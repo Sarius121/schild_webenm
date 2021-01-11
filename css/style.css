@@ -1,0 +1,353 @@
+body
+{
+    background-color: lightgray;
+}
+
+.form-control,
+.btn
+{
+    border-radius: 0;
+}
+
+.btn-primary
+{
+    background-color: #912f65;
+    border-color: #912f65;
+}
+
+.absolute-container
+{
+    width: 25%;
+    background-color: #FFF;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1em;
+}
+
+.separator
+{
+    display: block;
+    margin-bottom: 1em;
+    padding-bottom: 1em;
+    border-bottom: 1px solid lightgray;
+    clear: both;
+}
+
+/*#################### login #################### */
+
+#login-box input
+{
+    display: block;
+    margin: 0.5em 0;
+    width: 100%;
+    border: 1px solid lightgray;
+    padding: 0.5em;
+    transition-property: border-color, background-color;
+    transition-duration:  0.5s;
+    
+}
+
+#login-box input:focus
+{
+    outline: none;
+}
+
+#login-box input:hover
+{
+    border-color: black;
+}
+
+#login-box input[type="submit"]
+{
+    background-color: #912f65;
+    border-color: #912f65;
+    color: white;
+}
+
+#login-box input[type="submit"]:hover
+{
+    background-color: #742651;
+}
+
+
+#login-box label
+{
+    margin: 0;
+}
+
+/*#################### tab-layout #################### */
+.tab-layout.container
+{
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.tab-layout li
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 0.25em;
+}
+
+.tab-layout ul
+{
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 0;
+}
+
+.tab-layout ul.header li
+{
+    display: block;
+    border: 1px solid lightgray;
+}
+
+.tab-layout ul.header li.active
+{
+    background-color: lightgray;
+    border-bottom: 0;
+}
+
+.tab-layout ul.body
+{
+    margin-top: 0;
+    width: 100%;
+    border: 1px solid lightgray;
+    border-top-width: 3px;
+    visibility: hidden;
+    display: none;
+}
+
+.tab-layout ul.body.visible
+{
+    visibility: visible;
+    display: flex;
+}
+
+.tab-layout ul.body > li
+{
+    border: 1px lightgray solid;
+    margin: 0.25em;
+}
+
+.tab-layout ul.body > li .group-header
+{
+    text-align: center;
+    font-size: small;
+    background-color: lightgray;
+    margin-bottom: 2px;
+}
+
+.tab-layout ul.body > li li
+{
+    border-right: 1px dotted lightgray;
+}
+
+.tab-layout ul.body > li li:last-of-type
+{
+    border-right: 0;
+}
+
+.tab-layout ul.body > li li,
+.tab-layout ul.header li
+{
+    transition: background-color 0.25s;
+    cursor: pointer;
+}
+
+.tab-layout ul.body > li li:hover,
+.tab-layout ul.header li:hover
+{
+    background-color: lightgray;
+}
+
+/*#################### table #################### */
+
+#gradeTable
+{
+    overflow-y: scroll;
+    max-height: 65%;
+}
+
+/* width */
+#gradeTable::-webkit-scrollbar {
+    width: 15px;
+    margin: 0 0.25em;
+}
+  
+/* Track */
+#gradeTable::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-left: solid 0.25em white;
+}
+
+/* Handle */
+#gradeTable::-webkit-scrollbar-thumb {
+    background: #888;
+    border-left: solid 0.25em white;
+}
+
+/* Handle on hover */
+#gradeTable::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+table.gradeGrid
+{ 
+    border-collapse: collapse; 
+    border: 1px solid #CCB; 
+    width: 100%; 
+}
+
+table.gradeGrid td, table.gradeGrid th 
+{ 
+    padding: 5px; 
+    border: 1px solid #E0E0E0; 
+}
+
+table.gradeGrid th 
+{ 
+    border-bottom: 1px solid black;
+    text-align: left; 
+}
+
+table.gradeGrid input
+{
+    width: unset;
+}
+
+/*input.invalid 
+{ 
+    background: red; 
+    color: #FDFDFD; 
+}*/
+
+/*#################### home #################### */
+
+div.back-button
+{
+    float: left;
+    transition: background-image 0.5s;
+    border-radius: 1rem;
+    background-image: url("../img/back-button.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 2rem;
+    width: 2rem;
+    margin-right: 1em;
+}
+
+div.back-button:hover
+{
+    background-image: url("../img/back-button-filled.svg");
+}
+
+#home-container .d-flex
+{
+    margin-bottom: 1em;
+}
+
+#home-container div.d-flex h2
+{
+    margin-bottom: 0;
+}
+
+div.back-button svg
+{
+    height: 2em;
+    width: auto;
+}
+
+#home-container{
+    width: 75%;
+    margin: 0 auto;
+    background-color: #FFF;
+    padding: 1em;
+}
+
+#search-form .header
+{
+    font-weight: bold;
+}
+
+#search-form div.col-sm
+{
+    padding-right: 5px;
+}
+
+#search-form div.col-sm-auto
+{
+    padding-left: 5px;
+}
+
+.user-list
+{
+    overflow-y: scroll;
+    max-height: 65%;
+}
+
+/* width */
+.user-list::-webkit-scrollbar {
+    width: 15px;
+    margin: 0 0.25em;
+}
+  
+/* Track */
+.user-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-left: solid 0.25em white;
+}
+
+/* Handle */
+.user-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-left: solid 0.25em white;
+}
+
+/* Handle on hover */
+.user-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.user-list div.row
+{
+    border: 1px solid lightgray;
+    border-top: 0;
+    padding: 0.5em;
+    transition: background-color 0.5s;
+    cursor: default;
+}
+
+.user-list div.row:first-of-type
+{
+    border-top: 1px solid lightgray;
+}
+
+.user-list div.row:hover
+{
+    background-color: lightgray;
+}
+
+.user-list div.row div
+{
+    border-right: 1px solid lightgray;
+}
+
+.user-list div.row div:last-of-type
+{
+    border: 0;
+}
+
+.user-list div.grid-header
+{
+    border-bottom-color: black;
+}
+
+.user-list div.grid-header:hover
+{
+    background-color: unset;
+}
