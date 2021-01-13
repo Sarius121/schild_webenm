@@ -9,12 +9,6 @@ body
     border-radius: 0;
 }
 
-.btn-primary
-{
-    background-color: #912f65;
-    border-color: #912f65;
-}
-
 .absolute-container
 {
     width: 25%;
@@ -59,22 +53,34 @@ body
     border-color: black;
 }
 
-#login-box input[type="submit"]
-{
-    background-color: #912f65;
-    border-color: #912f65;
-    color: white;
-}
-
-#login-box input[type="submit"]:hover
-{
-    background-color: #742651;
-}
-
-
 #login-box label
 {
     margin: 0;
+}
+
+/*#################### nav #################### */
+
+.nav button
+{
+    outline: 0;
+    transition: background-color 0.25s;
+}
+
+.nav button:hover
+{
+    background-color: white;
+}
+
+#data-container > div
+{
+    visibility: hidden;
+    display: none;
+}
+
+#data-container > div.visible
+{
+    visibility: visible;
+    display: block;
 }
 
 /*#################### tab-layout #################### */
@@ -83,6 +89,7 @@ body
     max-width: 100%;
     padding: 0;
     margin: 0;
+    margin-top: 1em;
 }
 
 .tab-layout li
@@ -98,6 +105,7 @@ body
     display: flex;
     flex-direction: row;
     margin-bottom: 0;
+    position: relative;
 }
 
 .tab-layout ul.header li
@@ -165,57 +173,109 @@ body
     background-color: lightgray;
 }
 
+.tab-layout ul.body > li li.disabled
+{
+    color: darkgray;
+    cursor: default;
+}
+
+.tab-layout ul.body > li li.disabled:hover
+{
+    background-color: white;
+}
+
+.tab-layout li:hover > ul.dropdown
+{
+    visibility: visible;
+    display: block;
+}
+
+.tab-layout ul.dropdown
+{
+    position: absolute;
+    flex-direction: column;
+    background-color: white;
+    border: 1px solid lightgray;
+    left: 0;
+    min-width: 100%;
+    width: max-content;
+    visibility: hidden;
+    display: none;
+}
+
+.tab-layout ul.dropdown li.new-group
+{
+    border-top: 1px solid lightgray;
+}
+
 /*#################### table #################### */
 
-#gradeTable
+.dataTable
 {
     overflow-y: scroll;
     max-height: 65%;
 }
 
 /* width */
-#gradeTable::-webkit-scrollbar {
+.dataTable::-webkit-scrollbar {
     width: 15px;
     margin: 0 0.25em;
 }
   
 /* Track */
-#gradeTable::-webkit-scrollbar-track {
+.dataTable::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-left: solid 0.25em white;
 }
 
 /* Handle */
-#gradeTable::-webkit-scrollbar-thumb {
+.dataTable::-webkit-scrollbar-thumb {
     background: #888;
     border-left: solid 0.25em white;
 }
 
 /* Handle on hover */
-#gradeTable::-webkit-scrollbar-thumb:hover {
+.dataTable::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
 
-table.gradeGrid
+.dataTable table
 { 
     border-collapse: collapse; 
     border: 1px solid #CCB; 
     width: 100%; 
 }
 
-table.gradeGrid td, table.gradeGrid th 
+.dataTable table tbody tr
+{ 
+    transition: background-color 0.25s;
+}
+
+.dataTable table tbody tr:hover
+{ 
+    background-color: lightgray;
+}
+
+
+.dataTable table tbody tr.active
+{ 
+    background-color: #17a2b8;
+}
+
+.dataTable table td, 
+.dataTable table th 
 { 
     padding: 5px; 
     border: 1px solid #E0E0E0; 
 }
 
-table.gradeGrid th 
+.dataTable table th 
 { 
     border-bottom: 1px solid black;
     text-align: left; 
 }
 
-table.gradeGrid input
+.dataTable table input
 {
     width: unset;
 }
@@ -284,36 +344,47 @@ div.back-button svg
     padding-left: 5px;
 }
 
-.user-list
+/*#################### grades-modal #################### */
+
+#grades-modal .modal-dialog
+{
+    max-width: 700px;
+    margin: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.grades-list
 {
     overflow-y: scroll;
-    max-height: 65%;
+    max-height: 500px; /*TODO*/
 }
 
 /* width */
-.user-list::-webkit-scrollbar {
+.grades-list::-webkit-scrollbar {
     width: 15px;
     margin: 0 0.25em;
 }
   
 /* Track */
-.user-list::-webkit-scrollbar-track {
+.grades-list::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-left: solid 0.25em white;
 }
 
 /* Handle */
-.user-list::-webkit-scrollbar-thumb {
+.grades-list::-webkit-scrollbar-thumb {
     background: #888;
     border-left: solid 0.25em white;
 }
 
 /* Handle on hover */
-.user-list::-webkit-scrollbar-thumb:hover {
+.grades-list::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
 
-.user-list div.row
+.grades-list div.row
 {
     border: 1px solid lightgray;
     border-top: 0;
@@ -322,32 +393,37 @@ div.back-button svg
     cursor: default;
 }
 
-.user-list div.row:first-of-type
+.grades-list div.row:first-of-type
 {
     border-top: 1px solid lightgray;
 }
 
-.user-list div.row:hover
+.grades-list div.row:hover
 {
     background-color: lightgray;
 }
 
-.user-list div.row div
+.grades-list div.row.selected
+{
+    background-color: #17a2b8;;
+}
+
+.grades-list div.row div
 {
     border-right: 1px solid lightgray;
 }
 
-.user-list div.row div:last-of-type
+.grades-list div.row div:last-of-type
 {
     border: 0;
 }
 
-.user-list div.grid-header
+.grades-list div.grid-header
 {
     border-bottom-color: black;
 }
 
-.user-list div.grid-header:hover
+.grades-list div.grid-header:hover
 {
     background-color: unset;
 }

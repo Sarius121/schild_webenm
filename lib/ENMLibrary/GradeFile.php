@@ -25,6 +25,10 @@ class GradeFile {
                             ["name" => "Warnung", "label" => "Mahnung", "datatype" => "string", "editable" => true, "values" => ["-" => "keine Mahnung","+" =>"Mahnung"]
                             ]];
 
+    public const GRADE_COLUMNS = [["name" => "Krz", "label" => "Krz.", "size" => "-1"],
+                            ["name" => "Bezeichnung", "label" => "Bezeichnung", "size" => "-4"],
+                            ["name" => "Zeugnisnotenbez", "label" => "Zeugnisbez.", "size" => ""]];
+
     private $filename;
     private $db;
     private $error;
@@ -96,6 +100,26 @@ class GradeFile {
 
         //print_r(json_encode($jsonArray));
         return json_encode($jsonArray);
+    }
+
+    public function getGrades(){
+        return $this->fetchTableData("Noten", GradeFile::GRADE_COLUMNS);
+    }
+
+    public function fetchTableData($tablename, $columns){
+        $table = [];
+
+        $sql = 'SELECT * FROM ' . $tablename . ';';
+        $result = odbc_exec($this->db, $sql);
+        while($dbRow = odbc_fetch_array($result)){
+            $row = [];
+            for($i = 0; $i < count($columns); $i++){
+                //$row[array_values(GradeFile::COLUMNS)[$i]] = $dbRow[array_keys(GradeFile::COLUMNS)[$i]];
+                $row[$columns[$i]["name"]] = utf8_encode($dbRow[$columns[$i]["name"]]);
+            }
+            $table[] = $row;
+        }
+        return $table;
     }
 
     public function getTables(){

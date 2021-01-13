@@ -36,7 +36,7 @@ CellEditor.prototype.edit = function(rowIndex, columnIndex, element, value)
 		event = event || window.event;
 
 		// ENTER or TAB or Arrows: apply value
-		if (event.keyCode == 13 || event.keyCode == 9) {
+		if (event.keyCode == 13 || event.keyCode == 9 || event.keyCode == 37|| event.keyCode == 38 || event.keyCode == 39 || event.keyCode == 40) {
 
 			// backup onblur then remove it: it will be restored if editing could not be applied
 			this.onblur_backup = this.onblur; 
@@ -44,7 +44,7 @@ CellEditor.prototype.edit = function(rowIndex, columnIndex, element, value)
 			if (this.celleditor.applyEditing(this.element, this.celleditor.getEditorValue(this)) === false) this.onblur = this.onblur_backup;
 
 			// TAB or ArrowRight: move to next cell
-			if (event.keyCode == 9) {
+			if (event.keyCode == 9 || event.keyCode == 39) {
 				if (this.element.rowIndex >= 0 && this.celleditor.editablegrid.getColumnCount() > 0 && this.celleditor.editablegrid.getRowCount() > 0) {
 
 					var candidateRowIndex = this.element.rowIndex;
@@ -58,13 +58,69 @@ CellEditor.prototype.edit = function(rowIndex, columnIndex, element, value)
 
 						// candidate cell is editable: edit it and break
 						var column = this.celleditor.editablegrid.getColumn(candidateColumnIndex);
-						if (column.editable && column.datatype != 'boolean' && this.celleditor.editablegrid.isEditable(candidateRowIndex, candidateColumnIndex)) break;
+						if (column.editable && column.datatype != 'boolean' && this.celleditor.editablegrid.isEditable(candidateRowIndex, candidateColumnIndex)) {
+							this.celleditor.editablegrid.editCell(candidateRowIndex, candidateColumnIndex);
+							break;
+						}
 
 						// if we ever come back to the original cell, break
 						if (candidateRowIndex == this.element.rowIndex && candidateColumnIndex == this.element.columnIndex){
 							this.celleditor.editablegrid.editCell(this.element.rowIndex, this.element.columnIndex);
 							break;
 						}
+					}
+				}
+			} else if (event.keyCode == 40) { //ArrowDown
+				if (this.element.rowIndex >= 0 && this.celleditor.editablegrid.getColumnCount() > 0 && this.celleditor.editablegrid.getRowCount() > 0) {
+
+					var candidateRowIndex = this.element.rowIndex;
+					var candidateColumnIndex = this.element.columnIndex;
+					// find next cell in grid
+					candidateRowIndex++; 
+
+					// if row exists edit cell
+					if (!this.celleditor.editablegrid.getRow(candidateRowIndex)){
+						this.celleditor.editablegrid.editCell(this.element.rowIndex, this.element.columnIndex);
+					} else {
+						this.celleditor.editablegrid.editCell(candidateRowIndex, candidateColumnIndex);
+					}
+				}
+			} else if (event.keyCode == 37) { //ArrowLeft
+				if (this.element.rowIndex >= 0 && this.celleditor.editablegrid.getColumnCount() > 0 && this.celleditor.editablegrid.getRowCount() > 0) {
+
+					var candidateRowIndex = this.element.rowIndex;
+					var candidateColumnIndex = this.element.columnIndex;
+					while (true) {
+
+						// find next cell in grid
+						if (candidateColumnIndex > 0) candidateColumnIndex--;
+						else { candidateRowIndex--; candidateColumnIndex = this.celleditor.editablegrid.getColumnCount() - 1; }
+						if (candidateRowIndex < 0){
+							this.celleditor.editablegrid.editCell(this.element.rowIndex, this.element.columnIndex);
+							break;
+						};
+
+						// candidate cell is editable: edit it and break
+						var column = this.celleditor.editablegrid.getColumn(candidateColumnIndex);
+						if (column.editable && column.datatype != 'boolean' && this.celleditor.editablegrid.isEditable(candidateRowIndex, candidateColumnIndex)) {
+							this.celleditor.editablegrid.editCell(candidateRowIndex, candidateColumnIndex);
+							break;
+						}
+					}
+				}
+			} else if (event.keyCode == 38) { //ArrowUp
+				if (this.element.rowIndex >= 0 && this.celleditor.editablegrid.getColumnCount() > 0 && this.celleditor.editablegrid.getRowCount() > 0) {
+
+					var candidateRowIndex = this.element.rowIndex;
+					var candidateColumnIndex = this.element.columnIndex;
+					// find next cell in grid
+					candidateRowIndex--; 
+
+					// if row exists edit cell
+					if (candidateRowIndex >= 0){
+						this.celleditor.editablegrid.editCell(candidateRowIndex, candidateColumnIndex);
+					} else {
+						this.celleditor.editablegrid.editCell(this.element.rowIndex, this.element.columnIndex);
 					}
 				}
 			}
@@ -96,6 +152,9 @@ CellEditor.prototype.edit = function(rowIndex, columnIndex, element, value)
 	// display the resulting editor widget
 	this.displayEditor(element, editorInput);
 
+	//added by ***REMOVED***
+	element.parentElement.classList.add("active");
+
 	// give focus to the created editor
 	this.autoFocus(editorInput);
 };
@@ -126,6 +185,10 @@ CellEditor.prototype.displayEditor = function(element, editorInput, adjustX, adj
 	if (this.editablegrid.editmode == "static") {
 		while (element.hasChildNodes()) element.removeChild(element.firstChild);
 		element.appendChild(editorInput);
+
+		//added by ***REMOVED***
+		inputWidth = element.children[0].offsetWidth;
+        element.style.setProperty("width", inputWidth + 12);
 	}
 
 	// absolute mode: add input field in absolute position over table cell, leaving current content
@@ -170,6 +233,9 @@ CellEditor.prototype._clearEditor = function(element)
 {
 	// untag element
 	element.isEditing = false;
+
+	//added by ***REMOVED***
+	element.parentElement.classList.remove("active");
 
 	// clear fixed editor zone if any
 	if (this.editablegrid.editmode == "fixed") {
