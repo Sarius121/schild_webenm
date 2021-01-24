@@ -2,7 +2,7 @@
 use ENMLibrary\GradeFile;
 ?>
 
-<div id="grades-list" class="container grades-list">
+<div id="grades-list" class="container bootstrap-list">
     <div class="row grid-header">
         <?php 
         echo '<div class="col-sm-1">Nr.</div>';

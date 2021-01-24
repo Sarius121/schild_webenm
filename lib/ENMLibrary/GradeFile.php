@@ -106,18 +106,36 @@ class GradeFile {
         return $this->fetchTableData("Noten", GradeFile::GRADE_COLUMNS);
     }
 
-    public function fetchTableData($tablename, $columns){
+    public function fetchTableData($tablename, $columns, $filter = null, $dict = false){
         $table = [];
 
-        $sql = 'SELECT * FROM ' . $tablename . ';';
+        $startCol = 0;
+        if($dict){
+            $startCol = 1;
+        }
+
+        $sql = 'SELECT * FROM ' . $tablename;
+        if($filter != null){
+            $sql .= " WHERE " . $filter;
+        }
+        $sql .= ";";
+
         $result = odbc_exec($this->db, $sql);
         while($dbRow = odbc_fetch_array($result)){
             $row = [];
-            for($i = 0; $i < count($columns); $i++){
+            
+            for($i = $startCol; $i < count($columns); $i++){
                 //$row[array_values(GradeFile::COLUMNS)[$i]] = $dbRow[array_keys(GradeFile::COLUMNS)[$i]];
+                //print_r($dbRow);
                 $row[$columns[$i]["name"]] = utf8_encode($dbRow[$columns[$i]["name"]]);
             }
-            $table[] = $row;
+
+            if($dict){
+                $table[utf8_encode($dbRow[$columns[0]["name"]])] = $row;
+            } else {
+                $table[] = $row;
+            }
+            
         }
         return $table;
     }

@@ -280,6 +280,27 @@ body
     width: unset;
 }
 
+.dataTable table input[type="checkbox"]
+{
+    visibility: hidden;
+}
+
+.dataTable table input[type="checkbox"]:checked
+{
+    visibility: visible;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+.dataTable table input[type="checkbox"]:checked::after
+{
+    color: white;
+    padding: 0 0.5em;
+    background-color: green;
+    content: "\2713";
+}
+
 /*input.invalid 
 { 
     background: red; 
@@ -355,36 +376,36 @@ div.back-button svg
     transform: translate(-50%, -50%);
 }
 
-.grades-list
+.bootstrap-list
 {
     overflow-y: scroll;
     max-height: 500px; /*TODO*/
 }
 
 /* width */
-.grades-list::-webkit-scrollbar {
+.bootstrap-list::-webkit-scrollbar {
     width: 15px;
     margin: 0 0.25em;
 }
   
 /* Track */
-.grades-list::-webkit-scrollbar-track {
+.bootstrap-list::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-left: solid 0.25em white;
 }
 
 /* Handle */
-.grades-list::-webkit-scrollbar-thumb {
+.bootstrap-list::-webkit-scrollbar-thumb {
     background: #888;
     border-left: solid 0.25em white;
 }
 
 /* Handle on hover */
-.grades-list::-webkit-scrollbar-thumb:hover {
+.bootstrap-list::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
 
-.grades-list div.row
+.bootstrap-list div.row
 {
     border: 1px solid lightgray;
     border-top: 0;
@@ -393,37 +414,89 @@ div.back-button svg
     cursor: default;
 }
 
-.grades-list div.row:first-of-type
+.bootstrap-list div.row:first-of-type
 {
     border-top: 1px solid lightgray;
 }
 
-.grades-list div.row:hover
+.bootstrap-list div.row:hover
 {
     background-color: lightgray;
 }
 
-.grades-list div.row.selected
+.bootstrap-list div.row.selected
 {
     background-color: #17a2b8;;
 }
 
-.grades-list div.row div
+.bootstrap-list div.row div
 {
     border-right: 1px solid lightgray;
 }
 
-.grades-list div.row div:last-of-type
+.bootstrap-list div.row div:last-of-type
 {
     border: 0;
 }
 
-.grades-list div.grid-header
+.bootstrap-list div.grid-header
 {
     border-bottom-color: black;
 }
 
-.grades-list div.grid-header:hover
+.bootstrap-list div.grid-header:hover
 {
     background-color: unset;
+}
+
+/*#################### class-teacher-modal #################### */
+
+#class-teacher-modal .modal-dialog
+{
+    max-width: 70%;
+    width: 70%;
+}
+
+#class-teacher-head .row
+{
+    padding-bottom: 0.5em;
+    margin-bottom: 0.5em;
+    border-bottom: 1px solid lightgray;
+}
+
+#class-teacher-head .row .col-sm-auto.text
+{
+    padding: 0.5em;
+}
+
+#class-teacher-head .row .col-sm-auto button
+{
+    height: 100%;
+}
+
+#class-teacher-head h6
+{
+    margin: 0;
+}
+
+#class-teacher-head label
+{
+    font-weight: bold;
+}
+
+#class-teacher-head textarea
+{
+    width: 100%;
+    resize: none;
+    background-color: white;
+}
+
+#class-teacher-head textarea.active
+{
+    outline: -webkit-focus-ring-color auto 1px;
+}
+
+#phrasesTable
+{
+    max-height: 400px;
 }
