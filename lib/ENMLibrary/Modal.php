@@ -10,8 +10,8 @@ class Modal{
     private const HTML_AFTER_BODY = '</div><div class="modal-footer">';
     private const HTML_END = '</div></div></div></div>';
 
-    private const DEFAULT_BUTTONS = [["name" => "Abbrechen", "layer" => "btn-secondary", "onclick" => null],
-                                    ["name" => "OK", "layer" => "btn-primary", "onclick" => null]];
+    private const DEFAULT_BUTTONS = [["name" => "Abbrechen", "layer" => "btn-secondary", "closeOnClick" => true, "onclick" => null],
+                                    ["name" => "OK", "layer" => "btn-primary", "closeOnClick" => false, "onclick" => null]];
 
     private $id;
     private $title;
@@ -43,8 +43,8 @@ class Modal{
         return $modal;
     }
 
-    public function addButton($name, $btnLayer="btn-primary", $onclick=null) {
-        $this->buttons[] = array("name" => $name, "layer" => $btnLayer, "onclick" => $onclick);
+    public function addButton($name, $btnLayer="btn-primary", $closeOnClick=true, $onclick=null) {
+        $this->buttons[] = array("name" => $name, "layer" => $btnLayer, "closeOnClick" => $closeOnClick, "onclick" => $onclick);
     }
 
     public function setButtons($buttons) {
@@ -63,6 +63,9 @@ class Modal{
             $html .= '<button type="button" class="btn ' . $button["layer"] . '"';
             if($button["onclick"] != null){
                 $html .= ' onclick="' . $button["onclick"] . '"';
+            }
+            if($button["closeOnClick"] != null){
+                $html .= ' data-dismiss="modal"';
             }
             $html .= '>' . $button["name"] . '</button>';
         }

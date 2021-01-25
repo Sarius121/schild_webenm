@@ -172,7 +172,8 @@ if(!isset($loginHandler)){
     echo $gradesModal->getHTMLAfterBody(); ?>
 
 <?php //class-teacher-Modal 
-    $classTeacherModal = Modal::defaultModal("class-teacher-modal", "Klassenlehrer", "onClassTeacherModalOKClicked()");
+    $classTeacherModal = new Modal("class-teacher-modal", "Klassenlehrer");
+    $classTeacherModal->addButton("OK", "btn-primary", true);
     echo $classTeacherModal->getHTMLBeforeBody();
     include("modals/ClassTeacherModal.php");
     echo $classTeacherModal->getHTMLAfterBody(); ?>

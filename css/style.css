@@ -249,6 +249,7 @@ body
 .dataTable table tbody tr
 { 
     transition: background-color 0.25s;
+    cursor: default;
 }
 
 .dataTable table tbody tr:hover
@@ -449,6 +450,16 @@ div.back-button svg
     background-color: unset;
 }
 
+/*#################### class-teacher-table #################### */
+
+#classTeacherTable .editablegrid-ASV,
+#classTeacherTable .editablegrid-AuE,
+#classTeacherTable .editablegrid-ZeugnisBem
+{
+    visibility: hidden;
+    display: none;
+}
+
 /*#################### class-teacher-modal #################### */
 
 #class-teacher-modal .modal-dialog
@@ -496,7 +507,12 @@ div.back-button svg
     outline: -webkit-focus-ring-color auto 1px;
 }
 
+#class-teacher-head label.no-margin
+{
+    margin: 0;
+}
+
 #phrasesTable
 {
-    max-height: 400px;
+    max-height: 300px;
 }

@@ -4,32 +4,38 @@
             <h6>Schüler:</h6> 
         </div>
         <div class="col-sm-auto">
-            <button class="btn btn-primary"><</button>
+            <button id="btn-ct-previous" class="btn btn-primary" onclick="changeCTSelectedUserRelative(-1)"><</button>
         </div>
         <div class="col-sm-auto text">
-            <h6>Max Mustermann (EF)</h6>
+            <h6 id="ct-selected-name">Max Mustermann (EF)</h6>
         </div>
         <div class="col-sm-auto">
-            <button class="btn btn-primary">></button>
+            <button id="btn-ct-next" class="btn btn-primary" onclick="changeCTSelectedUserRelative(1)">></button>
         </div>
     </div>
     <div class="row">
         <div class="col-sm">
             <label for="ASV">Arbeits- und Sozialverhalten</label>
-            <textarea name="ASV" rows="8" onfocus="filterPhrasesTable('ASV', this)" readonly></textarea>
+            <textarea id="textarea-asv" name="ASV" rows="8" onfocus="filterPhrasesTable('ASV', this)" readonly></textarea>
         </div>
         <div class="col-sm">
             <label for="AuE">Außerunterrichtliches Engagement</label>
-            <textarea name="AuE" rows="8" onfocus="filterPhrasesTable('AUE', this)" readonly></textarea>
+            <textarea id="textarea-aue" name="AuE" rows="8" onfocus="filterPhrasesTable('AUE', this)" readonly></textarea>
         </div>
         <div class="col-sm">
             <label for="ZB">Zeugnis-Bemerkung</label>
-            <textarea name="ZB" rows="8" onfocus="filterPhrasesTable('ZB', this)" readonly></textarea>
+            <textarea id="textarea-zb" name="ZB" rows="8" onfocus="filterPhrasesTable('ZB', this)" readonly></textarea>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <input id="multipleFirstnames" type="checkbox" checked>
+            <label class="no-margin" for="multipleFirstnames">Vorname nicht mehrfach</label>
         </div>
     </div>
 </div>
 <div id="phrases">
-    <?php //TODO get phrases 
+    <?php
     use ENMLibrary\datatypes\PhrasesData;
 
     require_once("lib/ENMLibrary/datatypes/PhrasesData.php");
