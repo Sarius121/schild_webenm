@@ -60,6 +60,7 @@ if($loginHandler->isLoggedIn()){
         <script src="js/gradeTable.js"></script>
         <script src="js/grades-list.js"></script>
         <script src="js/classTeacherTable.js"></script>
+        <script src="js/examsTable.js"></script>
     </head>
     <body>
         <?php 

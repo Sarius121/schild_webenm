@@ -18,7 +18,7 @@ class ClassTeacherData {
 
     public const COLUMNS_KOPFNOTEN = [["name" => "S_GUID"], ["name" => "Name"], ["name" => "Klasse"], ["name" => "SumFehlstd"], ["name" => "SumFehlstdU"]];
     public const COLUMNS_LEISTUNGSDATEN = [["name" => "S_GUID"], ["name" => "Abschnitt_ID"]];
-    public const COLUMNS_PSFACHBEM = [["name" => "Abschnitt_ID"], ["name" => "ASV"], ["name" => "ZeugnisBem"]];
+    public const COLUMNS_PSFACHBEM = [["name" => "Abschnitt_ID"], ["name" => "ASV"], ["name" => "LELS"], ["name" => "ZeugnisBem"]];
 
     private $file;
     private $students; //cols: name, class, FS, uFS, ASV, AuE, ZeugnisBem, S_GUID, Abschnitt_ID, hasASV, hasAuE, hasZeugnisBem
@@ -71,15 +71,20 @@ class ClassTeacherData {
                 $row = $result[$this->students[$i]["Abschnitt_ID"]];
                 foreach(ClassTeacherData::COLUMNS_PSFACHBEM as $col){
                     if(key_exists($col["name"], $row)){
-                        $this->students[$i][$col["name"]] = $row[$col["name"]];
+                        $newcol = $col;
+                        if($col["name"] == "LELS"){
+                            $newCol["name"] = "AuE";
+                        }
+                        $this->students[$i][$newcol["name"]] = $row[$col["name"]];
                         
-                        switch($col["name"]){
+                        switch($newcol["name"]){
                             case "ASV":
                             case "ZeugnisBem":
+                            case "AuE":
                                 if(strlen($row[$col["name"]]) > 0){
-                                    $this->students[$i]["has" . $col["name"]] = true;
+                                    $this->students[$i]["has" . $newcol["name"]] = true;
                                 } else {
-                                    $this->students[$i]["has" . $col["name"]] = false;
+                                    $this->students[$i]["has" . $newcol["name"]] = false;
                                 }
                                 break;
                         }
