@@ -30,7 +30,10 @@ if(!isset($loginHandler)){
             </div>
         </div>
     </form> */ ?>
-    <div class="row">
+    <div id="header" class="row">
+        <div class="col-sm-auto">
+            <img src="img/schild_logo.png">
+        </div>
         <div class="col-sm">
             <h2>webENM</h2>
         </div>

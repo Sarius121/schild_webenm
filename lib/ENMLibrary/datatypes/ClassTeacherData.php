@@ -8,12 +8,12 @@ class ClassTeacherData {
                                         ["name" => "Name", "label" => "Name", "datatype" => "string", "editable" => false],
                                         ["name" => "SumFehlstd", "label" => "FS", "datatype" => "string", "editable" => true], 
                                         ["name" => "SumFehlstdU", "label" => "uFS", "datatype" => "string", "editable" => true],
-                                        ["name" => "hasASV", "label" => "ASV", "datatype" => "boolean", "editable" => false], //Table: PSFachBem
-                                        ["name" => "hasAuE", "label" => "AuE", "datatype" => "boolean", "editable" => false], //??
-                                        ["name" => "hasZeugnisBem", "label" => "ZB", "datatype" => "boolean", "editable" => false],
-                                        ["name" => "ASV", "label" => "ASV", "datatype" => "string", "editable" => false],
-                                        ["name" => "AuE", "label" => "AuE", "datatype" => "string", "editable" => false],
-                                        ["name" => "ZeugnisBem", "label" => "ZB", "datatype" => "string", "editable" => false]
+                                        ["name" => "hasASV", "label" => "ASV", "datatype" => "boolean", "editable" => true], //Table: PSFachBem
+                                        ["name" => "hasAuE", "label" => "AuE", "datatype" => "boolean", "editable" => true], //??
+                                        ["name" => "hasZeugnisBem", "label" => "ZB", "datatype" => "boolean", "editable" => true],
+                                        ["name" => "ASV", "label" => "ASV", "datatype" => "string", "editable" => true],
+                                        ["name" => "AuE", "label" => "AuE", "datatype" => "string", "editable" => true],
+                                        ["name" => "ZeugnisBem", "label" => "ZB", "datatype" => "string", "editable" => true]
                                     ];
 
     public const COLUMNS_KOPFNOTEN = [["name" => "S_GUID"], ["name" => "Name"], ["name" => "Klasse"], ["name" => "SumFehlstd"], ["name" => "SumFehlstdU"]];

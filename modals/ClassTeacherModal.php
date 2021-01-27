@@ -4,27 +4,27 @@
             <h6>Schüler:</h6> 
         </div>
         <div class="col-sm-auto">
-            <button id="btn-ct-previous" class="btn btn-primary" onclick="changeCTSelectedUserRelative(-1)"><</button>
+            <button id="btn-ct-previous" class="btn btn-primary"><</button> <!-- onclick="changeCTSelectedUserRelative(-1)" -->
         </div>
         <div class="col-sm-auto text">
             <h6 id="ct-selected-name">Max Mustermann (EF)</h6>
         </div>
         <div class="col-sm-auto">
-            <button id="btn-ct-next" class="btn btn-primary" onclick="changeCTSelectedUserRelative(1)">></button>
+            <button id="btn-ct-next" class="btn btn-primary">></button>
         </div>
     </div>
     <div class="row">
         <div class="col-sm">
             <label for="ASV">Arbeits- und Sozialverhalten</label>
-            <textarea id="textarea-asv" name="ASV" rows="8" onfocus="filterPhrasesTable('ASV', this)" readonly></textarea>
+            <textarea id="textarea-asv" name="ASV" rows="8" ></textarea><!--onfocus="filterPhrasesTable('ASV', this)" onchange="onPhrasesChanged()"-->
         </div>
         <div class="col-sm">
             <label for="AuE">Außerunterrichtliches Engagement</label>
-            <textarea id="textarea-aue" name="AuE" rows="8" onfocus="filterPhrasesTable('AUE', this)" readonly></textarea>
+            <textarea id="textarea-aue" name="AuE" rows="8"></textarea>
         </div>
         <div class="col-sm">
             <label for="ZB">Zeugnis-Bemerkung</label>
-            <textarea id="textarea-zb" name="ZB" rows="8" onfocus="filterPhrasesTable('ZB', this)" readonly></textarea>
+            <textarea id="textarea-zb" name="ZB" rows="8"></textarea>
         </div>
     </div>
     <div class="row">
@@ -36,7 +36,7 @@
 </div>
 <div id="phrases">
     <?php
-    use ENMLibrary\datatypes\PhrasesData;
+    /*use ENMLibrary\datatypes\PhrasesData;
 
     require_once("lib/ENMLibrary/datatypes/PhrasesData.php");
     
@@ -52,7 +52,7 @@
             
             onPhrasesTableLoaded();
         });
-    </script>
+    </script>*/?>
     <div id="phrasesTable" class="dataTable"></div>
 </div>
 <!--<div class="container bootstrap-list">

@@ -40,6 +40,8 @@ if($loginHandler->isLoggedIn()){
     <head>
         <title>webENM</title>
 
+        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
         <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="lib/editablegrid/editablegrid.css">
         <link rel="stylesheet" href="css/style.css">
@@ -54,6 +56,7 @@ if($loginHandler->isLoggedIn()){
 		<!-- [DO NOT DEPLOY] --> <script src="lib/editablegrid/editablegrid_charts.js" ></script>
         <script src="js/nav.js"></script>
         <script src="js/tab-layout.js"></script>
+        <script src="js/custom-editablegrid.js"></script>
         <script src="js/gradeTable.js"></script>
         <script src="js/grades-list.js"></script>
         <script src="js/classTeacherTable.js"></script>

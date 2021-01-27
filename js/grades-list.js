@@ -18,7 +18,7 @@ function onGradesListRowDoubleClicked(grade){
 
 function onGradesListOKClicked(){
     //hide modal
-    $('.active').removeClass('active');
+    $('gradeTable .active').removeClass('active');
     $('#grades-modal').modal('hide');
 
     //get row (activeRow is set in gradeTable.js)

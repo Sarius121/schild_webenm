@@ -58,6 +58,12 @@ body
     margin: 0;
 }
 
+/*#################### header #################### */
+#header img
+{
+    height: 3rem; /* TODO */
+}
+
 /*#################### nav #################### */
 
 .nav button
@@ -458,6 +464,14 @@ div.back-button svg
 {
     visibility: hidden;
     display: none;
+}
+
+#classTeacherTable .editablegrid-ASV.show,
+#classTeacherTable .editablegrid-AuE.show,
+#classTeacherTable .editablegrid-ZeugnisBem.show
+{
+    visibility: visible;
+    display: table-cell;
 }
 
 /*#################### class-teacher-modal #################### */
