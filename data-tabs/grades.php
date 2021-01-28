@@ -5,11 +5,12 @@ use ENMLibrary\Modal;
 
     <script>
 			window.onload = function() {
-				editableGrid = new EditableGrid("GradeTable", {editmode: "static"}); //, allowSimultaneousEdition: true
-				editableGrid.load(<?php echo $jsonTable; ?>);
-                editableGrid.renderGrid("gradeTable", "gradeGrid");
-                
-                onGradeTableLoaded();
+				/*editableGrid = new EditableGrid("GradeTable", {editmode: "static"}); //, allowSimultaneousEdition: true
+				editableGrid.load();
+                editableGrid.renderGrid("gradeTable", "gradeGrid");*/
+
+                gradeTable = new GradeTable(<?php echo $jsonTable; ?>);
+                gradeTable.renderGrid();
 			} 
 		</script>
     <div id="gradeTable" class="dataTable"></div>

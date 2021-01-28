@@ -27,7 +27,8 @@ class GradeFile {
 
     public const GRADE_COLUMNS = [["name" => "Krz", "label" => "Krz.", "size" => "-1"],
                             ["name" => "Bezeichnung", "label" => "Bezeichnung", "size" => "-4"],
-                            ["name" => "Zeugnisnotenbez", "label" => "Zeugnisbez.", "size" => ""]];
+                            ["name" => "Zeugnisnotenbez", "label" => "Zeugnisbez.", "size" => ""],
+                            ["name" => "Art", "label" => "Art", "size" => " hidden"]];
 
     private $filename;
     private $db;

@@ -3,7 +3,36 @@ window.addEventListener("load", function(event) {
     //$("#gradeTable .editablegrid-NotenKrz").css("color", "red");
 });
 
-function onGradeTableLoaded(){
+class GradeTable extends CustomEditableGrid{
+    constructor(json){
+        super("GradeTable", json);
+    }
+
+    onTableRendered(){    
+        //events
+        const that = this;
+        $("#gradeTable tbody .editablegrid-NotenKrz").dblclick((event) => {that.onGradeCellDoubleClicked(event)});
+    }
+    
+    renderGrid(){
+        super.renderGrid("gradeTable", "gradeGrid");
+    }
+
+    onGradeCellDoubleClicked(event){
+        //get row
+        var cell = event.currentTarget;
+        var cellClass = cell.classList.item(0);
+        this.activeRow = parseInt(cell.parentElement.id.split("_")[1]);
+
+        //show grade selection modal
+        gradesModal.filterGrades(null);
+        gradesModal.show(this, cellClass);
+        
+        cell.parentElement.classList.add("active");
+    }
+}
+
+/*function onGradeTableLoaded(){
     $("#gradeTable .editablegrid-NotenKrz").dblclick(onGradeCellDoubleClicked);
 }
 
@@ -15,10 +44,7 @@ function onGradeCellDoubleClicked(event){
     activeRow = parseInt(cell.parentElement.id.split("_")[1]);
 
     //show grade selection modal
-    $('#grades-modal').modal();
-    $('#grades-modal').on('hidden.bs.modal', function (e) {
-        focusCell(activeRow, ".editablegrid-NotenKrz");
-    });
+    //TODO show grades modal
     
     cell.parentElement.classList.add("active");
 }
@@ -34,4 +60,4 @@ function focusCell(row, col){
 
     //simulate click and set value of input
     $(selector).trigger('click');
-}
+}*/

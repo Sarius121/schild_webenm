@@ -10,10 +10,10 @@ class ExamsData {
                                         ["name" => "Fachlehrer", "label" => "Lehrkraft", "datatype" => "string", "editable" => false],
                                         ["name" => "Vornote", "label" => "Vornote", "datatype" => "string", "editable" => true],
                                         ["name" => "NoteSchriftlich", "label" => "Note schr. Prüf.", "datatype" => "string", "editable" => true],
-                                        ["name" => "MdlPruefung", "label" => "Mdl. Prüf.", "datatype" => "string", "editable" => false],
-                                        ["name" => "MdlPruefungFW", "label" => "Mdl. freiw. Prüf.", "datatype" => "string", "editable" => false],
-                                        ["name" => "NoteMuendlich", "label" => "Note mdl. Prüf.", "datatype" => "string", "editable" => false],
-                                        ["name" => "NoteAbschluss", "label" => "Abschlussnote", "datatype" => "string", "editable" => false]
+                                        ["name" => "MdlPruefung", "label" => "Mdl. Prüf.", "datatype" => "boolean", "editable" => true],
+                                        ["name" => "MdlPruefungFW", "label" => "Mdl. freiw. Prüf.", "datatype" => "boolean", "editable" => true],
+                                        ["name" => "NoteMuendlich", "label" => "Note mdl. Prüf.", "datatype" => "string", "editable" => true],
+                                        ["name" => "NoteAbschluss", "label" => "Abschlussnote", "datatype" => "string", "editable" => true]
                                     ];
 
     public const COLUMNS_BKFAECHER = [["name" => "Schueler_ID"], ["name" => "FachKrz"], ["name" => "Fachlehrer"], ["name" => "Vornote"], ["name" => "NoteSchriftlich"], 
@@ -34,12 +34,16 @@ class ExamsData {
 
     public function fetchExamGrades(){
         $result = $this->file->fetchTableData("SchuelerBKFaecher", ExamsData::COLUMNS_BKFAECHER);
+        for($i = 0; $i < count($result); $i++){
+            $result[$i]["MdlPruefung"] = ($result[$i]["MdlPruefung"] == "+");
+            $result[$i]["MdlPruefungFW"] = ($result[$i]["MdlPruefung"] == "+");
+        }
         $this->exams = $result;
     }
 
     public function fetchStudentData(){
         $filter = "Schueler_ID IN (SELECT Schueler_ID FROM SchuelerBKFaecher)";
-        $result = $this->file->fetchTableData("SchuelerLeistungsDaten", ExamsData::COLUMNS_LEISTUNGSDATEN, $filter);
+        $result = $this->file->fetchTableData("SchuelerLeistungsDaten", ExamsData::COLUMNS_LEISTUNGSDATEN, $filter, true);
         for($i = 0; $i < count($this->exams); $i++){
             if(key_exists($this->exams[$i]["Schueler_ID"], $result)){
                 $row = $result[$this->exams[$i]["Schueler_ID"]];

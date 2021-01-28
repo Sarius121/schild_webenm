@@ -169,10 +169,13 @@ if(!isset($loginHandler)){
     </div>
 </div>
 <?php //grades-Modal 
-    $gradesModal = Modal::defaultModal("grades-modal", "Noten", "onGradesListOKClicked()");
+    $gradesModal = Modal::defaultModal("grades-modal", "Noten", null);
     echo $gradesModal->getHTMLBeforeBody();
     include("modals/GradesModal.php");
-    echo $gradesModal->getHTMLAfterBody(); ?>
+    echo $gradesModal->getHTMLAfterBody();?>
+    <script>
+        gradesModal = new GradesModal();
+    </script>
 
 <?php //class-teacher-Modal 
     $classTeacherModal = new Modal("class-teacher-modal", "Klassenlehrer");

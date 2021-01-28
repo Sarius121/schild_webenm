@@ -154,17 +154,17 @@ class PhrasesTable extends CustomEditableGrid{
         $("#ClassTeacherTable_" + rowID + " .editablegrid-AuE").html(aue);
         $("#ClassTeacherTable_" + rowID + " .editablegrid-ZeugnisBem").html(zb);*/
         $('#class-teacher-modal').modal("hide");
-        this.classTeacherTable.changeTextCell(activeCTRow, ".editablegrid-ASV", asv);
-        this.classTeacherTable.changeTextCell(activeCTRow, ".editablegrid-AuE", aue);
-        this.classTeacherTable.changeTextCell(activeCTRow, ".editablegrid-ZeugnisBem", zb);
+        this.classTeacherTable.changeTextCell(activeCTRow, "editablegrid-ASV", asv);
+        this.classTeacherTable.changeTextCell(activeCTRow, "editablegrid-AuE", aue);
+        this.classTeacherTable.changeTextCell(activeCTRow, "editablegrid-ZeugnisBem", zb);
         $('#class-teacher-modal').modal("show");
     
         var hasASV = (asv.length > 0);
         var hasAUE = (aue.length > 0);
         var hasZB = (zb.length > 0);
     
-        this.classTeacherTable.changeCheckboxCell(activeCTRow, ".editablegrid-hasASV", hasASV);
-        this.classTeacherTable.changeCheckboxCell(activeCTRow, ".editablegrid-hasAuE", hasAUE);
-        this.classTeacherTable.changeCheckboxCell(activeCTRow, ".editablegrid-hasZeugnisBem", hasZB);
+        this.classTeacherTable.changeCheckboxCell(activeCTRow, "editablegrid-hasASV", hasASV);
+        this.classTeacherTable.changeCheckboxCell(activeCTRow, "editablegrid-hasAuE", hasAUE);
+        this.classTeacherTable.changeCheckboxCell(activeCTRow, "editablegrid-hasZeugnisBem", hasZB);
     }
 }

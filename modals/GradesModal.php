@@ -15,7 +15,7 @@ use ENMLibrary\GradeFile;
     </div>
     <?php if(count($grades) > 0){ 
         for($i = 0; $i < count($grades); $i++){
-            echo '<div class="row" onclick="onGradesListRowClicked(this, \'' . $grades[$i]["Krz"] . '\')" ondblclick="onGradesListRowDoubleClicked(\'' . $grades[$i]["Krz"] . '\')">';
+            echo '<div class="row">';
 
             echo '<div class="col-sm-1">';
             echo $i + 1;

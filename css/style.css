@@ -29,6 +29,12 @@ body
     clear: both;
 }
 
+.hidden
+{
+    visibility: hidden;
+    display: none;
+}
+
 /*#################### login #################### */
 
 #login-box input
@@ -287,27 +293,6 @@ body
     width: unset;
 }
 
-.dataTable table input[type="checkbox"]
-{
-    visibility: hidden;
-}
-
-.dataTable table input[type="checkbox"]:checked
-{
-    visibility: visible;
-    height: 100%;
-    width: 100%;
-    text-align: center;
-}
-
-.dataTable table input[type="checkbox"]:checked::after
-{
-    color: white;
-    padding: 0 0.5em;
-    background-color: green;
-    content: "\2713";
-}
-
 /*input.invalid 
 { 
     background: red; 
@@ -472,6 +457,27 @@ div.back-button svg
 {
     visibility: visible;
     display: table-cell;
+}
+
+#classTeacherTable.dataTable table input[type="checkbox"]
+{
+    visibility: hidden;
+}
+
+#classTeacherTable.dataTable table input[type="checkbox"]:checked
+{
+    visibility: visible;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+#classTeacherTable.dataTable table input[type="checkbox"]:checked::after
+{
+    color: white;
+    padding: 0 0.5em;
+    background-color: green;
+    content: "\2713";
 }
 
 /*#################### class-teacher-modal #################### */
