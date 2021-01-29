@@ -299,6 +299,15 @@ body
     color: #FDFDFD; 
 }*/
 
+
+.dataTable .editablegrid-ID,
+.dataTable .editablegrid-Leistung_ID,
+.dataTable .editablegrid-Abschnitt_ID
+{
+    visibility: hidden;
+    display: none;
+}
+
 /*#################### home #################### */
 
 div.back-button

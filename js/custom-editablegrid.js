@@ -4,6 +4,35 @@ class CustomEditableGrid{
         this.name = name;
         this.editableGrid = new EditableGrid(name, {editmode: "static"});
         this.editableGrid.load(json);
+
+        // override the function that will handle model changes
+        this.editableGrid.modelChanged = function(rowIndex, columnIndex, oldValue, newValue, row) {
+            var sessionID = document.cookie.match(/PHPSESSID=[^;]+/)[0].substring(10);
+            
+            var priKeyCol = this.columns[0]["name"];
+            var priKey = this.data[rowIndex]["columns"][0];
+            var col = this.columns[columnIndex]["name"];
+
+            var postData = [{
+                table : this.name,
+                priKeyCol : priKeyCol,
+                priKey : priKey,
+                col : col,
+                value : newValue,
+            }];
+
+            var post = "session_id=" + sessionID + "&data=" + encodeURIComponent(JSON.stringify(postData));
+            //console.log(post);
+
+            //TODO send
+            var request = new XMLHttpRequest();
+            //TODO look for errors request.addEventListener
+            request.open("POST", "push-data.php", false);
+            request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            request.send(post);
+            console.log(request.response);
+        }
+
     }
 
     renderGrid(tableID, gridID){

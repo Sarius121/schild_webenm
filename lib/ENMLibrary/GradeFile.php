@@ -5,8 +5,6 @@ require_once("constants.php");
 
 use Exception;
 use ErrorException;
-use PDO;
-use stdClass;
 
 class GradeFile {
 
@@ -68,43 +66,17 @@ class GradeFile {
         
     }
 
-    public function getTable(){
-        $table = [];
+    public function insertData($table, $priKeyCol, $priKey, $col, $value)
+    {
+        //put quotation marks around strings
+        if(is_string($value)){
+            $value = "'" . $value . "'";
+        }
 
-        $sql = 'SELECT * FROM SchuelerLeistungsDaten';
+        $sql = 'UPDATE ' . $table . ' SET ' . $col . ' = ' . $value . ' WHERE ' . $priKeyCol . ' = ' . $priKey . ';';
+
         $result = odbc_exec($this->db, $sql);
-        while($dbRow = odbc_fetch_array($result)){
-            $row = [];
-            for($i = 0; $i < count(GradeFile::COLUMNS); $i++){
-                //$row[array_values(GradeFile::COLUMNS)[$i]] = $dbRow[array_keys(GradeFile::COLUMNS)[$i]];
-                $row[GradeFile::COLUMNS[$i]["name"]] = utf8_encode($dbRow[GradeFile::COLUMNS[$i]["name"]]);
-            }
-            $table[] = $row;
-        }
-        //print_r($table);
-        return $table;
-
-        //print_r(odbc_result_all($result));
-    }
-
-    public function getJSONTable(){
-        $jsonArray = ["metadata" => GradeFile::COLUMNS];
-        $jsonArray["data"] = array();
-        $table = $this->getTable();
-        
-        for($i = 0; $i < count($table); $i++){
-            $row = [];
-            $row["id"] = $i;
-            $row["values"] = $table[$i];
-            $jsonArray["data"][] = $row;
-        }
-
-        //print_r(json_encode($jsonArray));
-        return json_encode($jsonArray);
-    }
-
-    public function getGrades(){
-        return $this->fetchTableData("Noten", GradeFile::GRADE_COLUMNS);
+        //TODO error handling
     }
 
     public function fetchTableData($tablename, $columns, $filter = null, $dict = false){
@@ -157,10 +129,14 @@ class GradeFile {
         echo '</table><hr>';
     }
 
-    public function getTableData($tablename){
+    /**
+     * helper function for debugging, will be deleted at the end
+     * @deprecated
+     */
+    public function getRawTableData($tablename){
         $sql = "select * from " . $tablename . ";";
         $result = $this->db->query($sql);
-        print_r($result->fetchAll());
+        return $result;
     }
 
     public function close(){

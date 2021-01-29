@@ -7,11 +7,6 @@ if(!isset($loginHandler)){
         header("Location: index.php");
         die("An Error occurred!");
     }
-
-    //$gradeTable = $loginHandler->getGradeFile()->getTable();
-    $jsonTable = $loginHandler->getGradeFile()->getJSONTable();
-
-    $grades = $loginHandler->getGradeFile()->getGrades();
 ?>
 
 <div id="home-container">
@@ -182,4 +177,9 @@ if(!isset($loginHandler)){
     $classTeacherModal->addButton("OK", "btn-primary", true);
     echo $classTeacherModal->getHTMLBeforeBody();
     include("modals/ClassTeacherModal.php");
-    echo $classTeacherModal->getHTMLAfterBody(); ?>
+    echo $classTeacherModal->getHTMLAfterBody(); 
+
+
+    $loginHandler->getGradeFile()->close();
+
+?>

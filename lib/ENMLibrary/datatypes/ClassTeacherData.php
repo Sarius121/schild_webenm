@@ -4,7 +4,10 @@ namespace ENMLibrary\datatypes;
 
 class ClassTeacherData {
 
-    public const CLASS_TEACHER_COLUMNS = [["name" => "Klasse", "label" => "Klasse", "datatype" => "string", "editable" => false], //Table: Kopfnoten
+    // Abschnitt_ID is the primary key in Kopfnoten but not in PSFachBem; probably Abschnitt_ID is unique in PSFachBem, too, but this is not proved!
+
+    public const CLASS_TEACHER_COLUMNS = [["name" => "Abschnitt_ID", "label" => "Abschnitt_ID", "datatype" => "string", "editable" => false],
+                                        ["name" => "Klasse", "label" => "Klasse", "datatype" => "string", "editable" => false], //Table: Kopfnoten
                                         ["name" => "Name", "label" => "Name", "datatype" => "string", "editable" => false],
                                         ["name" => "SumFehlstd", "label" => "FS", "datatype" => "string", "editable" => true], 
                                         ["name" => "SumFehlstdU", "label" => "uFS", "datatype" => "string", "editable" => true],

@@ -1,8 +1,6 @@
 <?php 
 use ENMLibrary\datatypes\ExamsData;
 
-require_once("lib/ENMLibrary/datatypes/ExamsData.php");
-
 $examsData = new ExamsData($loginHandler->getGradeFile());
 $jsonExamsTable = $examsData->getJSON();
 

@@ -5,4 +5,11 @@ require_once("lib/ENMLibrary/GradeFile.php");
 require_once("lib/ENMLibrary/Modal.php");
 require_once("lib/editablegrid/php/EditableGrid.php");
 
+require_once("lib/ENMLibrary/GradeFileDataHelper.php");
+require_once("lib/ENMLibrary/datatypes/StudentGradesData.php");
+require_once("lib/ENMLibrary/datatypes/ClassTeacherData.php");
+require_once("lib/ENMLibrary/datatypes/PhrasesData.php");
+require_once("lib/ENMLibrary/datatypes/ExamsData.php");
+require_once("lib/ENMLibrary/datatypes/GradesData.php");
+
 ?>

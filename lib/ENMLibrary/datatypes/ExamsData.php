@@ -4,7 +4,8 @@ namespace ENMLibrary\datatypes;
 
 class ExamsData {
 
-    public const EXAMS_COLUMNS = [["name" => "Klasse", "label" => "Klasse", "datatype" => "string", "editable" => false], //Leistungsdaten
+    public const EXAMS_COLUMNS = [["name" => "ID", "label" => "ID", "datatype" => "string", "editable" => false],
+                                        ["name" => "Klasse", "label" => "Klasse", "datatype" => "string", "editable" => false], //Leistungsdaten
                                         ["name" => "Name", "label" => "Name", "datatype" => "string", "editable" => false],
                                         ["name" => "FachKrz", "label" => "Fach", "datatype" => "string", "editable" => false], //SchuelerBKFaecher
                                         ["name" => "Fachlehrer", "label" => "Lehrkraft", "datatype" => "string", "editable" => false],
@@ -16,7 +17,7 @@ class ExamsData {
                                         ["name" => "NoteAbschluss", "label" => "Abschlussnote", "datatype" => "string", "editable" => true]
                                     ];
 
-    public const COLUMNS_BKFAECHER = [["name" => "Schueler_ID"], ["name" => "FachKrz"], ["name" => "Fachlehrer"], ["name" => "Vornote"], ["name" => "NoteSchriftlich"], 
+    public const COLUMNS_BKFAECHER = [["name" => "ID"], ["name" => "Schueler_ID"], ["name" => "FachKrz"], ["name" => "Fachlehrer"], ["name" => "Vornote"], ["name" => "NoteSchriftlich"], 
                                         ["name" => "MdlPruefung"], ["name" => "MdlPruefungFW"], ["name" => "NoteMuendlich"], ["name" => "NoteAbschluss"]];
     public const COLUMNS_LEISTUNGSDATEN = [["name" => "Schueler_ID"], ["name" => "Klasse"], ["name" => "Name"]];
 

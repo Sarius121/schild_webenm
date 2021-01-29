@@ -1,12 +1,16 @@
-<?php 
-use ENMLibrary\GradeFile;
+<?php
+
+use ENMLibrary\datatypes\GradesData;
+
+$gradesData = new GradesData($loginHandler->getGradeFile());
+$grades = $gradesData->getGradesArray();
 ?>
 
 <div id="grades-list" class="container bootstrap-list">
     <div class="row grid-header">
         <?php 
         echo '<div class="col-sm-1">Nr.</div>';
-        foreach (GradeFile::GRADE_COLUMNS as $col) {
+        foreach (GradesData::GRADES_COLUMNS as $col) {
             echo '<div class="col-sm' . $col['size'] . '">';
             echo $col['label'];
             echo "</div>";
@@ -21,7 +25,7 @@ use ENMLibrary\GradeFile;
             echo $i + 1;
             echo "</div>";
 
-            foreach (GradeFile::GRADE_COLUMNS as $col) {
+            foreach (GradesData::GRADES_COLUMNS as $col) {
                 echo '<div class="col-sm' . $col['size'] . '">';
                 echo $grades[$i][$col["name"]];
                 echo "</div>";

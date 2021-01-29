@@ -1,10 +1,7 @@
 <?php 
-use ENMLibrary\Modal;
 use ENMLibrary\datatypes\ClassTeacherData;
 use ENMLibrary\datatypes\PhrasesData;
 
-require_once("lib/ENMLibrary/datatypes/ClassTeacherData.php");
-require_once("lib/ENMLibrary/datatypes/PhrasesData.php");
 
 $classTeacherData = new ClassTeacherData($loginHandler->getGradeFile());
 $jsonClassTeacherTable = $classTeacherData->getJSON();
