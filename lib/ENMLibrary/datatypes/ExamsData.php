@@ -2,7 +2,7 @@
 
 namespace ENMLibrary\datatypes;
 
-class ExamsData {
+class ExamsData extends GradeFileData{
 
     public const EXAMS_COLUMNS = [["name" => "ID", "label" => "ID", "datatype" => "string", "editable" => false],
                                         ["name" => "Klasse", "label" => "Klasse", "datatype" => "string", "editable" => false], //Leistungsdaten
@@ -21,11 +21,12 @@ class ExamsData {
                                         ["name" => "MdlPruefung"], ["name" => "MdlPruefungFW"], ["name" => "NoteMuendlich"], ["name" => "NoteAbschluss"]];
     public const COLUMNS_LEISTUNGSDATEN = [["name" => "Schueler_ID"], ["name" => "Klasse"], ["name" => "Name"]];
 
-    private $file;
-    private $exams;
+    //private $file;
+    //private $exams;
 
     public function __construct($gradeFile) {
-        $this->file = $gradeFile;
+        parent::__construct($gradeFile, ExamsData::EXAMS_COLUMNS, "SchuelerBKFaecher");
+        //$this->file = $gradeFile;
     }
 
     public function fetchExams(){
@@ -39,18 +40,18 @@ class ExamsData {
             $result[$i]["MdlPruefung"] = ($result[$i]["MdlPruefung"] == "+");
             $result[$i]["MdlPruefungFW"] = ($result[$i]["MdlPruefung"] == "+");
         }
-        $this->exams = $result;
+        $this->data = $result;
     }
 
     public function fetchStudentData(){
         $filter = "Schueler_ID IN (SELECT Schueler_ID FROM SchuelerBKFaecher)";
         $result = $this->file->fetchTableData("SchuelerLeistungsDaten", ExamsData::COLUMNS_LEISTUNGSDATEN, $filter, true);
-        for($i = 0; $i < count($this->exams); $i++){
-            if(key_exists($this->exams[$i]["Schueler_ID"], $result)){
-                $row = $result[$this->exams[$i]["Schueler_ID"]];
+        for($i = 0; $i < count($this->data); $i++){
+            if(key_exists($this->data[$i]["Schueler_ID"], $result)){
+                $row = $result[$this->data[$i]["Schueler_ID"]];
                 foreach(ExamsData::COLUMNS_LEISTUNGSDATEN as $col){
                     if(key_exists($col["name"], $row)){
-                        $this->exams[$i][$col["name"]] = $row[$col["name"]];
+                        $this->data[$i][$col["name"]] = $row[$col["name"]];
                     }
                 }
             }
@@ -58,21 +59,26 @@ class ExamsData {
     }
 
     public function getJSON(){
-        $jsonArray = ["metadata" => ExamsData::EXAMS_COLUMNS];
-        $jsonArray["data"] = array();
-        
-        if($this->exams == null){
+        if($this->data == null){
             $this->fetchExams();
         }
-        
-        for($i = 0; $i < count($this->exams); $i++){
-            $row = [];
-            $row["id"] = $i;
-            $row["values"] = $this->exams[$i];
-            $jsonArray["data"][] = $row;
+        return parent::getJSON();
+    }
+
+    public function insertData($priKeyCol, $priKey, $col, $value)
+    {
+        $editedValue = $value;
+        if($col == "MdlPruefung" || $col == "MdlPruefungFW"){
+            if($value == true){
+                $editedValue = "+";
+            } else if($value == false) {
+                $editedValue = "-";
+            } else {
+                return false;
+            }
         }
 
-        return json_encode($jsonArray);
+        parent::insertData($priKeyCol, $priKey, $col, $editedValue);
     }
 
 }

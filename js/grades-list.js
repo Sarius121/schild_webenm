@@ -64,7 +64,12 @@ class GradesModal{
         this.table = table;
         this.col = col;
 
+        const tableID = this.table.tableID;
+
         $('#grades-modal').modal('show');
+        $('#grades-modal').on('hide.bs.modal', function () {
+            $('#' + tableID + ' .active').removeClass('active');
+          });
     }
 
     onGradesListRowClicked(event){
@@ -81,7 +86,6 @@ class GradesModal{
 
     onGradesListOKClicked(){
         //hide modal
-        $('#' + this.table.tableID + ' .active').removeClass('active');
         $('#grades-modal').modal('hide');
 
         //set value of input

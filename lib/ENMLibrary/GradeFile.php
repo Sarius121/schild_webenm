@@ -68,13 +68,14 @@ class GradeFile {
 
     public function insertData($table, $priKeyCol, $priKey, $col, $value)
     {
+        $value = utf8_decode($value);
         //put quotation marks around strings
         if(is_string($value)){
             $value = "'" . $value . "'";
         }
 
         $sql = 'UPDATE ' . $table . ' SET ' . $col . ' = ' . $value . ' WHERE ' . $priKeyCol . ' = ' . $priKey . ';';
-
+        print_r($sql);
         $result = odbc_exec($this->db, $sql);
         //TODO error handling
     }

@@ -2,7 +2,7 @@
 
 namespace ENMLibrary\datatypes;
 
-class ClassTeacherData {
+class ClassTeacherData extends GradeFileData{
 
     // Abschnitt_ID is the primary key in Kopfnoten but not in PSFachBem; probably Abschnitt_ID is unique in PSFachBem, too, but this is not proved!
 
@@ -23,11 +23,12 @@ class ClassTeacherData {
     public const COLUMNS_LEISTUNGSDATEN = [["name" => "S_GUID"], ["name" => "Abschnitt_ID"]];
     public const COLUMNS_PSFACHBEM = [["name" => "Abschnitt_ID"], ["name" => "ASV"], ["name" => "LELS"], ["name" => "ZeugnisBem"]];
 
-    private $file;
-    private $students; //cols: name, class, FS, uFS, ASV, AuE, ZeugnisBem, S_GUID, Abschnitt_ID, hasASV, hasAuE, hasZeugnisBem
+    //private $file;
+    //private $students; //cols: name, class, FS, uFS, ASV, AuE, ZeugnisBem, S_GUID, Abschnitt_ID, hasASV, hasAuE, hasZeugnisBem
 
     public function __construct($gradeFile) {
-        $this->file = $gradeFile;
+        parent::__construct($gradeFile, ClassTeacherData::CLASS_TEACHER_COLUMNS, "SchuelerLD_PSFachBem");
+        //$this->file = $gradeFile;
     }
 
     public function fetchClassTeacherTable(){
@@ -42,24 +43,24 @@ class ClassTeacherData {
     }
 
     private function fetchKopfnoten(){
-        $result = $this->file->fetchTableData("Kopfnoten", ClassTeacherData::COLUMNS_KOPFNOTEN);
-        $this->students = $result;
+        parent::fetchData("Kopfnoten", ClassTeacherData::COLUMNS_KOPFNOTEN);
+        //$this->data = $result;
 
         //TODO IstKlassenlehrer
         /*foreach($result as $student){
-            $this->students[] = $student;
+            $this->data[] = $student;
         }*/
     }
 
     private function fetchAbschnittIDs(){
         $filter = "S_GUID IN (SELECT S_GUID FROM Kopfnoten)";
         $result = $this->file->fetchTableData("SchuelerLeistungsDaten", ClassTeacherData::COLUMNS_LEISTUNGSDATEN, $filter, true);
-        for($i = 0; $i < count($this->students); $i++){
-            if(key_exists($this->students[$i]["S_GUID"], $result)){
-                $row = $result[$this->students[$i]["S_GUID"]];
+        for($i = 0; $i < count($this->data); $i++){
+            if(key_exists($this->data[$i]["S_GUID"], $result)){
+                $row = $result[$this->data[$i]["S_GUID"]];
                 foreach(ClassTeacherData::COLUMNS_LEISTUNGSDATEN as $col){
                     if(key_exists($col["name"], $row)){
-                        $this->students[$i][$col["name"]] = $row[$col["name"]];
+                        $this->data[$i][$col["name"]] = $row[$col["name"]];
                     }
                 }
             }
@@ -69,25 +70,25 @@ class ClassTeacherData {
     private function fetchPSFachBem(){
         $result = $this->file->fetchTableData("SchuelerLD_PSFachBem", ClassTeacherData::COLUMNS_PSFACHBEM, null, true);
 
-        for($i = 0; $i < count($this->students); $i++){
-            if(key_exists($this->students[$i]["Abschnitt_ID"], $result)){
-                $row = $result[$this->students[$i]["Abschnitt_ID"]];
+        for($i = 0; $i < count($this->data); $i++){
+            if(key_exists($this->data[$i]["Abschnitt_ID"], $result)){
+                $row = $result[$this->data[$i]["Abschnitt_ID"]];
                 foreach(ClassTeacherData::COLUMNS_PSFACHBEM as $col){
                     if(key_exists($col["name"], $row)){
                         $newcol = $col;
                         if($col["name"] == "LELS"){
                             $newCol["name"] = "AuE";
                         }
-                        $this->students[$i][$newcol["name"]] = $row[$col["name"]];
+                        $this->data[$i][$newcol["name"]] = $row[$col["name"]];
                         
                         switch($newcol["name"]){
                             case "ASV":
                             case "ZeugnisBem":
                             case "AuE":
                                 if(strlen($row[$col["name"]]) > 0){
-                                    $this->students[$i]["has" . $newcol["name"]] = true;
+                                    $this->data[$i]["has" . $newcol["name"]] = true;
                                 } else {
-                                    $this->students[$i]["has" . $newcol["name"]] = false;
+                                    $this->data[$i]["has" . $newcol["name"]] = false;
                                 }
                                 break;
                         }
@@ -99,23 +100,24 @@ class ClassTeacherData {
     }
 
     public function getJSON(){
-        $jsonArray = ["metadata" => ClassTeacherData::CLASS_TEACHER_COLUMNS];
-        $jsonArray["data"] = array();
-        
-        if($this->students == null){
+        if($this->data == null){
             $this->fetchClassTeacherTable();
         }
-        
-        for($i = 0; $i < count($this->students); $i++){
-            $row = [];
-            $row["id"] = $i;
-            $row["values"] = $this->students[$i];
-            $jsonArray["data"][] = $row;
+        return parent::getJSON();
+    }
+
+    public function insertData($priKeyCol, $priKey, $col, $value)
+    {
+        if($col == "SumFehlstd" || $col == "SumFehlstdU"){
+            $this->setDBTable("Kopfnoten");
+            parent::insertData($priKeyCol, $priKey, "Modifiziert", true);
+        } else {
+            $this->setDBTable("SchuelerLD_PSFachBem");
         }
 
-        //print_r(json_encode($jsonArray));
-        return json_encode($jsonArray);
+        parent::insertData($priKeyCol, $priKey, $col, $value);
     }
+
 
 }
 

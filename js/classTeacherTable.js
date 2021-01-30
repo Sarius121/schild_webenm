@@ -144,6 +144,7 @@ class PhrasesTable extends CustomEditableGrid{
     }
     
     onPhrasesChanged(){
+        //TODO somewhere here is an error!
         var activeCTRow = this.classTeacherTable.activeRow;
 
         var asv = $("#textarea-asv").val();

@@ -10,12 +10,12 @@ class GradesData extends GradeFileData{
                             ["name" => "Art", "label" => "Art", "size" => " hidden"]];
 
     public function __construct($gradeFile) {
-        parent::__construct($gradeFile, GradesData::GRADES_COLUMNS, "Noten");
+        parent::__construct($gradeFile, GradesData::GRADES_COLUMNS, "Noten", true); //readonly data
     }
 
     public function fetchGradesData()
     {
-        $this->fetchData("Noten");
+        $this->fetchData();
     }
 
     public function getGradesArray(){

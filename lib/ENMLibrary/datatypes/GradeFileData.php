@@ -4,15 +4,18 @@ namespace ENMLibrary\datatypes;
 
 class GradeFileData {
 
-    private $file;
+    protected $file;
     protected $data;
     private $tableColumns;
     private $dbTable;
 
-    public function __construct($gradeFile, $tableColumns, $dbTable) {
+    private $readonly;
+
+    public function __construct($gradeFile, $tableColumns, $dbTable, $readonly = false) {
         $this->file = $gradeFile;
         $this->tableColumns = $tableColumns;
         $this->dbTable = $dbTable;
+        $this->readonly = $readonly;
     }
 
     protected function fetchData($table = null, $columns = null){
@@ -44,7 +47,15 @@ class GradeFileData {
         return json_encode($jsonArray);
     }
 
+    protected function setDBTable($table){
+        $this->dbTable = $table;
+    }
+
     public function insertData($priKeyCol, $priKey, $col, $value){
+        if($this->readonly){
+            return false;
+        }
+        //TODO is col editable
         $this->file->insertData($this->dbTable, $priKeyCol, $priKey, $col, $value);
     }
 
