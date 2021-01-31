@@ -23,11 +23,11 @@ if($page == "login" && isset($_POST['username']) && isset($_POST['password']))
         $_SESSION['username'] = $_POST['username'];
         $_SESSION['password'] = $_POST['password'];
     }
-} 
+}
 else if(isset($_SESSION['username']))
 {
     $loginHandler->login($_SESSION['username'], $_SESSION['password']);
-} 
+}
 
 if($loginHandler->isLoggedIn()){
     $page = "home";

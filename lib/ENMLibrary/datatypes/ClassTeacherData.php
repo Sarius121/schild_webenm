@@ -75,20 +75,20 @@ class ClassTeacherData extends GradeFileData{
                 $row = $result[$this->data[$i]["Abschnitt_ID"]];
                 foreach(ClassTeacherData::COLUMNS_PSFACHBEM as $col){
                     if(key_exists($col["name"], $row)){
-                        $newcol = $col;
-                        if($col["name"] == "LELS"){
-                            $newCol["name"] = "AuE";
+                        $newcol = $col["name"];
+                        if($newcol == "LELS"){
+                            $newcol = "AuE";
                         }
-                        $this->data[$i][$newcol["name"]] = $row[$col["name"]];
+                        $this->data[$i][$newcol] = $row[$col["name"]];
                         
-                        switch($newcol["name"]){
+                        switch($newcol){
                             case "ASV":
                             case "ZeugnisBem":
                             case "AuE":
                                 if(strlen($row[$col["name"]]) > 0){
-                                    $this->data[$i]["has" . $newcol["name"]] = true;
+                                    $this->data[$i]["has" . $newcol] = true;
                                 } else {
-                                    $this->data[$i]["has" . $newcol["name"]] = false;
+                                    $this->data[$i]["has" . $newcol] = false;
                                 }
                                 break;
                         }
@@ -114,6 +114,7 @@ class ClassTeacherData extends GradeFileData{
         } else {
             $this->setDBTable("SchuelerLD_PSFachBem");
         }
+        if($col == "AuE"){ $col = "LELS"; }
 
         parent::insertData($priKeyCol, $priKey, $col, $value);
     }

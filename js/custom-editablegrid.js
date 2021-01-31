@@ -27,10 +27,12 @@ class CustomEditableGrid{
             //TODO send
             var request = new XMLHttpRequest();
             //TODO look for errors request.addEventListener
-            request.open("POST", "push-data.php", false);
+            request.open("POST", "push-data.php");
             request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            request.onload = function(e){
+                console.log(request.response);
+            };
             request.send(post);
-            console.log(request.response);
         }
 
     }
