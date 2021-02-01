@@ -56,7 +56,7 @@ class GradeFileData {
             return false;
         }
         //TODO is col editable
-        $this->file->insertData($this->dbTable, $priKeyCol, $priKey, $col, $value);
+        return $this->file->insertData($this->dbTable, $priKeyCol, $priKey, $col, $value);
     }
 
 }

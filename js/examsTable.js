@@ -1,7 +1,27 @@
 class ExamsTable extends CustomEditableGrid{
 
-    constructor(json, classTeacherTable){
+    constructor(json, gradesJSON){
         super("ExamsTable", json);
+
+        var gradeValidator = new CellValidator({ 
+			isValid: function(value) {
+                if(value == ""){return true;}
+                for (let i = 0; i < gradesJSON.length; i++) {
+                    if(value == gradesJSON[i].Krz){
+                        if(gradesJSON[i].Art == "N"){
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+                return false;
+             }
+		});
+
+        this.addCellValidator("Vornote", gradeValidator);
+        this.addCellValidator("NoteSchriftlich", gradeValidator);
+        this.addCellValidator("NoteMuendlich", gradeValidator);
+        this.addCellValidator("NoteAbschluss", gradeValidator);
     }
 
     onTableRendered(){

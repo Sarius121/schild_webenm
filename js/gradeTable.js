@@ -4,8 +4,20 @@ window.addEventListener("load", function(event) {
 });
 
 class GradeTable extends CustomEditableGrid{
-    constructor(json){
+    constructor(json, gradesJSON){
         super("GradeTable", json);
+
+        this.addCellValidator("NotenKrz", new CellValidator({ 
+			isValid: function(value) {
+                if(value == ""){return true;}
+                for (let i = 0; i < gradesJSON.length; i++) {
+                    if(value == gradesJSON[i].Krz){
+                        return true;
+                    }
+                }
+                return false;
+             }
+		}));
     }
 
     onTableRendered(){    

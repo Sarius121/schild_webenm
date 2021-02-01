@@ -78,7 +78,7 @@ class ExamsData extends GradeFileData{
             }
         }
 
-        parent::insertData($priKeyCol, $priKey, $col, $editedValue);
+        return parent::insertData($priKeyCol, $priKey, $col, $editedValue);
     }
 
 }

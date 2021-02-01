@@ -34,17 +34,24 @@ class StudentGradesData extends GradeFileData{
 
     public function insertData($priKeyCol, $priKey, $col, $value)
     {
-        parent::insertData($priKeyCol, $priKey, $col, $value); //TODO is value valid
+        $response = parent::insertData($priKeyCol, $priKey, $col, $value); //TODO is value valid
+        if(!$response){return false;};
         parent::insertData($priKeyCol, $priKey, "Modifiziert", true);
         if($col == "NotenKrz"){
-            parent::insertData($priKeyCol, $priKey, "Punkte", $this->getPointsOfGrade($value));
+            $points = $this->getPointsOfGrade($value);
+            if($points != false){
+                parent::insertData($priKeyCol, $priKey, "Punkte", $this->getPointsOfGrade($value));
+            }
         }
     }
 
     private function getPointsOfGrade($grade){
         $result = $this->file->fetchTableData("Noten", [["name" => "Punkte"]], "Krz = '" . $grade . "'");
-        print_r($result);
-        return $result[0]["Punkte"];
+        if(count($result) > 0){
+            return $result[0]["Punkte"];
+        } else {
+            return false;
+        }
     }
 }
 

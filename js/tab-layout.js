@@ -9,11 +9,18 @@ function onTabClicked(tabHeader, tabName){
 function onMenuItemClicked(item, action){
 
     switch(action){
-        case "save":
-            console.log("save clicked");
+        case "create-backup":
+            window.open("backup-file.php?action=create");
             break;
-        case "class-teacher":
-            console.log("class-teacher clicked");
+        case "restore-backup":
+            document.getElementById("backupFile").click();
             break;
+            
+    }
+}
+
+function onRestoreBackupFileSelected(files){
+    if(files.length > 0){
+        console.log(files[0]);
     }
 }

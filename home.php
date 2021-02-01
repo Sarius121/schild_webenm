@@ -48,11 +48,6 @@ if(!isset($loginHandler)){
             <li onclick="onTabClicked(this, 'tabHilfe');">Hilfe</li>
         </ul>
         <ul class="body visible" id="tabDatei">
-            <li><div class="group-header">Notendatei</div>
-                <ul>
-                    <li onclick="onMenuItemClicked(this, 'save')">Speichern</li>
-                </ul>
-            </li>
             <li><div class="group-header">Im- / Export</div>
                 <ul>
                     <li>Import</li>
@@ -67,8 +62,9 @@ if(!isset($loginHandler)){
             </li>
             <li><div class="group-header">Sicherung</div>
                 <ul>
-                    <li>Erstellen</li>
-                    <li>Einlesen</li>
+                    <li onclick="onMenuItemClicked(this, 'create-backup')">Erstellen</li>
+                    <input type="file" id="backupFile" accept=".enm" style="display:none" onchange="onRestoreBackupFileSelected(this.files)">
+                    <li onclick="onMenuItemClicked(this, 'restore-backup')">Einlesen</li>
                 </ul>
             </li>
             <li><div class="group-header">Schließen</div>

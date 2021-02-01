@@ -37,6 +37,10 @@ class CustomEditableGrid{
 
     }
 
+    addCellValidator(col, validator){
+        this.editableGrid.addCellValidator(col, validator);
+    }
+
     renderGrid(tableID, gridID){
         this.tableID = tableID;
         this.gridID = gridID;

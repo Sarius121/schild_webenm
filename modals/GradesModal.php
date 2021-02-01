@@ -2,8 +2,7 @@
 
 use ENMLibrary\datatypes\GradesData;
 
-$gradesData = new GradesData($loginHandler->getGradeFile());
-$grades = $gradesData->getGradesArray();
+//$grades is set in GradesData.php
 ?>
 
 <div id="grades-list" class="container bootstrap-list">

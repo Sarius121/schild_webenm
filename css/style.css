@@ -65,9 +65,19 @@ body
 }
 
 /*#################### header #################### */
+#header
+{
+    align-items: center;
+}
+
+#header h2
+{
+    margin: 0;
+}
+
 #header img
 {
-    height: 3rem; /* TODO */
+    height: 2.5rem; /* TODO */
 }
 
 /*#################### nav #################### */
@@ -293,11 +303,17 @@ body
     width: unset;
 }
 
-/*input.invalid 
+.dataTable td.number
+{
+    font-weight: normal;
+}
+
+input.invalid 
 { 
-    background: red; 
-    color: #FDFDFD; 
-}*/
+    background: #f8d7da; 
+    color: #721c24;
+    outline-color: #721c24;
+}
 
 
 .dataTable .editablegrid-ID,

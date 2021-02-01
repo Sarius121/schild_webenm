@@ -9,8 +9,8 @@ class ClassTeacherData extends GradeFileData{
     public const CLASS_TEACHER_COLUMNS = [["name" => "Abschnitt_ID", "label" => "Abschnitt_ID", "datatype" => "string", "editable" => false],
                                         ["name" => "Klasse", "label" => "Klasse", "datatype" => "string", "editable" => false], //Table: Kopfnoten
                                         ["name" => "Name", "label" => "Name", "datatype" => "string", "editable" => false],
-                                        ["name" => "SumFehlstd", "label" => "FS", "datatype" => "string", "editable" => true], 
-                                        ["name" => "SumFehlstdU", "label" => "uFS", "datatype" => "string", "editable" => true],
+                                        ["name" => "SumFehlstd", "label" => "FS", "datatype" => "integer", "editable" => true], 
+                                        ["name" => "SumFehlstdU", "label" => "uFS", "datatype" => "integer", "editable" => true],
                                         ["name" => "hasASV", "label" => "ASV", "datatype" => "boolean", "editable" => true], //Table: PSFachBem
                                         ["name" => "hasAuE", "label" => "AuE", "datatype" => "boolean", "editable" => true], //??
                                         ["name" => "hasZeugnisBem", "label" => "ZB", "datatype" => "boolean", "editable" => true],
@@ -116,7 +116,7 @@ class ClassTeacherData extends GradeFileData{
         }
         if($col == "AuE"){ $col = "LELS"; }
 
-        parent::insertData($priKeyCol, $priKey, $col, $value);
+        return parent::insertData($priKeyCol, $priKey, $col, $value);
     }
 
 

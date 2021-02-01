@@ -8,7 +8,7 @@ $jsonExamsTable = $examsData->getJSON();
 <div id="data-exams">
     <script>
         window.addEventListener("load", function(event) {
-            examsTable = new ExamsTable(<?php echo $jsonExamsTable; ?>);
+            examsTable = new ExamsTable(<?php echo $jsonExamsTable; ?>, <?php echo json_encode($grades); ?>);
             examsTable.renderGrid();
         });
     </script>

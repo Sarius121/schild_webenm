@@ -42,8 +42,15 @@ print_r($data);
 
 $fileHelper = new GradeFileDataHelper($loginHandler->getGradeFile());
 
+$response = [];
+$i = 0;
 foreach($data as $updateRequest){
-    $fileHelper->getDataObject($updateRequest->table)->insertData($updateRequest->priKeyCol, $updateRequest->priKey, $updateRequest->col, $updateRequest->value);
+    $response[$i] = $fileHelper->getDataObject($updateRequest->table)->insertData($updateRequest->priKeyCol, $updateRequest->priKey, $updateRequest->col, $updateRequest->value);
+    $i++;
+}
+
+if(array_search(false, $response)){
+    echo $loginHandler->getGradeFile()->getError();
 }
 
 $loginHandler->getGradeFile()->close();

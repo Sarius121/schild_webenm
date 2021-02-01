@@ -1,11 +1,15 @@
 <?php
 
 use ENMLibrary\datatypes\StudentGradesData;
+use ENMLibrary\datatypes\GradesData;
 
 //$jsonTable = $loginHandler->getGradeFile()->getJSONTable();
 
-$gradesData = new StudentGradesData($loginHandler->getGradeFile());
-$jsonGradesTable = $gradesData->getJSON();
+$studentGradesData = new StudentGradesData($loginHandler->getGradeFile());
+$jsonStudentGradesTable = $studentGradesData->getJSON();
+
+$gradesData = new GradesData($loginHandler->getGradeFile());
+$grades = $gradesData->getGradesArray();
 
 ?>
 <div id="data-grades" class="visible">
@@ -16,7 +20,7 @@ $jsonGradesTable = $gradesData->getJSON();
 				editableGrid.load();
                 editableGrid.renderGrid("gradeTable", "gradeGrid");*/
 
-                gradeTable = new GradeTable(<?php echo $jsonGradesTable; ?>);
+                gradeTable = new GradeTable(<?php echo $jsonStudentGradesTable; ?>, <?php echo json_encode($grades); ?>);
                 gradeTable.renderGrid();
 			} 
 		</script>

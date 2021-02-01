@@ -76,7 +76,12 @@ class GradeFile {
 
         $sql = 'UPDATE ' . $table . ' SET ' . $col . ' = ' . $value . ' WHERE ' . $priKeyCol . ' = ' . $priKey . ';';
         print_r($sql);
-        $result = odbc_exec($this->db, $sql);
+        try{
+            $result = odbc_exec($this->db, $sql);
+        } catch(Exception $e){
+            $this->error = $e->getMessage();
+            return false;
+        }
         //TODO error handling
     }
 
