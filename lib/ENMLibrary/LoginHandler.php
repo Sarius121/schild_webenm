@@ -3,6 +3,7 @@
 namespace ENMLibrary;
 
 require_once("GradeFile.php");
+require_once("EncryptedZipArchive.php");
 
 class LoginHandler {
 
@@ -10,6 +11,7 @@ class LoginHandler {
     private $username;
     private $error = false;
     private $gradeFile;
+    private $encryptedGradeFile;
 
     public function login($username, $password) {
         if($this->checkLogin($username, $password)){
@@ -23,12 +25,48 @@ class LoginHandler {
     }
 
     private function checkLogin($username, $password){
-        $this->gradeFile = new GradeFile($this->getGradeFilenameByUser($username));
-        return $this->gradeFile->openFile($password);
+        //TODO is file already opened by another session?
+        $success = false;
+        $tmpFilename = $this->getTmpGradeFilenameByUser($username);
+        $this->encryptedGradeFile = new EncryptedZipArchive($this->getGradeFilenameByUser($username), $tmpFilename);
+        if(file_exists($tmpFilename)){
+            //only try password
+            $success = $this->encryptedGradeFile->checkPassword($password);
+        } else {
+            //try password and extract grade file
+            $success = $this->encryptedGradeFile->open($password);
+        }
+        if($success){
+            $this->gradeFile = new GradeFile($this->getFullPath($tmpFilename));
+            $this->gradeFile->openFile();
+        }
+        return $success;
+    }
+
+    public function closeFile($password){
+        $this->gradeFile->close();
+        $success = $this->encryptedGradeFile->close($password);
+        $this->logout();
+        return $success;
+    }
+
+    private function logout(){
+        $this->loggedin = false;
+        $this->username = null;
+        $this->gradeFile = null;
+        $this->encryptedGradeFile = null;
+    }
+
+    public function getFullPath($path){
+        return realpath($path);
+    }
+
+    public function getTmpGradeFilenameByUser($username) {
+        return 'grade-files/tmp/' . $username . ".enm";
     }
 
     public function getGradeFilenameByUser($username) {
-        return realpath('grade-files/' . $username . ".enm");
+        return 'grade-files/' . $username . ".enz";
     }
 
     public function getGradeFilename() {

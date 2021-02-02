@@ -13,6 +13,9 @@ if(isset($_GET["page"])){
 }
 
 if($page == "logout"){
+    if(isset($_SESSION['username']) && $loginHandler->login($_SESSION['username'], $_SESSION['password'])){
+        $loginHandler->closeFile($_SESSION['password']);
+    }
     session_destroy();
     session_start();
 }

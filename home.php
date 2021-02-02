@@ -36,7 +36,7 @@ if(!isset($loginHandler)){
             Angemeldet als <?php echo $loginHandler->getUsername(); ?>
         </div>
         <div class="col-sm-auto">
-            <input class="btn btn-primary" type="submit" value="Schließen">
+            <a class="btn btn-primary" href="?page=logout">Abmelden</a>
         </div>
     </div>
     <div class="separator"></div>
