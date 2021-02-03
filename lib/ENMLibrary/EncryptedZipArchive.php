@@ -7,11 +7,13 @@ use ZipArchive;
 class EncryptedZipArchive{
 
     private $filename;
-    private $gradeFilename;
+    private $internalFilename;
+    private $tmpFilename;
 
-    public function __construct($filename, $gradeFilename){
+    public function __construct($filename, $internalFilename, $tmpFilename){
         $this->filename = $filename;
-        $this->gradeFilename = $gradeFilename;
+        $this->internalFilename = $internalFilename;
+        $this->tmpFilename = $tmpFilename;
     }
 
     /**
@@ -21,11 +23,9 @@ class EncryptedZipArchive{
         $zip = new ZipArchive();
         if ($zip->open($this->filename) === true) {
             $zip->setPassword($password);
-            $gradeFilenamePartArray = explode("/", $this->gradeFilename);
-            $gradeFilenamePart = end($gradeFilenamePartArray);
-            if(($gradeFile = $zip->getFromName($gradeFilenamePart))) {
+            if(($gradeFile = $zip->getFromName($this->internalFilename))) {
                 if(!$onlytry){
-                    file_put_contents($this->gradeFilename, "$gradeFile");
+                    file_put_contents($this->tmpFilename, "$gradeFile");
                 }
             } else {
                 $zip->close();
@@ -43,18 +43,16 @@ class EncryptedZipArchive{
     }
 
     public function saveChanges($password){
-        if(!file_exists($this->gradeFilename)){
+        if(!file_exists($this->tmpFilename)){
             return false;
         }
         $zip = new ZipArchive();
         if ($zip->open($this->filename) === true) {
             $zip->setPassword($password);
-            $gradeFilenamePartArray = explode("/", $this->gradeFilename);
-            $gradeFilenamePart = end($gradeFilenamePartArray);
-            if($zip->getFromName($gradeFilenamePart)) {
+            if($zip->getFromName($this->internalFilename)) {
                 //replaceFile() is only supported in PHP8 or higher
-                $zip->deleteName($gradeFilenamePart);
-                $zip->addFile($this->gradeFilename, $gradeFilenamePart);
+                $zip->deleteName($this->internalFilename);
+                $zip->addFile($this->tmpFilename, $this->internalFilename);
             } else {
                 $zip->close();
                 return false;
@@ -70,8 +68,11 @@ class EncryptedZipArchive{
      * pack temporarily stored grade file as zip archive
      */
     public function close($password){
-        $this->saveChanges($password);
-        unlink($this->gradeFilename);
+        $success = $this->saveChanges($password);
+        if($success){
+            unlink($this->tmpFilename);
+        }
+        return $success;
     }
 }
 

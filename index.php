@@ -17,12 +17,7 @@ if($page == "logout"){
 }
 else if ($page == "login" && isset($_POST['username']) && isset($_POST['password']))
 {
-    if($loginHandler->login($_POST['username'], $_POST['password'])){
-        /*$_SESSION['username'] = $_POST['username'];
-        $_SESSION['password'] = $_POST['password'];
-        $_SESSION['create'] = time();
-        $_SESSION['expire'] = time() + 60 * 60; //current time plus 1 hour*/
-    }
+    $loginHandler->login($_POST['username'], $_POST['password']);
 }
 else
 {

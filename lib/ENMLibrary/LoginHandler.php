@@ -12,6 +12,7 @@ class LoginHandler {
     private $error = false;
     private $gradeFile;
     private $encryptedGradeFile;
+    private $differentSessionActive = false;
 
     public function __construct($session_id = null)
     {
@@ -22,7 +23,7 @@ class LoginHandler {
     }
 
     public function login($username, $password) {
-        if($this->checkLogin($username, $password)){
+        if($this->checkLogin($username, $password, true)){
             $this->loggedin = true;
             $this->username = $username;
             $this->createSession();
@@ -48,23 +49,44 @@ class LoginHandler {
             $this->username = $_SESSION['username'];
             $this->extendSession();
             return true;
+        }
+        if($this->differentSessionActive){
+            $this->error = "Du hast dich an einem anderen Gerät angemeldet und wurdest deswegen auf diesem Gerät abgemeldet. Deine Änderungen wurden gesichert!";
         } else {
             $this->error = "Unbekannter Fehler. Versuche, dich erneut anzumelden.";
-            return false;
         }
+        return false;
     }
 
-    private function checkLogin($username, $password){
+    private function checkLogin($username, $password, $newlogin = false){
         //TODO is file already opened by another session?
         $success = false;
         $tmpFilename = $this->getTmpGradeFilenameByUser($username);
-        $this->encryptedGradeFile = new EncryptedZipArchive($this->getGradeFilenameByUser($username), $tmpFilename);
+        $this->encryptedGradeFile = new EncryptedZipArchive($this->getGradeFilenameByUser($username), $this->getInternalGradeFilenameByUser($username), $tmpFilename);
         if(file_exists($tmpFilename)){
             //only try password
             $success = $this->encryptedGradeFile->checkPassword($password);
+        } elseif(($foreignFilename = $this->foreignTmpFileExists($username)) != false){
+            $this->differentSessionActive = true;
+            if(!$newlogin){
+                //when it's not a new login and a foreign file is opened, the user has to login again to close the foreign session
+                return false;
+            }
+            //save changes from foreign session and create new
+            $foreignEncryptedGradeFile = new EncryptedZipArchive($this->getGradeFilenameByUser($username), $this->getInternalGradeFilenameByUser($username), $foreignFilename);
+            $success = $foreignEncryptedGradeFile->close($password);
+            if($success){
+                $success = $this->encryptedGradeFile->open($password);
+            }
         } else {
-            //try password and extract grade file
-            $success = $this->encryptedGradeFile->open($password);
+            if($newlogin){
+                //try password and extract grade file
+                $success = $this->encryptedGradeFile->open($password);
+            } else {
+                //different session was opened and closed -> user should be logged out
+                $this->differentSessionActive = true;
+                return false;
+            }
         }
         if($success){
             $this->gradeFile = new GradeFile($this->getFullPath($tmpFilename));
@@ -100,6 +122,13 @@ class LoginHandler {
         $this->destroySession();
     }
 
+    public function getSessionFileID(){
+        if(!isset($_SESSION['file_id'])){
+            $_SESSION['file_id'] = uniqid(); //might not be uniq!
+        }
+        return $_SESSION['file_id'];
+    }
+
     public function isSessionExpired(){
         return time() > $_SESSION['expire'];
     }
@@ -123,16 +152,36 @@ class LoginHandler {
         session_destroy();
     }
 
+    private function foreignTmpFileExists($username){
+        $found = glob("grade-files/tmp/" . $username . "*");
+        if($found == false || count($found) <= 0){
+            return false;
+        }
+        foreach ($found as $filename) {
+            $fileIDArray = explode("_", $filename);
+            $fileID = end($fileIDArray);
+            if($fileID != $this->getTmpGradeFilenameByUser($username)){
+                return $filename;
+            }
+        }
+        return false;
+    }
+
     public function getFullPath($path){
         return realpath($path);
     }
 
     public function getTmpGradeFilenameByUser($username) {
-        return 'grade-files/tmp/' . $username . ".enm";
+        $fileID = $this->getSessionFileID();
+        return 'grade-files/tmp/' . $username . ".enm_" . $fileID;
     }
 
     public function getGradeFilenameByUser($username) {
         return 'grade-files/' . $username . ".enz";
+    }
+
+    public function getInternalGradeFilenameByUser($username) {
+        return $username . ".enm";
     }
 
     public function getGradeFilename() {
