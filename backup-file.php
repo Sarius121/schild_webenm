@@ -8,16 +8,10 @@ if(!isset($_GET["action"])){
     die("missing arguments");
 }
 
-session_start();
-if(!isset($_SESSION["username"]) || !isset($_SESSION["password"])){
-    http_response_code(403);
-    die();
-}
-
 //try opening database
 $loginHandler = new LoginHandler();
-$loginHandler->login($_SESSION['username'], $_SESSION['password']);
- 
+$loginHandler->loginWithSession();
+
 if(!$loginHandler->isLoggedIn()){
     http_response_code(403);
     die();
@@ -25,6 +19,7 @@ if(!$loginHandler->isLoggedIn()){
 
 //database is now accessable
 $loginHandler->getGradeFile()->close();
+$loginHandler->saveFileChanges();
 
 //print_r($loginHandler->getGradeFilename());
 

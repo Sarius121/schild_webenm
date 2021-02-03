@@ -42,10 +42,7 @@ class EncryptedZipArchive{
         return $this->open($password, true);
     }
 
-    /**
-     * pack temporarily stored grade file as zip archive
-     */
-    public function close($password){
+    public function saveChanges($password){
         if(!file_exists($this->gradeFilename)){
             return false;
         }
@@ -63,11 +60,18 @@ class EncryptedZipArchive{
                 return false;
             }
             $zip->close();
-            unlink($this->gradeFilename);
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * pack temporarily stored grade file as zip archive
+     */
+    public function close($password){
+        $this->saveChanges($password);
+        unlink($this->gradeFilename);
     }
 }
 

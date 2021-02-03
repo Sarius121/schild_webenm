@@ -5,7 +5,6 @@ include("imports.php");
 use ENMLibrary\LoginHandler;
 
 $loginHandler = new LoginHandler();
-session_start();
 
 $page = "login";
 if(isset($_GET["page"])){
@@ -13,23 +12,21 @@ if(isset($_GET["page"])){
 }
 
 if($page == "logout"){
-    if(isset($_SESSION['username']) && $loginHandler->login($_SESSION['username'], $_SESSION['password'])){
-        $loginHandler->closeFile($_SESSION['password']);
-    }
-    session_destroy();
-    session_start();
+    $loginHandler->loginWithSession();
+    $loginHandler->logout();
 }
-
-if($page == "login" && isset($_POST['username']) && isset($_POST['password']))
+else if ($page == "login" && isset($_POST['username']) && isset($_POST['password']))
 {
     if($loginHandler->login($_POST['username'], $_POST['password'])){
-        $_SESSION['username'] = $_POST['username'];
+        /*$_SESSION['username'] = $_POST['username'];
         $_SESSION['password'] = $_POST['password'];
+        $_SESSION['create'] = time();
+        $_SESSION['expire'] = time() + 60 * 60; //current time plus 1 hour*/
     }
 }
-else if(isset($_SESSION['username']))
+else
 {
-    $loginHandler->login($_SESSION['username'], $_SESSION['password']);
+    $loginHandler->loginWithSession();
 }
 
 if($loginHandler->isLoggedIn()){

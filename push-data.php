@@ -15,16 +15,9 @@ if(!isset($_POST["data"])){
     die("missing arguments");
 }
 
-session_id($_POST["session_id"]);
-session_start();
-if(!isset($_SESSION["username"]) || !isset($_SESSION["password"])){
-    http_response_code(403);
-    die();
-}
-
 //try opening database
-$loginHandler = new LoginHandler();
-$loginHandler->login($_SESSION['username'], $_SESSION['password']);
+$loginHandler = new LoginHandler($_POST["session_id"]);
+$loginHandler->loginWithSession();
  
 if(!$loginHandler->isLoggedIn()){
     http_response_code(403);
