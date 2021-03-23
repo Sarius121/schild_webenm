@@ -46,7 +46,7 @@ class GradeFile {
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
             PDO::ATTR_EMULATE_PREPARES => false
         ];*/
-        set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) {
+        set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext = null) {
             // error was suppressed with the @-operator
             if (0 === error_reporting()) {
                 return false;
@@ -55,9 +55,10 @@ class GradeFile {
             throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
         });
         try{
-            $this->db = odbc_connect("DRIVER={Microsoft Access Driver (*.mdb)};charset=UTF-8; DBQ=" . $this->filename . ";", "", $password);
+            $this->db = odbc_connect("DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};charset=UTF-8; DBQ=" . $this->filename . ";", "", $password);
         } catch(Exception $e){
             $this->error = $e->getMessage();
+            print_r($e->getMessage());
             return false;
         }
 
