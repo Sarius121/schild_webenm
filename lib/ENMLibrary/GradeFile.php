@@ -5,6 +5,7 @@ require_once("constants.php");
 
 use Exception;
 use ErrorException;
+use MDBConnector\MDBDatabase;
 
 class GradeFile {
 
@@ -37,7 +38,7 @@ class GradeFile {
     }
 
     public function openFile($password=DEFAULT_DB_PASSWORD){ 
-        if(!file_exists($this->filename)){
+        if(!file_exists("grade-files/tmp/" . $this->filename)){
             $this->error = "File not found";
             return false;
         }
@@ -55,7 +56,10 @@ class GradeFile {
             throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
         });
         try{
-            $this->db = odbc_connect("DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};charset=UTF-8; DBQ=" . $this->filename . ";", "", $password);
+            //$this->db = new PDO("odbc:DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};charset=UTF-8;DBQ=" . $this->filename . ";PWD=" . $password . ";");
+            //$this->db = odbc_connect("DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};charset=UTF-8; DBQ=" . $this->filename . ";", "", $password);
+            $this->db = new MDBDatabase();
+            $this->db->connect($this->filename, $password);
         } catch(Exception $e){
             $this->error = $e->getMessage();
             print_r($e->getMessage());
@@ -75,10 +79,13 @@ class GradeFile {
             $value = "'" . $value . "'";
         }
 
-        $sql = 'UPDATE ' . $table . ' SET ' . $col . ' = ' . $value . ' WHERE ' . $priKeyCol . ' = ' . $priKey . ';';
+        $sql = 'UPDATE [' . $table . '] SET [' . $col . '] = ' . $value . ' WHERE [' . $priKeyCol . '] = ' . $priKey . ';';
         print_r($sql);
         try{
-            $result = odbc_exec($this->db, $sql);
+            $result = $this->db->execute($sql);
+            print_r($result);
+            //$result = $this->db->query($sql)->fetchAll();
+            //$result = odbc_exec($this->db, $sql);
         } catch(Exception $e){
             $this->error = $e->getMessage();
             return false;
@@ -87,21 +94,28 @@ class GradeFile {
     }
 
     public function fetchTableData($tablename, $columns, $filter = null, $dict = false){
-        $table = [];
-
-        $startCol = 0;
-        if($dict){
-            $startCol = 1;
+        $columnList = "";
+        $first = true;
+        foreach($columns as $col){
+            if($first){
+                $first = false;
+            } else {
+                $columnList .= ", ";
+            }
+            $columnList .= "[" . $col["name"] . "]";
         }
 
-        $sql = 'SELECT * FROM ' . $tablename;
+        $sql = "SELECT " . $columnList . " FROM [" . $tablename . "]";
         if($filter != null){
             $sql .= " WHERE " . $filter;
         }
         $sql .= ";";
 
-        $result = odbc_exec($this->db, $sql);
-        while($dbRow = odbc_fetch_array($result)){
+        //$result = odbc_exec($this->db, $sql);
+        //$result = $this->db->query($sql)->fetchAll();
+        $result = $this->db->query($sql, $dict);
+        //while($dbRow = odbc_fetch_array($result)){
+        /*foreach ($result as $dbRow) {
             $row = [];
             
             for($i = $startCol; $i < count($columns); $i++){
@@ -116,11 +130,15 @@ class GradeFile {
                 $table[] = $row;
             }
             
-        }
-        return $table;
+        }*/
+        return $result;
     }
 
-    public function getTables(){
+    /**
+     * helper function for debugging, will be deleted at the end
+     * @deprecated
+     */
+    /*public function getTables(){
         $result = odbc_tables($this->db);
 
         echo '<div id="top">..</div><table border="1" cellpadding="5"><tr>';
@@ -140,14 +158,16 @@ class GradeFile {
      * helper function for debugging, will be deleted at the end
      * @deprecated
      */
-    public function getRawTableData($tablename){
+    /*public function getRawTableData($tablename){
         $sql = "select * from " . $tablename . ";";
         $result = $this->db->query($sql);
         return $result;
-    }
+    }*/
 
     public function close(){
-        odbc_close($this->db);
+        //$this->db = null;
+        $this->db->close();
+        //odbc_close($this->db);
     }
 
     public function getError(){

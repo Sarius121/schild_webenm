@@ -168,7 +168,9 @@ class LoginHandler {
     }
 
     public function getFullPath($path){
-        return realpath($path);
+        //TODO filename handling is inefficient!!
+        $splitFilename = explode("/", $path);
+        return $splitFilename[count($splitFilename) - 1];
     }
 
     public function getTmpGradeFilenameByUser($username) {
