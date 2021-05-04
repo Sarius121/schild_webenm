@@ -6,14 +6,17 @@ use ZipArchive;
 
 class EncryptedZipArchive{
 
-    private $filename;
+    //zip filename (.enz)
+    private $zipfilename;
+    //filename inside the zip archive
     private $internalFilename;
+    //database filename (.enm)
     private $tmpFilename;
 
-    public function __construct($filename, $internalFilename, $tmpFilename){
-        $this->filename = $filename;
-        $this->internalFilename = $internalFilename;
-        $this->tmpFilename = $tmpFilename;
+    public function __construct($zipfilename, $dbfilename){
+        $this->zipfilename = GRADE_FILES_DIRECTORY . $zipfilename;
+        $this->internalFilename = explode("_", $dbfilename)[0];
+        $this->tmpFilename = TMP_GRADE_FILES_DIRECTORY . $dbfilename;
     }
 
     /**
@@ -21,9 +24,13 @@ class EncryptedZipArchive{
      */
     public function open($password, $onlytry=false){
         $zip = new ZipArchive();
-        if ($zip->open($this->filename) === true) {
+        if ($zip->open($this->zipfilename) === true) {
             $zip->setPassword($password);
-            if(($gradeFile = $zip->getFromName($this->internalFilename))) {
+            //if count bigger than 1 -> file not valid
+            if($zip->count() > 1){
+                return false;
+            }
+            if(($gradeFile = $zip->getFromIndex(0))) {
                 if(!$onlytry){
                     file_put_contents($this->tmpFilename, "$gradeFile");
                 }
@@ -47,7 +54,7 @@ class EncryptedZipArchive{
             return false;
         }
         $zip = new ZipArchive();
-        if ($zip->open($this->filename) === true) {
+        if ($zip->open($this->zipfilename) === true) {
             $zip->setPassword($password);
             if($zip->getFromName($this->internalFilename)) {
                 //replaceFile() is only supported in PHP8 or higher

@@ -17,7 +17,10 @@ if($page == "logout"){
 }
 else if ($page == "login" && isset($_POST['username']) && isset($_POST['password']))
 {
-    $loginHandler->login($_POST['username'], $_POST['password']);
+    if($loginHandler->login($_POST['username'], $_POST['password'])){
+        header("Location: .");
+        exit();
+    }
 }
 else
 {

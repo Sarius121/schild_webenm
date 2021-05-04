@@ -35,7 +35,7 @@ class MDBDatabase{
         if(!$this->isConnected()){
             return false;
         }
-        $data = [ "connID" => $this->connID, "method" => "exec", "sql" => $sql ];
+        $data = [ "connID" => $this->connID, "method" => "execute", "sql" => $sql ];
         $result = $this->doRequest("mdbexecute", $data);
         if($result != false){
             $jsonResult = json_decode($result, true);

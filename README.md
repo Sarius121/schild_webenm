@@ -24,5 +24,5 @@ It is used because there is no MDB-file driver for php on linux (no one that can
 - support measures
 
 # TODOs
-- repairing and cleaning up the LoginHandler
 - restoring backups (check uploaded files)
+- temporary files are not deleteted directly (probably because they are somehow still opened by mdb_connector_server)
