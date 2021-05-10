@@ -2,13 +2,13 @@
 
 namespace MDBConnector;
 
+require_once("constants.php");
+
 /**
  * This class establishes a connection to a server which handles all accesses to the database files and sends sql statements to this server to be executed.
  */
 class MDBDatabase{
 
-    private const MDB_FILE_SERVER = "localhost";
-    private const MDB_FILE_PORT = 8080;
 
     private $connID;
 
@@ -19,7 +19,7 @@ class MDBDatabase{
     }
 
     public function connect($file, $password){
-        $data = [ "file" => $file, "password" => $password, "debug" => "true" ];
+        $data = [ "file" => $file, "password" => $password, "debug" => "false" ]; //you may want to set debug = true
         $result = $this->doRequest("mdbconnect", $data);
         if($result != false){
             $jsonResult = json_decode($result, true);
@@ -64,7 +64,9 @@ class MDBDatabase{
     }
 
     protected function doRequest($path, $data){
-        $url = "http://" . MDBDatabase::MDB_FILE_SERVER . ":" . MDBDatabase::MDB_FILE_PORT . "/" . $path;
+        $url = "http://" . MDB_CONN_SERVER . ":" . MDB_CONN_PORT . "/" . MDB_CONN_PATH . $path;
+
+        $data["apisecret"] = API_SECRET;
 
         $options = array(
             'http' => array(

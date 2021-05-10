@@ -1,0 +1,9 @@
+<?php
+
+namespace ENMLibrary;
+
+define("DEFAULT_DB_PASSWORD", "default database password");
+define("GRADE_FILES_DIRECTORY", "grade-files/");
+define("TMP_GRADE_FILES_DIRECTORY", "grade-files/tmp/");
+
+?>

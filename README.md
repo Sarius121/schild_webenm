@@ -23,6 +23,10 @@ It is used because there is no MDB-file driver for php on linux (no one that can
 - renamed grade files
 - support measures
 
+# Installation notices
+## Permissions
+The grade-files/tmp/ directory has to be read and write accessible by the webserver with this webapp and the servlet-container with the mdb_connector_server. Easy way to do this in Linux is creating a group with the two users and setting the default permission for this directory as discribed here: https://unix.stackexchange.com/questions/1314/how-to-set-default-file-permissions-for-all-folders-files-in-a-directory.
+
 # TODOs
 - restoring backups (check uploaded files)
-- temporary files are not deleteted directly (probably because they are somehow still opened by mdb_connector_server)
+- temporary files are not deleteted directly (probably because they are somehow still opened by mdb_connector_server) -> not a problem in linux

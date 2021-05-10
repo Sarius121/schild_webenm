@@ -1,0 +1,11 @@
+<?php 
+
+namespace MDBConnector;
+
+// remember to change the access permissions in the security config of the mdb_connector_server if it's not on the same machine!
+define("MDB_CONN_SERVER", "localhost");
+define("MDB_CONN_PORT", 8080);
+define("MDB_CONN_PATH", "mdb/");
+define("API_SECRET", "some secret");
+
+?>
