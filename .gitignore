@@ -1,4 +1,7 @@
 .vscode
 constants.php
 test-files/
-grade-files/
+grade-files/*
+!grade-files/.htaccess
+!grade-files/tmp/
+grade-files/tmp/*
