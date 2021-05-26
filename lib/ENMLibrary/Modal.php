@@ -18,7 +18,7 @@ class Modal{
     private $body;
     private $buttons = [];
 
-    public function __construct($id, $title, $body=null, $buttons=null) {
+    public function __construct($id, $title, $body=null, $buttons=[]) {
         $this->id = $id;
         $this->title = $title;
         $this->body = $body;

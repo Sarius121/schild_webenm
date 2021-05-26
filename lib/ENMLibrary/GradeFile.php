@@ -71,6 +71,18 @@ class GradeFile {
         
     }
 
+    public function hasRequiredTables(){
+        $requiredTables = ["SchuelerLeistungsDaten", "SchuelerLD_PSFachBem", "Kopfnoten", "SchuelerBKFaecher", "Noten", "Floskeln"];
+
+        foreach($requiredTables as $table){
+            $success = ($this->fetchTableData($table, []) !== false);
+            if(!$success){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public function insertData($table, $priKeyCol, $priKey, $col, $value)
     {
         $value = utf8_decode($value);
@@ -96,13 +108,17 @@ class GradeFile {
     public function fetchTableData($tablename, $columns, $filter = null, $dict = false){
         $columnList = "";
         $first = true;
-        foreach($columns as $col){
-            if($first){
-                $first = false;
-            } else {
-                $columnList .= ", ";
+        if(count($columns) == 0){
+            $columnList = "*";
+        } else {
+            foreach($columns as $col){
+                if($first){
+                    $first = false;
+                } else {
+                    $columnList .= ", ";
+                }
+                $columnList .= "[" . $col["name"] . "]";
             }
-            $columnList .= "[" . $col["name"] . "]";
         }
 
         $sql = "SELECT " . $columnList . " FROM [" . $tablename . "]";
@@ -136,7 +152,7 @@ class GradeFile {
 
     /**
      * helper function for debugging, will be deleted at the end
-     * @deprecated
+     * 
      */
     /*public function getTables(){
         $result = odbc_tables($this->db);

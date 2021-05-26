@@ -65,7 +65,7 @@ class LoginHandler {
         $success = false;
 
         $dbFilename = $this->getDBFilename($username);
-        $this->encryptedGradeFile = new EncryptedZipArchive($this->getZipFilename($username), $dbFilename);
+        $this->encryptedGradeFile = new EncryptedZipArchive($this->getZipFilename($username), TMP_GRADE_FILES_DIRECTORY . $dbFilename);
         if(file_exists(TMP_GRADE_FILES_DIRECTORY . $dbFilename)){
             //only try password
             $success = $this->encryptedGradeFile->checkPassword($password);
@@ -76,7 +76,7 @@ class LoginHandler {
                 return false;
             }
             //save changes from foreign session and create new
-            $foreignEncryptedGradeFile = new EncryptedZipArchive($this->getZipFilename($username), $foreignFilename);
+            $foreignEncryptedGradeFile = new EncryptedZipArchive($this->getZipFilename($username), TMP_GRADE_FILES_DIRECTORY . $foreignFilename);
             $success = $foreignEncryptedGradeFile->close($password);
             if($success){
                 $success = $this->encryptedGradeFile->open($password);
@@ -172,7 +172,7 @@ class LoginHandler {
     }
 
     public function getZipFilename($username){
-        return $username . ".enz";
+        return GRADE_FILES_DIRECTORY . $username . ".enz";
     }
 
     public function getDBFilename($username){
@@ -195,6 +195,10 @@ class LoginHandler {
 
     public function getUsername(){
         return $this->username;
+    }
+
+    public function getPassword(){
+        return $_SESSION["password"];
     }
 
 }

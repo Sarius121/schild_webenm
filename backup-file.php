@@ -1,5 +1,6 @@
 <?php
 
+use ENMLibrary\FileUploader;
 use ENMLibrary\LoginHandler;
 
 include("imports.php");
@@ -27,7 +28,11 @@ $loginHandler->saveFileChanges();
 header("Pragma: public");
 header("Cache-Control: must-revalidate, post-check=0, pre-check=0");*/
 
-$path = $loginHandler->getGradeFilename();
+$path = $loginHandler->getZipFilename($loginHandler->getUsername());
+if(!file_exists($path)){
+    http_response_code(404);
+    die();
+}
 
 if($_GET["action"] == "create"){
     header('Content-Description: File Transfer');
@@ -43,7 +48,20 @@ if($_GET["action"] == "create"){
     readfile($path);
     exit;
 } else if($_GET["action"] == "restore"){
-
+    die("restoring");
+    //untested!
+    if(!empty($_FILES) && isset($_FILES["backupFile"])){
+        $file = $_FILES["backupFile"];
+        if($file["error"] == UPLOAD_ERR_OK){
+            $fileUploader = new FileUploader($file, $loginHandler->getUsername(), $loginHandler->getPassword());
+            if($fileUploader->upload()){
+                echo "success";
+                exit;
+            }
+        }
+    }
+    echo "error uploading file";
+    exit;
 } else{
     die("wrong arguments");
 }

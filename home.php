@@ -63,7 +63,7 @@ if(!isset($loginHandler)){
             <li><div class="group-header">Sicherung</div>
                 <ul>
                     <li onclick="onMenuItemClicked(this, 'create-backup')">Erstellen</li>
-                    <input type="file" id="backupFile" accept=".enm" style="display:none" onchange="onRestoreBackupFileSelected(this.files)">
+                    <input name="backupFile" type="file" id="backupFile" accept=".enz" style="display:none" onchange="onRestoreBackupFileSelected(this.files)">
                     <li onclick="onMenuItemClicked(this, 'restore-backup')">Einlesen</li>
                 </ul>
             </li>
@@ -178,4 +178,12 @@ if(!isset($loginHandler)){
 
     $loginHandler->getGradeFile()->close();
 
+?>
+
+<?php //upload-backup-Modal
+    $uploadBackupModal = new Modal("upload-backup-modal", "Backup Einlesen");
+    $uploadBackupModal->addButton("OK", "btn-primary", true);
+    echo $uploadBackupModal->getHTMLBeforeBody();
+    include("modals/UploadBackupModal.php");
+    echo $uploadBackupModal->getHTMLAfterBody(); 
 ?>

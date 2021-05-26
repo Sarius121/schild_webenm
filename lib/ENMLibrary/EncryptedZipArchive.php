@@ -6,7 +6,7 @@ use ZipArchive;
 
 class EncryptedZipArchive{
 
-    //zip filename (.enz)
+    //zip filename with relative path (.enz)
     private $zipfilename;
     //filename inside the zip archive
     private $internalFilename;
@@ -14,9 +14,9 @@ class EncryptedZipArchive{
     private $tmpFilename;
 
     public function __construct($zipfilename, $dbfilename){
-        $this->zipfilename = GRADE_FILES_DIRECTORY . $zipfilename;
-        $this->internalFilename = explode("_", $dbfilename)[0];
-        $this->tmpFilename = TMP_GRADE_FILES_DIRECTORY . $dbfilename;
+        $this->zipfilename = $zipfilename;
+        $this->internalFilename = basename($zipfilename, "enz") . "enm";
+        $this->tmpFilename = $dbfilename;
     }
 
     /**
@@ -74,8 +74,11 @@ class EncryptedZipArchive{
     /**
      * pack temporarily stored grade file as zip archive
      */
-    public function close($password){
-        $success = $this->saveChanges($password);
+    public function close($password, $saveChanges = true){
+        $success = true;
+        if($saveChanges){
+            $success = $this->saveChanges($password);
+        }
         if($success){
             unlink($this->tmpFilename);
         }
