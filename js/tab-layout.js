@@ -21,6 +21,9 @@ function onMenuItemClicked(item, action){
         case "undo-backup":
             undoBackupRestore();
             break;
+        case "information":
+            $("#information-modal").modal("show");
+            break;
     }
 }
 
