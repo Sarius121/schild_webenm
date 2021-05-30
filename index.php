@@ -59,6 +59,8 @@ if($loginHandler->isLoggedIn()){
         <script src="js/grades-list.js"></script>
         <script src="js/classTeacherTable.js"></script>
         <script src="js/examsTable.js"></script>
+
+        <script src="js/progress-message-box.js"></script>
     </head>
     <body>
         <?php 

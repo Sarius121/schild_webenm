@@ -182,7 +182,9 @@ class GradeFile {
 
     public function close(){
         //$this->db = null;
-        $this->db->close();
+        if($this->db != null){
+            $this->db->close();
+        }
         //odbc_close($this->db);
     }
 

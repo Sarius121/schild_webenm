@@ -1,6 +1,6 @@
 <?php
 
-use ENMLibrary\FileUploader;
+use ENMLibrary\BackupHandler;
 use ENMLibrary\LoginHandler;
 
 include("imports.php");
@@ -48,19 +48,27 @@ if($_GET["action"] == "create"){
     readfile($path);
     exit;
 } else if($_GET["action"] == "restore"){
-    die("restoring");
-    //untested!
     if(!empty($_FILES) && isset($_FILES["backupFile"])){
         $file = $_FILES["backupFile"];
         if($file["error"] == UPLOAD_ERR_OK){
-            $fileUploader = new FileUploader($file, $loginHandler->getUsername(), $loginHandler->getPassword());
-            if($fileUploader->upload()){
+            $fileUploader = new BackupHandler();
+            if($fileUploader->upload($file, $loginHandler->getUsername(), $loginHandler->getPassword())){
+                $loginHandler->reopenFile(false);
                 echo "success";
                 exit;
             }
         }
     }
     echo "error uploading file";
+    exit;
+} else if($_GET["action"] == "undo"){
+    $fileUploader = new BackupHandler();
+    if($fileUploader->undoBackupRestore($loginHandler->getUsername())){
+        $loginHandler->reopenFile(false);
+        echo "success";
+        exit;
+    }
+    echo "error undo backup";
     exit;
 } else{
     die("wrong arguments");

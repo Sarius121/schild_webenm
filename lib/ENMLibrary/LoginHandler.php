@@ -101,9 +101,19 @@ class LoginHandler {
         return $this->encryptedGradeFile->saveChanges($_SESSION['password']);
     }
 
-    public function closeFile($password){
+    public function closeFile($password, $saveChanges = true){
         $this->gradeFile->close();
-        return $this->encryptedGradeFile->close($password);
+        return $this->encryptedGradeFile->close($password, $saveChanges);
+    }
+
+    public function reopenFile($saveChanges){
+        if(!$this->isLoggedIn()){
+            return false;
+        }
+        if($this->closeFile($this->getPassword(), $saveChanges)){
+            return $this->encryptedGradeFile->open($this->getPassword());
+        }
+        return false;
     }
 
     public function logout($password = null){

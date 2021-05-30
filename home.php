@@ -1,5 +1,6 @@
 <?php
 
+use ENMLibrary\BackupHandler;
 use ENMLibrary\GradeFile;
 use ENMLibrary\Modal;
 
@@ -44,50 +45,38 @@ if(!isset($loginHandler)){
         <ul class="header">
             <li class="active" onclick="onTabClicked(this, 'tabDatei');">Datei</li>
             <li onclick="onTabClicked(this, 'tabLeistungsdaten');">Leistungsdaten</li>
-            <li onclick="onTabClicked(this, 'tabZusaetze');">Zusätze</li>
             <li onclick="onTabClicked(this, 'tabHilfe');">Hilfe</li>
         </ul>
         <ul class="body visible" id="tabDatei">
-            <li><div class="group-header">Im- / Export</div>
-                <ul>
-                    <li>Import</li>
-                    <li>Export</li>
-                </ul>
-            </li>
             <li><div class="group-header">Druck</div>
                 <ul>
                     <li class="disabled">Formulardruck</li>
                     <li class="disabled">&#9013;</li>
                 </ul>
             </li>
-            <li><div class="group-header">Sicherung</div>
+            <li><div class="group-header">Lokale Sicherung</div>
                 <ul>
                     <li onclick="onMenuItemClicked(this, 'create-backup')">Erstellen</li>
                     <input name="backupFile" type="file" id="backupFile" accept=".enz" style="display:none" onchange="onRestoreBackupFileSelected(this.files)">
                     <li onclick="onMenuItemClicked(this, 'restore-backup')">Einlesen</li>
-                </ul>
-            </li>
-            <li><div class="group-header">Schließen</div>
-                <ul>
-                    <li>Schließen</li>
+                    <li <?php $backupHandler = new BackupHandler(); if(!$backupHandler->oldBackupExists($loginHandler->getUsername())){ ?>class="disabled" <?php } ?> onclick="onMenuItemClicked(this, 'undo-backup')" data-tooltip="zum Stand vor dem Einlesen des Backups zurückkehren"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-counterclockwise"/></svg></li>
                 </ul>
             </li>
         </ul>
         <ul class="body" id="tabLeistungsdaten">
             <li><div class="group-header">Bearbeiten</div>
                 <ul>
-                    <li>Kopieren</li>
-                    <li>Fördern</li>
+                    <li class="disabled">Fördern</li>
                 </ul>
             </li>
             <li><div class="group-header">Sortierung</div>
                 <ul>
-                    <li>Fach, Name</li>
+                    <li class="disabled">Fach, Name</li>
                             <!--<option value="name-subject">Name, Fach</option>
                             <option value="subject-name">Fach, Name</option>
                             <option value="class-name">Klasse, Name</option>
                             <option value="class-subject">Klasse, Fach</option>-->
-                    <li>&#9013;
+                    <li class="disabled">&#9013;
                         <ul class="dropdown">
                             <li>Name, Fach</li>
                             <li>Fach, Name</li>
@@ -99,8 +88,8 @@ if(!isset($loginHandler)){
             </li>
             <li><div class="group-header">Filter</div>
                 <ul>
-                    <li>Gruppe</li>
-                    <li>&#9013;
+                    <li class="disabled">Gruppe</li>
+                    <li class="disabled">&#9013;
                         <ul class="dropdown">
                             <li>Filter Lerngruppe</li>
                             <li>Filter erstellen</li>
@@ -110,20 +99,11 @@ if(!isset($loginHandler)){
                 </ul>
             </li>
         </ul>
-        <ul class="body" id="tabZusaetze">
-            <li><div class="group-header">Zusätze</div>
-                <ul>
-                    <li>Spalten wählen</li>
-                    <li>Eingabehilfe</li>
-                    <li>Einstellungen</li>
-                </ul>
-            </li>
-        </ul>
         <ul class="body" id="tabHilfe">
             <li><div class="group-header">Hilfe</div>
                 <ul>
-                    <li>Dokumentation</li>
-                    <li>Information</li>
+                    <li class="disabled">Dokumentation</li>
+                    <li class="disabled">Information</li>
                 </ul>
             </li>
         </ul>
@@ -178,12 +158,4 @@ if(!isset($loginHandler)){
 
     $loginHandler->getGradeFile()->close();
 
-?>
-
-<?php //upload-backup-Modal
-    $uploadBackupModal = new Modal("upload-backup-modal", "Backup Einlesen");
-    $uploadBackupModal->addButton("OK", "btn-primary", true);
-    echo $uploadBackupModal->getHTMLBeforeBody();
-    include("modals/UploadBackupModal.php");
-    echo $uploadBackupModal->getHTMLAfterBody(); 
 ?>
