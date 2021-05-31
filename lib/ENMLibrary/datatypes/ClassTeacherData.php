@@ -9,8 +9,8 @@ class ClassTeacherData extends GradeFileData{
     public const CLASS_TEACHER_COLUMNS = [["name" => "Abschnitt_ID", "label" => "Abschnitt_ID", "datatype" => "string", "editable" => false],
                                         ["name" => "Klasse", "label" => "Klasse", "datatype" => "string", "editable" => false], //Table: Kopfnoten
                                         ["name" => "Name", "label" => "Name", "datatype" => "string", "editable" => false],
-                                        ["name" => "SumFehlstd", "label" => "FS", "datatype" => "integer", "editable" => true], 
-                                        ["name" => "SumFehlstdU", "label" => "uFS", "datatype" => "integer", "editable" => true],
+                                        /*["name" => "SumFehlstd", "label" => "FS", "datatype" => "integer", "editable" => true], 
+                                        ["name" => "SumFehlstdU", "label" => "uFS", "datatype" => "integer", "editable" => true],*/
                                         ["name" => "hasASV", "label" => "ASV", "datatype" => "boolean", "editable" => true], //Table: PSFachBem
                                         ["name" => "hasAuE", "label" => "AuE", "datatype" => "boolean", "editable" => true], //??
                                         ["name" => "hasZeugnisBem", "label" => "ZB", "datatype" => "boolean", "editable" => true],
@@ -19,7 +19,7 @@ class ClassTeacherData extends GradeFileData{
                                         ["name" => "ZeugnisBem", "label" => "ZB", "datatype" => "string", "editable" => true]
                                     ];
 
-    public const COLUMNS_KOPFNOTEN = [["name" => "S_GUID"], ["name" => "Name"], ["name" => "Klasse"], ["name" => "SumFehlstd"], ["name" => "SumFehlstdU"]];
+    public const COLUMNS_KOPFNOTEN = [["name" => "Abschnitt_ID"], ["name" => "S_GUID"], ["name" => "Name"], ["name" => "Klasse"]/*, ["name" => "SumFehlstd"], ["name" => "SumFehlstdU"]*/];
     public const COLUMNS_LEISTUNGSDATEN = [["name" => "S_GUID"], ["name" => "Abschnitt_ID"]];
     public const COLUMNS_PSFACHBEM = [["name" => "Abschnitt_ID"], ["name" => "ASV"], ["name" => "LELS"], ["name" => "ZeugnisBem"]];
 

@@ -48,20 +48,25 @@ if(!isset($loginHandler)){
             <li onclick="onTabClicked(this, 'tabHilfe');">Hilfe</li>
         </ul>
         <ul class="body visible" id="tabDatei">
+            <li><div class="group-header">Notendatei</div>
+                <ul>
+                    <li onclick="onMenuItemClicked(this, 'save-changes')">Speichern</li>
+                </ul>
+            </li>
             <li><div class="group-header">Druck</div>
                 <ul>
                     <li class="disabled">Formulardruck</li>
                     <li class="disabled">&#9013;</li>
                 </ul>
             </li>
-            <li><div class="group-header">Lokale Sicherung</div>
+            <?php /*<li><div class="group-header">Lokale Sicherung</div>
                 <ul>
                     <li onclick="onMenuItemClicked(this, 'create-backup')">Erstellen</li>
                     <input name="backupFile" type="file" id="backupFile" accept=".enz" style="display:none" onchange="onRestoreBackupFileSelected(this.files)">
                     <li onclick="onMenuItemClicked(this, 'restore-backup')">Einlesen</li>
                     <li <?php $backupHandler = new BackupHandler(); if(!$backupHandler->oldBackupExists($loginHandler->getUsername())){ ?>class="disabled" <?php } ?> onclick="onMenuItemClicked(this, 'undo-backup')" data-tooltip="zum Stand vor dem Einlesen des Backups zurückkehren"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-counterclockwise"/></svg></li>
                 </ul>
-            </li>
+            </li>*/ ?>
         </ul>
         <ul class="body" id="tabLeistungsdaten">
             <li><div class="group-header">Bearbeiten</div>
@@ -127,16 +132,16 @@ if(!isset($loginHandler)){
         <div class="nav-item">
             <button class="nav-link" onclick="onNavButtonClicked(this, 'data-class-teacher')">Klassenleitung</button>
         </div>
-        <div class="nav-item">
+        <?php /*<div class="nav-item">
             <button class="nav-link" onclick="onNavButtonClicked(this, 'data-exams')">Zentr. Prf.</button>
-        </div>
+        </div>*/ ?>
     </div>
     
     <div id="data-container">
         <?php 
         include("data-tabs/grades.php");
         include("data-tabs/class-teacher.php");
-        include("data-tabs/exams.php"); ?>
+        //include("data-tabs/exams.php"); ?>
     </div>
 </div>
 <?php //grades-Modal 

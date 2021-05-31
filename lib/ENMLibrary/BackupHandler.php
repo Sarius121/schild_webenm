@@ -64,7 +64,7 @@ class BackupHandler {
         //is file zip archive encrypted with the right password?
         $tmp_grade_file = TMP_GRADE_FILES_DIRECTORY . "new-" . $username . ".enm";
         $zipArchive = new EncryptedZipArchive($target, $tmp_grade_file);
-        if(!$zipArchive->open($password)){
+        if(!$zipArchive->open()){
             //file is not an encrypted zip archive or the password is wrong
             return false;
         }
@@ -75,7 +75,9 @@ class BackupHandler {
         $gradeFile = new GradeFile(basename($tmp_grade_file));
         if($gradeFile->openFile()){
             if($gradeFile->hasRequiredTables()){
-                $success = true;
+                if($gradeFile->checkUser($password)){
+                    $success = true;
+                }
             } else {
                 //some tables are missing
             }
@@ -84,7 +86,7 @@ class BackupHandler {
         }
         
         $gradeFile->close();
-        $zipArchive->close($password, false);
+        $zipArchive->close(false);
 
         return $success;
     }

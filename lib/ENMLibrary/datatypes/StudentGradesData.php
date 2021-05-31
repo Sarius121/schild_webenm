@@ -10,10 +10,12 @@ class StudentGradesData extends GradeFileData{
                             ["name" => "Klasse", "label" => "Klasse", "datatype" => "string", "editable" => false],
                             ["name" => "Name", "label" => "Name", "datatype" => "string", "editable" => false],
                             ["name" => "FachBez", "label" => "Fach", "datatype" => "string", "editable" => false],
-                            ["name" => "KursartKrz", "label" => "Art", "datatype" => "string", "editable" => false],
+                            /*["name" => "KursartKrz", "label" => "Art", "datatype" => "string", "editable" => false],*/
                             ["name" => "KurzBez", "label" => "Kurs", "datatype" => "string", "editable" => false],
                             ["name" => "NotenKrz", "label" => "Note", "datatype" => "string", "editable" => true],
-                            ["name" => "Warnung", "label" => "Mahnung", "datatype" => "string", "editable" => true, "values" => ["-" => "keine Mahnung","+" =>"Mahnung"]]];
+                            ["name" => "Fehlstd", "label" => "FS", "datatype" => "integer", "editable" => true],
+                            ["name" => "uFehlstd", "label" => "uFS", "datatype" => "integer", "editable" => true]/*,
+["name" => "Warnung", "label" => "Mahnung", "datatype" => "string", "editable" => true, "values" => ["-" => "keine Mahnung","+" =>"Mahnung"]]*/];
 
     public function __construct($gradeFile) {
         parent::__construct($gradeFile, StudentGradesData::STUDENT_GRADES_COLUMNS, "SchuelerLeistungsdaten");

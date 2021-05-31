@@ -192,6 +192,18 @@ class GradeFile {
         return $this->error;
     }
 
+    public function checkUser($password){
+        $data = $this->fetchTableData("Users", [ [ "name" => "US_PasswordHash"]]);
+        if(is_array($data)){
+            foreach ($data as $user){
+                if(password_verify($password, $user["US_PasswordHash"])){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }
 
 ?>

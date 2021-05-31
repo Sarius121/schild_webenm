@@ -22,7 +22,7 @@ class EncryptedZipArchive{
     /**
      * unpack grade file to tmp-directory
      */
-    public function open($password, $onlytry=false){
+    public function open($password = DEFAULT_ZIP_PASSWORD, $onlytry=false){
         $zip = new ZipArchive();
         if ($zip->open($this->zipfilename) === true) {
             $zip->setPassword($password);
@@ -45,20 +45,20 @@ class EncryptedZipArchive{
         }
     }
 
-    public function checkPassword($password){
+    public function checkPassword($password = DEFAULT_ZIP_PASSWORD){
         return $this->open($password, true);
     }
 
-    public function saveChanges($password){
+    public function saveChanges($password = DEFAULT_ZIP_PASSWORD){
         if(!file_exists($this->tmpFilename)){
             return false;
         }
         $zip = new ZipArchive();
         if ($zip->open($this->zipfilename) === true) {
             $zip->setPassword($password);
-            if($zip->getFromName($this->internalFilename)) {
+            if($zip->getFromIndex(0)) {
                 //replaceFile() is only supported in PHP8 or higher
-                $zip->deleteName($this->internalFilename);
+                $zip->deleteIndex(0);
                 $zip->addFile($this->tmpFilename, $this->internalFilename);
             } else {
                 $zip->close();
@@ -74,7 +74,7 @@ class EncryptedZipArchive{
     /**
      * pack temporarily stored grade file as zip archive
      */
-    public function close($password, $saveChanges = true){
+    public function close($saveChanges = true, $password = DEFAULT_ZIP_PASSWORD){
         $success = true;
         if($saveChanges){
             $success = $this->saveChanges($password);

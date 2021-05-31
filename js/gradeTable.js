@@ -17,7 +17,16 @@ class GradeTable extends CustomEditableGrid{
                 }
                 return false;
              }
-		}));
+        }));
+        
+        var positiveNumberValidator = new CellValidator({ 
+			isValid: function(value) {
+                return (value == "" || parseInt(value) >= 0);
+             }
+		});
+
+        this.addCellValidator("Fehlstd", positiveNumberValidator);
+        this.addCellValidator("uFehlstd", positiveNumberValidator);
     }
 
     onTableRendered(){    

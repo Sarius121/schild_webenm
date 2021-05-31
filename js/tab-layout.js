@@ -12,6 +12,9 @@ function onMenuItemClicked(item, action){
     }
 
     switch(action){
+        case "save-changes":
+            saveChanges();
+            break;
         case "create-backup":
             window.open("backup-file.php?action=create");
             break;
@@ -100,6 +103,36 @@ function undoBackupRestore(){
         }
     }
     var messageBox = new ProgressMessageBox("undo-backup-modal", "Backup rückgängig machen", "Kehre zum alten Backup zurück...", "Schließe nicht das Fenster oder lade die Seite neu, während zum alten Backup zurückgekehrt wird!", true);
+    messageBox.show();
+
+    preventAppClosing = true;
+    httpRequest.send();
+}
+
+function saveChanges(){
+    var httpRequest = new XMLHttpRequest();
+    httpRequest.open("POST", "inactive-actions.php?action=save-changes");
+    httpRequest.onreadystatechange = function(){
+        if (this.readyState == 4 && this.status == 200) {
+            //success
+            preventAppClosing = false;
+            if(this.responseText == "success"){
+                messageBox.setStatus(ProgressMessageBox.STATUS_SUCCESS);
+                messageBox.setMessage("Die Änderungen wurden gesichert.");
+                messageBox.close();
+            } else {
+                messageBox.setStatus(ProgressMessageBox.STATUS_FAIL);
+                messageBox.setMessage("Es ist ein unbekannter Fehler aufgetreten!");
+                console.log(this.responseText);
+            }
+        } else if(this.readyState == 4) {
+            preventAppClosing = false;
+            //error
+            messageBox.setStatus(ProgressMessageBox.STATUS_FAIL);
+            messageBox.setMessage("Es ist ein unbekannter Fehler aufgetreten!");
+        }
+    }
+    var messageBox = new ProgressMessageBox("save-changes", "Änderungen speichern", "Die Änderungen werden gesichert...", "Schließe nicht das Fenster oder lade die Seite neu, während die Änderungen gesichert werden! Übrigens: Die Änderungen werden auch automatisch beim Abmelden gesichert.", true);
     messageBox.show();
 
     preventAppClosing = true;

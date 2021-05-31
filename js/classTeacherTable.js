@@ -8,14 +8,14 @@ class ClassTeacherTable extends CustomEditableGrid{
     constructor(json){
         super( "ClassTeacherTable", json);
 
-        var positiveNumberValidator = new CellValidator({ 
+        /*var positiveNumberValidator = new CellValidator({ 
 			isValid: function(value) {
                 return (value == "" || parseInt(value) >= 0);
              }
 		});
 
         this.addCellValidator("SumFehlstd", positiveNumberValidator);
-        this.addCellValidator("SumFehlstdU", positiveNumberValidator);
+        this.addCellValidator("SumFehlstdU", positiveNumberValidator);*/
     }
 
     renderGrid(){

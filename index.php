@@ -13,7 +13,9 @@ if(isset($_GET["page"])){
 
 if($page == "logout"){
     $loginHandler->loginWithSession();
-    $loginHandler->logout();
+    if(!$loginHandler->logout()){
+        header("Location: .");
+    }
 }
 else if ($page == "login" && isset($_POST['username']) && isset($_POST['password']))
 {
