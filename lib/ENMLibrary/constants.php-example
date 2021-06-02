@@ -2,8 +2,11 @@
 
 namespace ENMLibrary;
 
+define("DEFAULT_ZIP_PASSWORD", "default zip password");
 define("DEFAULT_DB_PASSWORD", "default database password");
-define("GRADE_FILES_DIRECTORY", "grade-files/");
+define("SOURCE_GRADE_FILES_DIRECTORY", "grade-files/source/");
+define("GRADE_FILES_DIRECTORY", "grade-files/working/");
 define("TMP_GRADE_FILES_DIRECTORY", "grade-files/tmp/");
+define("FILE_SUFFIX", "_2020_2");
 
 ?>

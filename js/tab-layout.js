@@ -119,7 +119,7 @@ function saveChanges(){
             if(this.responseText == "success"){
                 messageBox.setStatus(ProgressMessageBox.STATUS_SUCCESS);
                 messageBox.setMessage("Die Änderungen wurden gesichert.");
-                messageBox.close();
+                messageBox.hide();
             } else {
                 messageBox.setStatus(ProgressMessageBox.STATUS_FAIL);
                 messageBox.setMessage("Es ist ein unbekannter Fehler aufgetreten!");

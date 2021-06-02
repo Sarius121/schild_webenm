@@ -5,7 +5,7 @@ namespace ENMLibrary;
 class BackupHandler {
 
     public function oldBackupExists($username){
-        return file_exists(GRADE_FILES_DIRECTORY . $username . ".enz-old");
+        return file_exists(GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz-old");
     }
 
     public function upload($file, $username, $password) {
@@ -13,7 +13,7 @@ class BackupHandler {
             return false;
         }
 
-        $target_file = GRADE_FILES_DIRECTORY . $username . ".enz-new";
+        $target_file = GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz-new";
         if(!move_uploaded_file($file["tmp_name"], $target_file)){
             return false;
         }
@@ -24,8 +24,8 @@ class BackupHandler {
             return false;
         }
 
-        $current_file = GRADE_FILES_DIRECTORY . $username . ".enz";
-        $old_target_file = GRADE_FILES_DIRECTORY . $username . ".enz-old";
+        $current_file = GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz";
+        $old_target_file = GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz-old";
 
         if(rename($current_file, $old_target_file)){
             if(rename($target_file, $current_file)){
@@ -62,7 +62,7 @@ class BackupHandler {
     private function doDetailedFileCheck($target, $username, $password){
         //detailed file type check
         //is file zip archive encrypted with the right password?
-        $tmp_grade_file = TMP_GRADE_FILES_DIRECTORY . "new-" . $username . ".enm";
+        $tmp_grade_file = TMP_GRADE_FILES_DIRECTORY . "new-" . $username . FILE_SUFFIX . ".enm";
         $zipArchive = new EncryptedZipArchive($target, $tmp_grade_file);
         if(!$zipArchive->open()){
             //file is not an encrypted zip archive or the password is wrong
@@ -98,10 +98,10 @@ class BackupHandler {
         if(!$this->oldBackupExists($username)){
             return false;
         }
-        $current_file = GRADE_FILES_DIRECTORY . $username . ".enz";
-        $old_file = GRADE_FILES_DIRECTORY . $username . ".enz-old";
+        $current_file = GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz";
+        $old_file = GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz-old";
 
-        $current_safety_file = GRADE_FILES_DIRECTORY . $username . ".enz-safe";
+        $current_safety_file = GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz-safe";
 
         if(rename($current_file, $current_safety_file)){
             if(rename($old_file, $current_file)){
