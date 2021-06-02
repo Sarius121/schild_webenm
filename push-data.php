@@ -48,4 +48,14 @@ if(array_search(false, $response)){
 
 $loginHandler->getGradeFile()->close();
 
+//save file after 20 actions
+if(isset($_SESSION["actionCount"])){
+    $_SESSION["actionCount"] += 1;
+    if(($_SESSION["actionCount"] % 20) == 0){
+        $loginHandler->saveFileChanges();
+    }
+} else {
+    $_SESSION["actionCount"] = 1;
+}
+
 ?>

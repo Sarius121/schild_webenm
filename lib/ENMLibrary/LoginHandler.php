@@ -16,6 +16,8 @@ class LoginHandler {
     private $sourceFile;
     private $differentSessionActive = false;
 
+    private $basename;
+
     public function __construct($session_id = null)
     {
         if($session_id != null){
@@ -202,7 +204,7 @@ class LoginHandler {
     }
 
     private function foreignTmpFileExists($username){
-        $found = glob(TMP_GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX. "*");
+        $found = glob(TMP_GRADE_FILES_DIRECTORY . $this->getBasename($username) . "*");
         if($found == false || count($found) <= 0){
             return false;
         }
@@ -218,16 +220,32 @@ class LoginHandler {
     }
 
     public function getSourceFilename($username){
-        return SOURCE_GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz";
+        return SOURCE_GRADE_FILES_DIRECTORY . $this->getBasename($username) . ".enz";
     }
 
     public function getZipFilename($username){
-        return GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz";
+        return GRADE_FILES_DIRECTORY . $this->getBasename($username) . ".enz";
     }
 
     public function getDBFilename($username){
         $fileID = $this->getSessionFileID();
-        return $username . FILE_SUFFIX . ".enm_" . $fileID;
+        return $this->getBasename($username) . ".enm_" . $fileID;
+    }
+
+    public function getBasename($username){
+        if($this->basename != null){
+            return $this->basename;
+        }
+        $found = glob(SOURCE_GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . "*.enz");
+        if($found == false || count($found) <= 0){
+            return false;
+        }
+        foreach ($found as $file) {
+            //take first
+            $this->basename = basename($file, ".enz");
+            return $this->basename;
+        }
+        return false;
     }
 
     public function getGradeFile()
