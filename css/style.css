@@ -11,6 +11,7 @@ body
 
 .absolute-container
 {
+    min-width: 480px;
     width: 25%;
     background-color: #FFF;
     position: absolute;
@@ -18,6 +19,14 @@ body
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 1em;
+}
+
+@media only screen and (max-width: 480px){
+    .absolute-container
+    {
+        width: 100%;
+        max-width: unset;
+    }
 }
 
 .separator
@@ -367,10 +376,18 @@ div.back-button svg
 }
 
 #home-container{
+    min-width: 1400px;
     width: 75%;
     margin: 0 auto;
     background-color: #FFF;
     padding: 1em;
+}
+
+@media only screen and (max-width: 1400px){
+    #home-container{
+        width: 100%;
+        min-width: unset;
+    }
 }
 
 #search-form .header
@@ -529,11 +546,6 @@ div.back-button svg
 #class-teacher-head .row .col-sm-auto.text
 {
     padding: 0.5em;
-}
-
-#class-teacher-head .row .col-sm-auto button
-{
-    height: 100%;
 }
 
 #class-teacher-head h6

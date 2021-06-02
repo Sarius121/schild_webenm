@@ -187,8 +187,8 @@ CellEditor.prototype.displayEditor = function(element, editorInput, adjustX, adj
 		element.appendChild(editorInput);
 
 		//added by ***REMOVED***
-		inputWidth = element.children[0].offsetWidth;
-        element.style.setProperty("width", inputWidth + 12);
+		inputWidth = editorInput.offsetWidth;
+        element.style.setProperty("width", inputWidth);
 	}
 
 	// absolute mode: add input field in absolute position over table cell, leaving current content
