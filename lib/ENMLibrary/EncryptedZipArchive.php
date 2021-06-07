@@ -26,11 +26,11 @@ class EncryptedZipArchive{
         $zip = new ZipArchive();
         if ($zip->open($this->zipfilename) === true) {
             $zip->setPassword($password);
-            //if count bigger than 1 -> file not valid
-            if($zip->count() > 1){
+            //find file in archive
+            if(($index = $this->getInternalFileIndex($zip)) == -1){
                 return false;
             }
-            if(($gradeFile = $zip->getFromIndex(0))) {
+            if(($gradeFile = $zip->getFromIndex($index))) {
                 if(!$onlytry){
                     file_put_contents($this->tmpFilename, "$gradeFile");
                 }
@@ -56,9 +56,9 @@ class EncryptedZipArchive{
         $zip = new ZipArchive();
         if ($zip->open($this->zipfilename) === true) {
             $zip->setPassword($password);
-            if($zip->getFromIndex(0)) {
+            if(($index = $this->getInternalFileIndex($zip)) != -1){
                 //replaceFile() is only supported in PHP8 or higher
-                $zip->deleteIndex(0);
+                $zip->deleteIndex($index);
                 $zip->addFile($this->tmpFilename, $this->internalFilename);
             } else {
                 $zip->close();
@@ -83,6 +83,16 @@ class EncryptedZipArchive{
             unlink($this->tmpFilename);
         }
         return $success;
+    }
+
+    private function getInternalFileIndex($zip){
+        for($i = 0; $i < $zip->count(); $i++){
+            $name = $zip->getNameIndex($i);
+            if(pathinfo($name, PATHINFO_EXTENSION) == "enm"){
+                return $i;
+            }
+        }
+        return -1;
     }
 }
 

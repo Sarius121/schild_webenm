@@ -7,9 +7,12 @@ class GradeTable extends CustomEditableGrid{
     constructor(json, gradesJSON){
         super("GradeTable", json);
 
+        this.editableGrid.setCellEditor("NotenKrz", new UpperCaseTextEditor());
+
         this.addCellValidator("NotenKrz", new CellValidator({ 
 			isValid: function(value) {
                 if(value == ""){return true;}
+                value = value.toUpperCase();
                 for (let i = 0; i < gradesJSON.length; i++) {
                     if(value == gradesJSON[i].Krz){
                         return true;
@@ -52,6 +55,20 @@ class GradeTable extends CustomEditableGrid{
         cell.parentElement.classList.add("active");
     }
 }
+
+function UpperCaseTextEditor() 
+{
+
+};
+
+//inherits TextCellEditor functionalities
+UpperCaseTextEditor.prototype = new TextCellEditor();
+
+//redefine displayEditor to setup autocomplete
+UpperCaseTextEditor.prototype.formatValue = function(value)
+{
+	return value.toUpperCase();
+};
 
 /*function onGradeTableLoaded(){
     $("#gradeTable .editablegrid-NotenKrz").dblclick(onGradeCellDoubleClicked);

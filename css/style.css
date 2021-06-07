@@ -311,6 +311,13 @@ svg
 { 
     border-bottom: 1px solid black;
     text-align: left; 
+    cursor: pointer;
+    transition: background-color 0.25s;
+}
+
+.dataTable table th:hover
+{
+    background-color: lightgrey;
 }
 
 .dataTable table input
@@ -337,6 +344,11 @@ input.invalid
 {
     visibility: hidden;
     display: none;
+}
+
+.dataTable .editablegrid-NotenKrz input
+{
+    text-transform: uppercase;
 }
 
 /*#################### home #################### */
@@ -516,12 +528,17 @@ div.back-button svg
 {
     visibility: visible;
     height: 100%;
-    width: 100%;
+    width: auto;
     text-align: center;
+    position: relative;
 }
 
 #classTeacherTable.dataTable table input[type="checkbox"]:checked::after
 {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
     color: white;
     padding: 0 0.5em;
     background-color: green;
@@ -676,5 +693,13 @@ div.back-button svg
 }
  
 [data-tooltip]:not(.disabled):hover::after, [data-tooltip]:not(.disabled):hover::before {
+  animation-name: tooltip;
+  animation-duration: 1s;
   opacity: 1;
 }
+
+@keyframes tooltip {
+    0%   {opacity: 0;}
+    99%  {opacity: 0;}
+    100% {opacity: 1;}
+  }

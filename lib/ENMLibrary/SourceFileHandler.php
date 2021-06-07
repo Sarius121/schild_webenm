@@ -14,7 +14,11 @@ class SourceFileHandler {
     }
 
     public function openFile(){
-        return copy($this->sourceFile, $this->targetFile);
+        if(file_exists($this->sourceFile)){
+            return copy($this->sourceFile, $this->targetFile);
+        } else {
+            return false;
+        }
     }
 
     public function saveFile(){

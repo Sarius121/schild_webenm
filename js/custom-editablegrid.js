@@ -35,6 +35,19 @@ class CustomEditableGrid{
             request.send(post);
         }
 
+        var that = this;
+
+        this.editableGrid.tableRendered = function(){
+            $("#" + name + " th").click(function(event) {
+                if(event.target == event.currentTarget){
+                    $(this).find("a").trigger("click");
+                }
+            });
+            $("#" + name + " th a").attr("data-tooltip", "Sortieren");
+
+            that.onTableRendered();
+        }
+
     }
 
     addCellValidator(col, validator){
@@ -47,8 +60,6 @@ class CustomEditableGrid{
         this.editableGrid.renderGrid(tableID, gridID);
 
         this.tableLength = $("#" + this.tableID + " tbody tr").last().attr('id').split("_")[1];
-
-        this.onTableRendered();
     }
 
     onTableRendered(){

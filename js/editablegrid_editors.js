@@ -136,13 +136,20 @@ CellEditor.prototype.edit = function(rowIndex, columnIndex, element, value)
 		}
 	};
 
+
+	var that = this;
+
 	// if simultaneous edition is not allowed, we cancel edition when focus is lost
 	if (!this.editablegrid.allowSimultaneousEdition) editorInput.onblur = this.editablegrid.saveOnBlur ? function(event) { 
 
 		// backup onblur then remove it: it will be restored if editing could not be applied
 		this.onblur_backup = this.onblur; 
 		this.onblur = null;
-		if (this.celleditor.applyEditing(this.element, this.celleditor.getEditorValue(this)) === false) this.onblur = this.onblur_backup; 
+		if (this.celleditor.applyEditing(this.element, this.celleditor.getEditorValue(this)) === false) {
+			this.onblur = this.onblur_backup;
+			//prevent loosing focus when editing cannot be applied
+			setTimeout(function () { that.autoFocus(editorInput); }, 20);
+		}
 	}
 	: function(event) { 
 		this.onblur = null; 
