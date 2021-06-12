@@ -243,6 +243,7 @@ CellEditor.prototype._clearEditor = function(element)
 
 	//added by ***REMOVED***
 	element.parentElement.classList.remove("active");
+	element.style.removeProperty("width");
 
 	// clear fixed editor zone if any
 	if (this.editablegrid.editmode == "fixed") {

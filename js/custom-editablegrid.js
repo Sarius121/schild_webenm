@@ -1,5 +1,7 @@
 class CustomEditableGrid{
 
+    stickyHeader = false;
+
     constructor(name, json){
         this.name = name;
         this.editableGrid = new EditableGrid(name, {editmode: "static"});
@@ -45,6 +47,24 @@ class CustomEditableGrid{
             });
             $("#" + name + " th a").attr("data-tooltip", "Sortieren");
 
+            if(that.stickyHeader){
+                var theadRow = document.getElementById(that.tableID).getElementsByTagName("tr")[0];
+                var theadCols = theadRow.childNodes;
+                theadCols.forEach(function(item){
+                    var width = item.offsetWidth;
+                    var className = undefined;
+                    item.classList.forEach(function(item){
+                        if(item.startsWith("editablegrid")){
+                            className = item;
+                            return;
+                        }
+                    });
+                    $("#" + that.tableID + " ." + className).css("width", width);
+                });
+                theadRow.style.position = "absolute";
+                document.getElementById(that.tableID).getElementsByTagName("tbody")[0].style.display = "block";
+            }
+
             that.onTableRendered();
         }
 
@@ -57,9 +77,14 @@ class CustomEditableGrid{
     renderGrid(tableID, gridID){
         this.tableID = tableID;
         this.gridID = gridID;
+
+        if(this.stickyHeader){
+            document.getElementById(this.tableID).classList.add("stickyHeader");
+        }
+
         this.editableGrid.renderGrid(tableID, gridID);
 
-        this.tableLength = $("#" + this.tableID + " tbody tr").last().attr('id').split("_")[1];
+        this.tableLength = $("#" + this.tableID + " tbody tr").length;
     }
 
     onTableRendered(){
@@ -82,6 +107,9 @@ class CustomEditableGrid{
         this.focusCell(row, col);
         var selector = "#" + this.tableID + "_" + row + " ." + col + " input";
         $(selector).val(value);
+
+        //apply changes by bluring input
+        $(selector).blur();
 
         //hide cols
         $(colSelector).removeClass("show");

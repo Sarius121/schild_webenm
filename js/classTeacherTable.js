@@ -16,6 +16,10 @@ class ClassTeacherTable extends CustomEditableGrid{
 
         this.addCellValidator("SumFehlstd", positiveNumberValidator);
         this.addCellValidator("SumFehlstdU", positiveNumberValidator);*/
+
+        const that = this;
+        document.getElementById('btn-ct-previous').addEventListener("click", (event) => {that.changeSelectedUserRelative(-1)});
+        document.getElementById('btn-ct-next').addEventListener("click", (event) => {that.changeSelectedUserRelative(1)});
     }
 
     renderGrid(){
@@ -25,9 +29,6 @@ class ClassTeacherTable extends CustomEditableGrid{
     onTableRendered(){
         const that = this;
         $("#classTeacherTable tr").dblclick((event) => {that.onRowDoubleClicked(event)});
-    
-        document.getElementById('btn-ct-previous').addEventListener("click", (event) => {that.changeSelectedUserRelative(-1)});
-        document.getElementById('btn-ct-next').addEventListener("click", (event) => {that.changeSelectedUserRelative(1)});
 
         //dblclick on checkbox should be handled but click not because it shouldn't be editable (disabled -> no dblclick event)
         $('#classTeacherTable .boolean input').attr("onclick", "return false;")
@@ -37,22 +38,26 @@ class ClassTeacherTable extends CustomEditableGrid{
         //get row
         var row = event.currentTarget;
         this.activeRow = parseInt(row.id.split("_")[1]);
+        this.activeRelativeRow = Array.prototype.indexOf.call(row.parentNode.children, row);
     
         //show grade selection modal
         $('#class-teacher-modal').modal();
     
-        this.changeSelectedUser(this.activeRow);
+        this.changeSelectedUser(this.activeRelativeRow);
     }
     
-    changeSelectedUser(rowID){
+    changeSelectedUser(rowIndex){
         $("#btn-ct-previous").prop('disabled', false);
         $("#btn-ct-next").prop('disabled', false);
-        if(rowID == 0){
+        if(rowIndex == 0){
             $("#btn-ct-previous").prop('disabled', true);
         }
-        if(rowID == this.tableLength){
+        if(rowIndex == this.tableLength - 1){
             $("#btn-ct-next").prop('disabled', true);
         }
+
+        var rowFullID = document.getElementById(this.tableID).getElementsByTagName("tbody")[0].children.item(rowIndex).id.split("_");
+        var rowID = rowFullID[rowFullID.length - 1];
     
         var name = $("#" + this.tableID + "_" + rowID + " .editablegrid-Name").html() + " (" + $("#ClassTeacherTable_" + rowID + " .editablegrid-Klasse").html() + ")";
         var asv = $("#" + this.tableID + "_" + rowID + " .editablegrid-ASV").html();
@@ -64,11 +69,12 @@ class ClassTeacherTable extends CustomEditableGrid{
         $("#textarea-aue").val(aue);
         $("#textarea-zb").val(zb);
     
+        this.activeRelativeRow = rowIndex;
         this.activeRow = rowID;
     }
     
     changeSelectedUserRelative(relRowID){
-        this.changeSelectedUser(this.activeRow + relRowID);
+        this.changeSelectedUser(this.activeRelativeRow + relRowID);
     }
     
     renderPhrasesTable(json){
@@ -101,7 +107,8 @@ class PhrasesTable extends CustomEditableGrid{
         document.getElementById('textarea-zb').addEventListener("focus", (event) => {that.filterPhrasesTable('ZB', event.currentTarget)});
     
         document.querySelectorAll("#class-teacher-head textarea").forEach(item => {
-            item.addEventListener("onchange", () => {that.onPhrasesChanged()});
+            item.addEventListener("change", () => {
+                that.onPhrasesChanged()});
           });
     }
     

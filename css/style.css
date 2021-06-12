@@ -279,7 +279,7 @@ svg
 .dataTable table
 { 
     border-collapse: collapse; 
-    border: 1px solid #CCB; 
+    /*border: 1px solid #CCB; */
     width: 100%; 
 }
 
@@ -289,13 +289,15 @@ svg
     cursor: default;
 }
 
-.dataTable table tbody tr:hover
+.dataTable table tbody tr:hover,
+.dataTable table tbody tr:hover .editablegrid-NotenKrz
 { 
     background-color: lightgray;
 }
 
 
-.dataTable table tbody tr.active
+.dataTable table tbody tr.active,
+.dataTable table tbody tr.active .editablegrid-NotenKrz
 { 
     background-color: #17a2b8;
 }
@@ -349,6 +351,36 @@ input.invalid
 .dataTable .editablegrid-NotenKrz input
 {
     text-transform: uppercase;
+}
+
+.editablegrid-NotenKrz
+{
+    background-color: #eee;
+    transition: background-color 0.25s;
+}
+
+.dataTable.stickyHeader tbody::before
+{
+    content: " ";
+    white-space: pre;
+    height: 31px;
+    display: block;
+}
+
+#data-grades,
+#data-class-teacher,
+#phrases,
+#data-exams
+{
+    position: relative;
+}
+
+.dataTable.stickyHeader thead tr
+{
+    background-color: white;
+    top: 0;
+    left: 0;
+    z-index: 10;
 }
 
 /*#################### home #################### */
