@@ -54,14 +54,17 @@ class GradeFile {
         });
         try{
             $this->db = new MDBDatabase();
-            $this->db->connect($this->filename, $password);
+            $result = $this->db->connect($this->filename, $password);
+            if($result == false){
+                $this->error = "Der Server ist vorübergehend nicht erreichbar. Falls es noch nicht gespeicherte Änderungen gab, wurden diese gesichert.";
+                return false;
+            }
+            return true;
         } catch(Exception $e){
-            $this->error = $e->getMessage();
-            print_r($e->getMessage());
+            //$this->error = $e->getMessage();
+            //print_r($e->getMessage());
             return false;
         }
-
-        return true;
         
     }
 
@@ -82,6 +85,10 @@ class GradeFile {
         //put quotation marks around strings
         if(is_string($value)){
             $value = "'" . $value . "'";
+        }
+
+        if($value == null){
+            $value = "NULL";
         }
 
         $sql = 'UPDATE [' . $table . '] SET [' . $col . '] = ' . $value . ' WHERE [' . $priKeyCol . '] = ' . $priKey . ';';
@@ -133,7 +140,6 @@ class GradeFile {
     }
 
     public function checkUser($password){
-        return $password == DEFAULT_ZIP_PASSWORD;
         $data = $this->fetchTableData("Users", [ [ "name" => "US_PasswordHash"]]);
         if(is_array($data)){
             foreach ($data as $user){

@@ -35,7 +35,9 @@ class LoginHandler {
             $success = true;
         } else {
             $success = false;
-            $this->error = "Der Benutzername oder das Passwort ist falsch!";
+            if($this->error == null){
+                $this->error = "Unbekannter Fehler. Versuche, dich erneut anzumelden.";
+            }
         }
         if($this->gradeFile != null){
             //only open grade file when logged in with session -> after login user is redirected
@@ -50,7 +52,7 @@ class LoginHandler {
             return false;
         } elseif ($this->isSessionExpired()){
             $this->checkLogin($_SESSION['username'], $_SESSION['password']); //open EncryptedGradeFile to have the possibility to close it
-            $this->logout($_SESSION['password']); //logout and close encrypted grade file
+            $this->logout(); //logout and close encrypted grade file
             $this->error = "Deine Session ist abgelaufen. Melde dich erneut an.";
             return false;
         }
@@ -59,11 +61,11 @@ class LoginHandler {
             $this->username = $_SESSION['username'];
             $this->extendSession();
             return true;
-        }
-        if($this->differentSessionActive){
-            $this->error = "Du hast dich an einem anderen Gerät angemeldet und wurdest deswegen auf diesem Gerät abgemeldet. Deine Änderungen wurden gesichert!";
         } else {
-            $this->error = "Unbekannter Fehler. Versuche, dich erneut anzumelden.";
+            if($this->error == null){
+                $this->error = "Unbekannter Fehler. Versuche, dich erneut anzumelden.";
+            }
+            $this->destroySession();
         }
         if($this->gradeFile != null){
             $this->gradeFile->close();
@@ -74,6 +76,12 @@ class LoginHandler {
     private function checkLogin($username, $password, $newlogin = false){
         $success = false;
 
+        if(!$this->getBasename($username)){
+            //wrong username
+            $this->error = "Der Benutzername oder das Passwort ist falsch!";
+            return false;
+        }
+
         $dbFilename = $this->getDBFilename($username);
         $this->sourceFile = new SourceFileHandler($this->getSourceFilename($username), $this->getZipFilename($username));
         $this->encryptedGradeFile = new EncryptedZipArchive($this->getZipFilename($username), TMP_GRADE_FILES_DIRECTORY . $dbFilename);
@@ -81,36 +89,67 @@ class LoginHandler {
             //only try password
             if($this->encryptedGradeFile->checkPassword()){ //TODO not neccessary?
                 $this->gradeFile = new GradeFile($dbFilename);
-                $this->gradeFile->openFile();
-                $success = $this->gradeFile->checkUser($password);
+                if($this->gradeFile->openFile()){
+                    $success = $this->gradeFile->checkUser($password);
+                    //TODO shouldn't be false because he was already loggedin -> when it's false, it's an application error -> c&!s?
+                } else {
+                    if($this->gradeFile->getError() != null){
+                        $this->error = $this->gradeFile->getError();
+                    }
+                    //close files and save changes if connection is not possible
+                    $this->encryptedGradeFile->close();
+                    $this->sourceFile->closeFile();
+                }
             }
-            
+            //TODO what if db exists but working zip not or source zip?
         } elseif(($foreignFilename = $this->foreignTmpFileExists($username)) != false){
             $this->differentSessionActive = true;
             if(!$newlogin){
                 //when it's not a new login and a foreign file is opened, the user has to login again to close the foreign session
+                $this->error = "Du hast dich an einem anderen Gerät angemeldet und wurdest deswegen auf diesem Gerät abgemeldet. Deine Änderungen wurden gesichert!";
                 return false;
             }
-            $this->gradeFile = new GradeFile($foreignFilename);
-            if($this->gradeFile->openFile() && $this->gradeFile->checkUser($password)){
-                $this->gradeFile->close();
+            $foreignGradeFile = new GradeFile($foreignFilename);
+            if($foreignGradeFile->openFile() && $foreignGradeFile->checkUser($password)){
+                $foreignGradeFile->close();
 
                 //save changes from foreign session and create new
-                $foreignEncryptedGradeFile = new EncryptedZipArchive($this->getZipFilename($username), TMP_GRADE_FILES_DIRECTORY . $foreignFilename);
-                $success = $foreignEncryptedGradeFile->close();
-                if($success){
-                    $foreignSourceFile = new SourceFileHandler($this->getSourceFilename($username), $this->getZipFilename($username));
-                    $foreignSourceFile->saveFile(); //close is not neccessary
-                    if($this->encryptedGradeFile->open()){
-                        $this->gradeFile = new GradeFile($dbFilename);
-                        $this->gradeFile->openFile();
-                        $success = $this->gradeFile->checkUser($password);
+                $foreignZipFile = $this->foreignZipFileExists($username);
+                $foreignEncryptedGradeFile = new EncryptedZipArchive($foreignZipFile, TMP_GRADE_FILES_DIRECTORY . $foreignFilename);
+                $foreignSourceFile = new SourceFileHandler($this->getSourceFilename($username), $foreignZipFile);
+                if($foreignEncryptedGradeFile->close() && $foreignSourceFile->closeFile()){
+                    if($this->sourceFile->openFile()){
+                        if($this->encryptedGradeFile->open()){
+                            $this->gradeFile = new GradeFile($dbFilename);
+                            if($this->gradeFile->openFile()){
+                                $success = $this->gradeFile->checkUser($password);
+                                //TODO shouldn't be false because checkUser on foreign file worked -> when it's false, it's an application error -> c&!s?
+                            } else {
+                                if($this->gradeFile->getError() != null){
+                                    $this->error = $this->gradeFile->getError();
+                                }
+                                //close files and don't save changes (there are no changes) if connection is not possible
+                                $this->encryptedGradeFile->close(false);
+                                $this->sourceFile->closeFile(false);
+                            }
+                        } else {
+                            $this->sourceFile->closeFile(false);
+                        }
                     } else {
-                        $success = false;
+                        //nothing opened yet
                     }
+                } else {
+                    //nothing opened yet
                 }
             } else {
-                $this->gradeFile->close();
+                if($foreignGradeFile->getError() != null){
+                    $this->error = $foreignGradeFile->getError();
+                } else {
+                    $this->error = "Der Benutzername oder das Passwort ist falsch!";
+                }
+                //connection not possible or wrong username or password -> not your file, don't close it
+                $foreignGradeFile->close();
+                //doesn't matter -> nothing opened yet
                 return false;
             }
             
@@ -120,15 +159,33 @@ class LoginHandler {
                     //try password and extract grade file
                     if($this->encryptedGradeFile->open()){
                         $this->gradeFile = new GradeFile($dbFilename);
-                        $this->gradeFile->openFile();
-                        $success = $this->gradeFile->checkUser($password);
+                        if($this->gradeFile->openFile()){
+                            if($this->gradeFile->checkUser($password)){
+                                $success = true;
+                            } else {
+                                //wrong password -> close everything
+                                $this->gradeFile->close();
+                                $this->encryptedGradeFile->close(false);
+                                $this->sourceFile->closeFile(false);
+                                $this->error = "Der Benutzername oder das Passwort ist falsch!";
+                            }
+                        } else {
+                            if($this->gradeFile->getError() != null){
+                                $this->error = $this->gradeFile->getError();
+                            }
+                            //close files and don't save changes (there are no changes) if connection is not possible
+                            $this->encryptedGradeFile->close(false);
+                            $this->sourceFile->closeFile(false);
+                        }
                     } else {
                         $this->sourceFile->closeFile();
                     }
                 }
             } else {
                 //different session was opened and closed -> user should be logged out
+                //nothing opened yet
                 $this->differentSessionActive = true;
+                $this->error = "Du hast dich an einem anderen Gerät angemeldet und wurdest deswegen auf diesem Gerät abgemeldet. Deine Änderungen wurden gesichert!";
                 return false;
             }
         }
@@ -144,7 +201,10 @@ class LoginHandler {
 
     public function closeFile($saveChanges = true){
         if($this->gradeFile != null) { $this->gradeFile->close(); }
-        return $this->encryptedGradeFile->close($saveChanges) && $this->sourceFile->closeFile();
+        $success = true;
+        if($this->encryptedGradeFile != null) { $success = $this->encryptedGradeFile->close($saveChanges); }
+        if($this->sourceFile != null) { $success = $success && $this->sourceFile->closeFile(); }
+        return $success;
     }
 
     public function reopenFile($saveChanges){
@@ -158,8 +218,8 @@ class LoginHandler {
         return false;
     }
 
-    public function logout(){
-        if(!$this->isLoggedIn()){
+    public function logout($force = false){
+        if(!$force && !$this->isLoggedIn()){
             return false;
         }
         if($this->closeFile()){
@@ -219,12 +279,24 @@ class LoginHandler {
         return false;
     }
 
+    private function foreignZipFileExists($username){
+        $found = glob(GRADE_FILES_DIRECTORY . $this->getBasename($username) . "*");
+        if($found == false || count($found) <= 0){
+            return false;
+        }
+        foreach ($found as $file) {
+            //TODO found more than one
+            return $file;
+        }
+        return false;
+    }
+
     public function getSourceFilename($username){
         return SOURCE_GRADE_FILES_DIRECTORY . $this->getBasename($username) . ".enz";
     }
 
     public function getZipFilename($username){
-        return GRADE_FILES_DIRECTORY . $this->getBasename($username) . ".enz";
+        return GRADE_FILES_DIRECTORY . $this->getBasename($username) . ".enz_" . $this->getSessionFileID();
     }
 
     public function getDBFilename($username){

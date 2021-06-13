@@ -2,6 +2,8 @@
 
 namespace MDBConnector;
 
+use Exception;
+
 require_once("constants.php");
 
 /**
@@ -76,9 +78,13 @@ class MDBDatabase{
             )
         );
         $context  = stream_context_create($options);
-        $result = file_get_contents($url, false, $context);
 
-        return $result;
+        try{
+            $result = file_get_contents($url, false, $context);
+            return $result;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     public function close(){

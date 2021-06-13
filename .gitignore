@@ -5,3 +5,7 @@ grade-files/*
 !grade-files/.htaccess
 !grade-files/tmp/
 grade-files/tmp/*
+!grade-files/source/
+grade-files/source/*
+!grade-files/working/
+grade-files/working/*

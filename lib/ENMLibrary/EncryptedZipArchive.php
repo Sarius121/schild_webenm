@@ -15,7 +15,7 @@ class EncryptedZipArchive{
 
     public function __construct($zipfilename, $dbfilename){
         $this->zipfilename = $zipfilename;
-        $this->internalFilename = basename($zipfilename, "enz") . "enm";
+        $this->internalFilename = pathinfo($zipfilename, PATHINFO_FILENAME) . ".enm";
         $this->tmpFilename = $dbfilename;
     }
 
@@ -75,6 +75,9 @@ class EncryptedZipArchive{
      * pack temporarily stored grade file as zip archive
      */
     public function close($saveChanges = true, $password = DEFAULT_ZIP_PASSWORD){
+        if(!file_exists($this->tmpFilename)){
+            return false;
+        }
         $success = true;
         if($saveChanges){
             $success = $this->saveChanges($password);

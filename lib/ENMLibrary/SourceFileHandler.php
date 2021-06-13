@@ -25,8 +25,8 @@ class SourceFileHandler {
         return copy($this->targetFile, $this->sourceFile);
     }
 
-    public function closeFile(){
-        if($this->saveFile()){
+    public function closeFile($saveChanges = true){
+        if(!$saveChanges || $this->saveFile()){
             return unlink($this->targetFile);
         } else {
             return false;

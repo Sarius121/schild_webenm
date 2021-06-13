@@ -114,6 +114,12 @@ class ClassTeacherData extends GradeFileData{
         } else {
             //no changed column in PSFachBem -> must changed in Kopfnoten be set?
             $this->setDBTable("SchuelerLD_PSFachBem");
+
+            //set value to null if it's empty because these cols have the AllowZeroLength property set to false
+            //TODO should probably be included in mdb-connector-server?
+            if(is_string($value) && strlen($value) == 0){
+                $value = null;
+            }
         }
         if($col == "AuE"){ $col = "LELS"; }
 

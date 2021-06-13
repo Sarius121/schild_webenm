@@ -24,7 +24,7 @@ class GradeTable extends CustomEditableGrid{
         
         var positiveNumberValidator = new CellValidator({ 
 			isValid: function(value) {
-                return (value == "" || parseInt(value) >= 0);
+                return (parseInt(value) >= 0);
              }
 		});
 
