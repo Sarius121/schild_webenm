@@ -35,8 +35,8 @@ class ClassTeacherData extends GradeFileData{
         //get students of class (class, name, FS, uFS, S_GUID)
         $this->fetchKopfnoten();
 
-        //get Abschnitt_IDs of students by S_GUID
-        $this->fetchAbschnittIDs();
+        //get Abschnitt_IDs of students by S_GUID -> TODO not necessary because Abschnitt_IDs are in Kopfnoten?
+        //$this->fetchAbschnittIDs();
 
         //get ASV and ZeugnisBem by Abschnitt_ID
         $this->fetchPSFachBem();
@@ -112,6 +112,7 @@ class ClassTeacherData extends GradeFileData{
             $this->setDBTable("Kopfnoten");
             parent::insertData($priKeyCol, $priKey, "Modifiziert", true);
         } else {
+            //no changed column in PSFachBem -> must changed in Kopfnoten be set?
             $this->setDBTable("SchuelerLD_PSFachBem");
         }
         if($col == "AuE"){ $col = "LELS"; }

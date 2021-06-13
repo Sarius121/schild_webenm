@@ -15,7 +15,7 @@ class GradeFile {
                                     "JahrgangIntern" => "JG", "AOSF" => "AOSF", "ZieldifferentesLernen" => "ZdL", "Sortierung" => "Sort."];*/
     /*public const COLUMNS = ["Klasse" => "Klasse", "Name" => "Name", "FachBez" => "Fach", "KursartKrz" => "Art", "KurzBez" => "Kurs", "NotenKrz" => "Note", "Warnung" => "Mahnung"];*/
 
-    public const COLUMNS = [["name" => "Klasse", "label" => "Klasse", "datatype" => "string", "editable" => false],
+    /*public const COLUMNS = [["name" => "Klasse", "label" => "Klasse", "datatype" => "string", "editable" => false],
                             ["name" => "Name", "label" => "Name", "datatype" => "string", "editable" => false],
                             ["name" => "FachBez", "label" => "Fach", "datatype" => "string", "editable" => false],
                             ["name" => "KursartKrz", "label" => "Art", "datatype" => "string", "editable" => false],
@@ -27,7 +27,7 @@ class GradeFile {
     public const GRADE_COLUMNS = [["name" => "Krz", "label" => "Krz.", "size" => "-1"],
                             ["name" => "Bezeichnung", "label" => "Bezeichnung", "size" => "-4"],
                             ["name" => "Zeugnisnotenbez", "label" => "Zeugnisbez.", "size" => ""],
-                            ["name" => "Art", "label" => "Art", "size" => " hidden"]];
+                            ["name" => "Art", "label" => "Art", "size" => " hidden"]];*/
 
     private $filename;
     private $db;
@@ -42,11 +42,8 @@ class GradeFile {
             $this->error = "File not found";
             return false;
         }
-        /*$options = [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-            PDO::ATTR_EMULATE_PREPARES => false
-        ];*/
+
+        //TODO necessary?
         set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext = null) {
             // error was suppressed with the @-operator
             if (0 === error_reporting()) {
@@ -56,8 +53,6 @@ class GradeFile {
             throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
         });
         try{
-            //$this->db = new PDO("odbc:DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};charset=UTF-8;DBQ=" . $this->filename . ";PWD=" . $password . ";");
-            //$this->db = odbc_connect("DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};charset=UTF-8; DBQ=" . $this->filename . ";", "", $password);
             $this->db = new MDBDatabase();
             $this->db->connect($this->filename, $password);
         } catch(Exception $e){
@@ -67,7 +62,6 @@ class GradeFile {
         }
 
         return true;
-        //print_r($this->db->errorInfo());
         
     }
 
@@ -85,7 +79,6 @@ class GradeFile {
 
     public function insertData($table, $priKeyCol, $priKey, $col, $value)
     {
-        $value = utf8_decode($value);
         //put quotation marks around strings
         if(is_string($value)){
             $value = "'" . $value . "'";
@@ -96,13 +89,11 @@ class GradeFile {
         try{
             $result = $this->db->execute($sql);
             print_r($result);
-            //$result = $this->db->query($sql)->fetchAll();
-            //$result = odbc_exec($this->db, $sql);
+            return $result;
         } catch(Exception $e){
             $this->error = $e->getMessage();
             return false;
         }
-        //TODO error handling
     }
 
     public function fetchTableData($tablename, $columns, $filter = null, $dict = false){
@@ -127,65 +118,14 @@ class GradeFile {
         }
         $sql .= ";";
 
-        //$result = odbc_exec($this->db, $sql);
-        //$result = $this->db->query($sql)->fetchAll();
         $result = $this->db->query($sql, $dict);
-        //while($dbRow = odbc_fetch_array($result)){
-        /*foreach ($result as $dbRow) {
-            $row = [];
-            
-            for($i = $startCol; $i < count($columns); $i++){
-                //$row[array_values(GradeFile::COLUMNS)[$i]] = $dbRow[array_keys(GradeFile::COLUMNS)[$i]];
-                //print_r($dbRow);
-                $row[$columns[$i]["name"]] = utf8_encode($dbRow[$columns[$i]["name"]]);
-            }
-
-            if($dict){
-                $table[utf8_encode($dbRow[$columns[0]["name"]])] = $row;
-            } else {
-                $table[] = $row;
-            }
-            
-        }*/
         return $result;
     }
-
-    /**
-     * helper function for debugging, will be deleted at the end
-     * 
-     */
-    /*public function getTables(){
-        $result = odbc_tables($this->db);
-
-        echo '<div id="top">..</div><table border="1" cellpadding="5"><tr>';
-
-        $tblRow = 1;
-        while (odbc_fetch_row($result)){
-            if(odbc_result($result,"TABLE_TYPE")=="TABLE"){
-                $tableName = odbc_result($result,"TABLE_NAME");
-                echo '<tr><td>' . $tblRow . '</td><td><a href="#' . $tableName . '">' . $tableName . '</a></td></tr>';
-                $tblRow++;
-            }  
-        }
-        echo '</table><hr>';
-    }
-
-    /**
-     * helper function for debugging, will be deleted at the end
-     * @deprecated
-     */
-    /*public function getRawTableData($tablename){
-        $sql = "select * from " . $tablename . ";";
-        $result = $this->db->query($sql);
-        return $result;
-    }*/
 
     public function close(){
-        //$this->db = null;
         if($this->db != null){
             $this->db->close();
         }
-        //odbc_close($this->db);
     }
 
     public function getError(){
@@ -193,6 +133,7 @@ class GradeFile {
     }
 
     public function checkUser($password){
+        return $password == DEFAULT_ZIP_PASSWORD;
         $data = $this->fetchTableData("Users", [ [ "name" => "US_PasswordHash"]]);
         if(is_array($data)){
             foreach ($data as $user){

@@ -37,12 +37,12 @@ class StudentGradesData extends GradeFileData{
     public function insertData($priKeyCol, $priKey, $col, $value)
     {
         $response = parent::insertData($priKeyCol, $priKey, $col, $value); //TODO is value valid
-        if(!$response){return false;};
+        if($response == false){return false;};
         parent::insertData($priKeyCol, $priKey, "Modifiziert", true);
         if($col == "NotenKrz"){
             $points = $this->getPointsOfGrade($value);
             if($points != false){
-                parent::insertData($priKeyCol, $priKey, "Punkte", $this->getPointsOfGrade($value));
+                parent::insertData($priKeyCol, $priKey, "Punkte", $points);
             }
         }
     }
