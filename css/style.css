@@ -285,6 +285,7 @@ svg
 
 .dataTable table tbody tr
 { 
+    height: 2.5rem;
     transition: background-color 0.25s;
     cursor: default;
 }

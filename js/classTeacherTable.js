@@ -140,7 +140,7 @@ class PhrasesTable extends CustomEditableGrid{
     onRowDoubleClicked(event){
         var multipleVorname = !document.getElementById("multipleFirstnames").checked;
         
-        var text = $(event.currentTarget).find(".editablegrid-Floskeltext").first().html();
+        var text = $(event.currentTarget).find(".editablegrid-Floskeltext").first().text();
     
         var firstname = $("#ClassTeacherTable_" + this.classTeacherTable.activeRow + " .editablegrid-Name").html().split(", ")[1];
         
@@ -153,6 +153,13 @@ class PhrasesTable extends CustomEditableGrid{
             text = text.replaceAll('$Vorname$', 'Er/Sie'); //TODO Geschlecht
         }
         text = text.replaceAll('$Anrede$', 'Ihre/Seine'); //TODO Geschlecht
+
+        //replace variables with options: e.g. &Klassensprecher%Klassensprecherin& -> Klassensprecher/Klassensprecherin
+        var foundMatch = text.match(/&(\S*)%(\S*)&/);
+        while(foundMatch != null){
+            text = text.replace(foundMatch[0], foundMatch[1] + "/" + foundMatch[2]); //TODO Geschlecht -> first match is male, second female
+            foundMatch = text.match(/&(\S*)%(\S*)&/);
+        }
     
         if(currentText.length > 0){
             currentText += " ";
