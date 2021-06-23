@@ -291,14 +291,16 @@ svg
 }
 
 .dataTable table tbody tr:hover,
-.dataTable table tbody tr:hover .editablegrid-NotenKrz
+.dataTable table tbody tr:hover .editablegrid-NotenKrz,
+.dataTable table tbody tr:hover .editablegrid-uFehlstd
 { 
     background-color: lightgray;
 }
 
 
 .dataTable table tbody tr.active,
-.dataTable table tbody tr.active .editablegrid-NotenKrz
+.dataTable table tbody tr.active .editablegrid-NotenKrz,
+.dataTable table tbody tr.active .editablegrid-uFehlstd
 { 
     background-color: #17a2b8;
 }
@@ -356,7 +358,13 @@ input.invalid
 
 .editablegrid-NotenKrz
 {
-    background-color: #eee;
+    background-color: #e6d281;
+    transition: background-color 0.25s;
+}
+
+.editablegrid-uFehlstd
+{
+    background-color: #e6908a;
     transition: background-color 0.25s;
 }
 
