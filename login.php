@@ -7,7 +7,7 @@ if(!isset($loginHandler)){
 
 <div id="login-box" class="absolute-container">
     <h2>Anmelden</h2>
-    <p>Melden Sie sich mit Ihrem webENM-Account an.</p>
+    <p><?php echo getConstant("LOGIN_PROMPT", "Melden Sie sich mit Ihrem webENM-Account an."); ?></p>
     <?php if(strlen($loginHandler->getError()) > 0){ ?>
         <div class="alert alert-danger" role="alert">
             <?php echo $loginHandler->getError(); ?>

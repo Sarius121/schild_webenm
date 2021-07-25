@@ -4,6 +4,9 @@ window.addEventListener("load", function(event) {
 });
 
 class GradeTable extends CustomEditableGrid{
+
+    loadingRemoved = false;
+
     constructor(json, gradesJSON){
         super("GradeTable", json);
 
@@ -36,6 +39,11 @@ class GradeTable extends CustomEditableGrid{
         //events
         const that = this;
         $("#gradeTable tbody .editablegrid-NotenKrz").dblclick((event) => {that.onGradeCellDoubleClicked(event)});
+
+        if(!this.loadingRemoved){
+            document.getElementById("data-container-loading").remove();
+            this.loadingRemoved = true;
+        }
     }
     
     renderGrid(){

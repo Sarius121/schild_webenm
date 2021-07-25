@@ -1,6 +1,15 @@
 <?php
 
 include("imports.php");
+require_once("config/ui-conf.php");
+
+function getConstant(string $name, $defaultValue){
+    if(defined($name)){
+        return constant($name);
+    } else {
+        return $defaultValue;
+    }
+}
 
 use ENMLibrary\LoginHandler;
 
