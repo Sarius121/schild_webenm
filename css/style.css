@@ -406,28 +406,12 @@ input.invalid
     transition: background-color 0.25s;
 }
 
-.dataTable.stickyHeader tbody::before
-{
-    content: " ";
-    white-space: pre;
-    height: 31px;
-    display: block;
-}
-
 #data-grades,
 #data-class-teacher,
 #phrases,
 #data-exams
 {
     position: relative;
-}
-
-.dataTable.stickyHeader thead tr
-{
-    background-color: white;
-    top: 0;
-    left: 0;
-    z-index: 10;
 }
 
 /*#################### home #################### */
