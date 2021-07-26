@@ -68,6 +68,7 @@ if($loginHandler->isLoggedIn()){
         <script src="js/custom-editablegrid.js"></script>
         <script src="js/gradeTable.js"></script>
         <script src="js/grades-list.js"></script>
+        <script src="js/textarea-caret-position.js"></script>
         <script src="js/classTeacherTable.js"></script>
         <script src="js/examsTable.js"></script>
 

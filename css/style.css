@@ -621,6 +621,11 @@ div.back-button svg
     width: 70%;
 }
 
+#class-teacher-head
+{
+    position: relative;
+}
+
 #class-teacher-head .row
 {
     padding-bottom: 0.5em;
@@ -663,6 +668,89 @@ div.back-button svg
 #phrasesTable
 {
     max-height: 300px;
+}
+
+/*#################### auto-complete-box #################### */
+
+.auto-complete-box
+{
+    position: absolute;
+    max-width: 300px;
+    max-height: 100px;
+    background: white;
+    border: 1px solid lightgray;
+    z-index: 10;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-top: 1.5em;
+}
+
+#class-teacher-head .auto-complete-box .row
+{
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+#class-teacher-head .auto-complete-box .row:last-child
+{
+    border: none;
+}
+
+.auto-complete-box .row:hover .col
+{
+    background-color: #aaaaaaa5;
+}
+
+.auto-complete-box .row:hover .col-auto
+{
+    background-color: #aaa;
+}
+
+.auto-complete-box .row.selected .col
+{
+    background-color: #007bffa5;
+}
+
+.auto-complete-box .row.selected .col-auto
+{
+    background-color: #007bff;
+}
+
+.auto-complete-box .col-auto,
+.auto-complete-box .col
+{
+    padding: 1px 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color 0.25s;
+    cursor: pointer;
+}
+
+.auto-complete-box .col-auto
+{
+    background-color: lightgray;
+}
+
+/* width */
+.auto-complete-box::-webkit-scrollbar {
+    width: 6px;
+    /*margin: 0 0.25em;*/
+}
+  
+/* Track */
+.auto-complete-box::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+.auto-complete-box::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+.auto-complete-box::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 /*#################### progress-message-box #################### */

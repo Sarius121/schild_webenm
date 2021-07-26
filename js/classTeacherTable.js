@@ -90,6 +90,8 @@ class ClassTeacherTable extends CustomEditableGrid{
  */
 class PhrasesTable extends CustomEditableGrid{
 
+    autoCompleteBox = new AutoCompleteBox("class-teacher-head", "");
+
     constructor(json, classTeacherTable){
         super("PhrasesTable", json);
         this.classTeacherTable = classTeacherTable;
@@ -109,6 +111,75 @@ class PhrasesTable extends CustomEditableGrid{
         document.querySelectorAll("#class-teacher-head textarea").forEach(item => {
             item.addEventListener("change", () => {
                 that.onPhrasesChanged()});
+            item.addEventListener("keyup", (event) => {
+                if(this.autoCompleteBox.active == false){
+                    if(event.key == "#"){
+                        console.log("start autocomplete");
+                        var pos = getCaretCoordinates(event.currentTarget, event.currentTarget.selectionEnd);
+                        var parent = document.getElementById("class-teacher-head");
+                        var boundariesTop = event.currentTarget.getBoundingClientRect().top - parent.getBoundingClientRect().top;
+                        var boundariesLeft = event.currentTarget.getBoundingClientRect().left - parent.getBoundingClientRect().left;
+                        this.autoCompleteBox.startAutoComplete(boundariesLeft + pos["left"], boundariesTop + pos["top"] - event.currentTarget.scrollTop);
+                        console.log(pos);
+                        var autoCompleteStart = event.currentTarget.selectionEnd - 1;
+                        var textarea = event.currentTarget;
+                        this.autoCompleteBox.committedListener = function(phrase){
+                            if(phrase != null){
+                                var autoCompleteEnd = textarea.selectionEnd;
+                                var content = textarea.value;
+                                textarea.value = content.slice(0, autoCompleteStart) + phrase + content.slice(autoCompleteEnd);
+                            }
+                        };
+                    }
+                } else {
+                    if(/[a-zA-Z0-9]/.test(String.fromCharCode(event.keyCode))){
+                        var pos = getCaretCoordinates(event.currentTarget, event.currentTarget.selectionEnd);
+                        var parent = document.getElementById("class-teacher-head");
+                        var boundariesTop = event.currentTarget.getBoundingClientRect().top - parent.getBoundingClientRect().top;
+                        var boundariesLeft = event.currentTarget.getBoundingClientRect().left - parent.getBoundingClientRect().left;
+                        this.autoCompleteBox.pushChange(event.key, boundariesLeft + pos["left"], boundariesTop + pos["top"] - event.currentTarget.scrollTop);
+                    } else if(event.key != "Shift" && event.key != "ArrowUp" && event.key != "ArrowDown"){
+                        console.log("cancel autocomplete");
+                        this.autoCompleteBox.cancel();
+                    }
+                }
+            });
+            item.addEventListener("keydown", (event) => {
+                if(this.autoCompleteBox.active){
+                    if(event.key == "ArrowUp"){
+                        this.autoCompleteBox.selectItem(this.autoCompleteBox.selectedItem - 1);
+                        event.preventDefault();
+                    } else if(event.key == "ArrowDown"){
+                        this.autoCompleteBox.selectItem(this.autoCompleteBox.selectedItem + 1);
+                        event.preventDefault();
+                    } else if(event.key == "Enter"){
+                        this.autoCompleteBox.commitAutoComplete();
+                        event.preventDefault();
+                    }
+                }
+            });
+            item.addEventListener("mousedown", (event) => {
+                if(this.autoCompleteBox.active){
+                    console.log("cancel autocomplete");
+                    this.autoCompleteBox.cancel();
+                }
+            });
+            item.addEventListener("scroll", (event) => {
+                if(this.autoCompleteBox.active){
+                    var pos = getCaretCoordinates(event.currentTarget, event.currentTarget.selectionEnd);
+                    var parent = document.getElementById("class-teacher-head");
+                    var boundariesTop = event.currentTarget.getBoundingClientRect().top - parent.getBoundingClientRect().top;
+                    var boundariesLeft = event.currentTarget.getBoundingClientRect().left - parent.getBoundingClientRect().left;
+                    var textareaHeight = event.currentTarget.offsetHeight;
+                    if(pos["top"] > textareaHeight || (pos["top"] - event.currentTarget.scrollTop) < 0){
+                        //cursor is not visible at the moment -> cancel
+                        this.autoCompleteBox.cancel();
+                    } else {
+                        this.autoCompleteBox.pushChange("", boundariesLeft + pos["left"], boundariesTop + pos["top"] - event.currentTarget.scrollTop);
+                    }
+                }
+            });
+
           });
     }
     
@@ -128,11 +199,9 @@ class PhrasesTable extends CustomEditableGrid{
         rows.each(function() {
             var group = $(this).find('.editablegrid-Floskelgruppe').html();
             if(group == filterGroup){
-                $(this).css("visibility", "visible");
-                $(this).css("display", "table-row");
+                $(this).toggleClass("hidden", false);
             } else {
-                $(this).css("visibility", "hidden");
-                $(this).css("display", "none");
+                $(this).toggleClass("hidden", true);
             }
         });
     }
@@ -193,5 +262,115 @@ class PhrasesTable extends CustomEditableGrid{
         this.classTeacherTable.changeCheckboxCell(activeCTRow, "editablegrid-hasASV", hasASV);
         this.classTeacherTable.changeCheckboxCell(activeCTRow, "editablegrid-hasAuE", hasAUE);
         this.classTeacherTable.changeCheckboxCell(activeCTRow, "editablegrid-hasZeugnisBem", hasZB);
+    }
+}
+
+class AutoCompleteBox {
+
+    active = false;
+    selectedItem = 0;
+    committedListener = function(phrase){};
+
+    constructor(parentId, columnSelector){
+        this.columnSelector = columnSelector;
+        this.parentId = parentId;
+    }
+
+    startAutoComplete(posX, posY){
+        this.autoCompleteBox = document.createElement("div");
+        this.autoCompleteBox.className = "container auto-complete-box";
+
+        var innerHTML = "";
+        var itemCount = 0;
+
+        $("#phrasesTable tbody tr").each(function(){
+            if(!$(this).hasClass("hidden")){
+                var code = $(this).find(".editablegrid-Kuerzel").first().text();
+                var phrase = $(this).find(".editablegrid-Floskeltext").first().text();
+                innerHTML += "<div class='row'><div class='col-auto'>" + code + "</div><div class='col'>" + phrase + "</div></div>";
+                itemCount++;
+            }
+        });
+        this.itemCount = itemCount;
+        this.autoCompleteBox.innerHTML = innerHTML;
+        this.autoCompleteBox.style.top = posY;
+        this.autoCompleteBox.style.left = posX;
+        const that = this;
+        this.autoCompleteBox.addEventListener("click", (event) => {
+            var target = $(event.target);
+            var currentTarget = null;
+            if(target.hasClass("row")){
+                currentTarget = target;
+            } else if(target.hasClass("col") || target.hasClass("col-auto")) {
+                currentTarget = target.parent();
+            }
+            if(currentTarget != null){
+                var index = currentTarget.parent().children().index(currentTarget);
+                that.selectItem(index);
+                that.commitAutoComplete();
+            }
+        });
+        document.getElementById(this.parentId).appendChild(this.autoCompleteBox);
+
+        this.content = "#";
+        this.active = true;
+        this.selectItem(0);
+    }
+
+    selectItem(index){
+        if(0 <= index && index < this.itemCount){
+            $(this.autoCompleteBox).children().toggleClass("selected", false);
+            this.autoCompleteBox.children.item(index).classList.toggle("selected", true);
+            this.selectedItem = index;
+
+            this.autoCompleteBox.children.item(index).scrollIntoView(false);
+        }
+    }
+
+    pushChange(character, posX, posY){
+        this.autoCompleteBox.style.top = posY;
+        this.autoCompleteBox.style.left = posX;
+
+        if(character.length > 0){
+            this.content += character.toUpperCase();
+
+            var that = this;
+            $(this.autoCompleteBox).children().each(function(){
+                if(!$(this).find(".col-auto").first().text().startsWith(that.content)){
+                    that.itemCount--;
+                    if($(this).hasClass("selected")){
+                        this.remove();
+                        if(that.selectedItem == 0){
+                            that.selectItem(0);
+                        } else {
+                            that.selectItem(that.selectedItem - 1);
+                        }
+                    } else {
+                        this.remove();
+                    }
+                    if(that.itemCount == 0){
+                        that.cancel();
+                    }
+                }
+            });
+        }
+    }
+
+    commitAutoComplete(){
+        var phrase = null;
+        if(this.itemCount > 0){
+            phrase = $(this.autoCompleteBox.children.item(this.selectedItem)).find(".col").text();
+        }
+        this.remove();
+        this.committedListener(phrase);
+    }
+
+    cancel(){
+        this.remove();
+    }
+
+    remove(){
+        this.autoCompleteBox.remove();
+        this.active = false;
     }
 }
