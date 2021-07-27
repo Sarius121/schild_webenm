@@ -41,7 +41,7 @@ class ClassTeacherTable extends CustomEditableGrid{
         this.activeRelativeRow = Array.prototype.indexOf.call(row.parentNode.children, row);
     
         //show grade selection modal
-        $('#class-teacher-modal').modal();
+        $('#class-teacher-modal').modal('show');
     
         this.changeSelectedUser(this.activeRelativeRow);
     }
@@ -91,10 +91,39 @@ class ClassTeacherTable extends CustomEditableGrid{
 class PhrasesTable extends CustomEditableGrid{
 
     autoCompleteBox = new AutoCompleteBox("class-teacher-head", "");
+    phraseGroups = [];
+    currentFilterGroups = [];
 
     constructor(json, classTeacherTable){
         super("PhrasesTable", json);
         this.classTeacherTable = classTeacherTable;
+
+        json.data.forEach((item) => {
+            var group = item.values.Floskelgruppe;
+            if(!this.phraseGroups.includes(group)){
+                this.phraseGroups.push(group);
+                var phraseGroupFilter = document.createElement("li");
+                var html = "";
+                html = '<label class="form-check-label dropdown-item" for="phrasesFilterCheck' + group + '"><input class="form-check-input" type="checkbox" id="phrasesFilterCheck' + group + '" checked><span>';
+                html += item.values.Floskelgruppe;
+                html += '</span></label>';
+                phraseGroupFilter.innerHTML = html;
+                document.getElementById("phraseFilterList").appendChild(phraseGroupFilter);
+                const that = this;
+                $(phraseGroupFilter).find("input").change(function(){
+                    var group = $(this).attr("id").replace("phrasesFilterCheck", "");
+                    if(this.checked){
+                        that.currentFilterGroups.push(group);
+                        that.filterPhrasesTable(that.currentFilterGroups);
+                    } else {
+                        var index = that.currentFilterGroups.indexOf(group);
+                        that.currentFilterGroups.splice(index, 1);
+                        that.filterPhrasesTable(that.currentFilterGroups);
+                    }
+                });
+            }
+        });
+        this.currentFilterGroups = this.phraseGroups;
     }
 
     onTableRendered(){
@@ -104,9 +133,9 @@ class PhrasesTable extends CustomEditableGrid{
         const that = this;
         $("#phrasesTable tbody tr").dblclick((event) => {that.onRowDoubleClicked(event)});
 
-        document.getElementById("textarea-asv").addEventListener("focus", (event) => {that.filterPhrasesTable('ASV', event.currentTarget)});
-        document.getElementById('textarea-aue').addEventListener("focus", (event) => {that.filterPhrasesTable('AUE', event.currentTarget)});
-        document.getElementById('textarea-zb').addEventListener("focus", (event) => {that.filterPhrasesTable('ZB', event.currentTarget)});
+        document.getElementById("textarea-asv").addEventListener("focus", (event) => {that.filterPhrasesTable(['ASV'], event.currentTarget)});
+        document.getElementById('textarea-aue').addEventListener("focus", (event) => {that.filterPhrasesTable(['AUE'], event.currentTarget)});
+        document.getElementById('textarea-zb').addEventListener("focus", (event) => {that.filterPhrasesTable(['ZB'], event.currentTarget)});
     
         document.querySelectorAll("#class-teacher-head textarea").forEach(item => {
             item.addEventListener("change", () => {
@@ -187,7 +216,16 @@ class PhrasesTable extends CustomEditableGrid{
         super.renderGrid("phrasesTable", "phrasesGrid");
     }
     
-    filterPhrasesTable(filterGroup, origin = null){
+    filterPhrasesTable(filterGroups, origin = null){
+        $("#phraseFilterList input").each(function() {
+            var group = $(this).attr("id").replace("phrasesFilterCheck", "");
+            if(filterGroups.includes(group)){
+                $(this).prop("checked", true);
+            } else {
+                $(this).prop("checked", false);
+            }
+        });
+
         var table = document.getElementById("phrasesTable");
         var rows = $("#phrasesTable tbody tr");
     
@@ -198,12 +236,13 @@ class PhrasesTable extends CustomEditableGrid{
     
         rows.each(function() {
             var group = $(this).find('.editablegrid-Floskelgruppe').html();
-            if(group == filterGroup){
+            if(filterGroups.includes(group)){
                 $(this).toggleClass("hidden", false);
             } else {
                 $(this).toggleClass("hidden", true);
             }
         });
+        this.currentFilterGroups = filterGroups;
     }
     
     onRowDoubleClicked(event){

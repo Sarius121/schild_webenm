@@ -6,7 +6,7 @@ class Modal{
 
     private const HTML_START = '<div id="';
     private const HTML_AFTER_ID = '" class="modal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">';
-    private const HTML_AFTER_TITLE = '</h5><button type="button" class="close" data-dismiss="modal" aria-label="Schließen"><span aria-hidden="true">&times;</span></button></div><div class="modal-body">';
+    private const HTML_AFTER_TITLE = '</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body">';
     private const HTML_AFTER_BODY = '</div><div class="modal-footer">';
     private const HTML_END = '</div></div></div></div>';
 
@@ -65,7 +65,7 @@ class Modal{
                 $html .= ' onclick="' . $button["onclick"] . '"';
             }
             if($button["closeOnClick"] != null){
-                $html .= ' data-dismiss="modal"';
+                $html .= ' data-bs-dismiss="modal"';
             }
             $html .= '>' . $button["name"] . '</button>';
         }

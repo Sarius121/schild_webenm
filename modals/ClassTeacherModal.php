@@ -27,10 +27,17 @@
             <textarea id="textarea-zb" name="ZB" rows="8"></textarea>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm">
+    <div class="row separated">
+        <div class="col-sm-auto">
             <input id="multipleFirstnames" type="checkbox" checked>
             <label class="no-margin" for="multipleFirstnames">Vorname nicht mehrfach</label>
+        </div>
+        <div class="col-sm">
+            <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-tooltip="Floskelgruppen">
+                <svg class="bi"><use xlink:href="img/ui-icons.svg#funnel-fill"/></svg>
+            </button>
+            <ul id="phraseFilterList" class="dropdown-menu">
+            </ul>
         </div>
     </div>
 </div>

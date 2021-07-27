@@ -356,6 +356,7 @@ svg
     position: sticky;
     top: 0;
     background-color: white;
+    z-index: 1;
 }
 
 .dataTable table th:hover
@@ -631,11 +632,7 @@ div.back-button svg
     padding-bottom: 0.5em;
     margin-bottom: 0.5em;
     border-bottom: 1px solid lightgray;
-}
-
-#class-teacher-head .row .col-sm-auto.text
-{
-    padding: 0.5em;
+    align-items: center;
 }
 
 #class-teacher-head h6
@@ -663,6 +660,23 @@ div.back-button svg
 #class-teacher-head label.no-margin
 {
     margin: 0;
+}
+
+#class-teacher-head .row.separated .col-sm,
+#class-teacher-head .row.separated .col-sm-auto
+{
+    border-right: 1px solid lightgray;
+}
+
+#class-teacher-head .row.separated .col-sm:last-child,
+#class-teacher-head .row.separated .col-sm-auto:last-child
+{
+    border: none;
+}
+
+#phraseFilterList span
+{
+    margin-left: 0.5em;
 }
 
 #phrasesTable

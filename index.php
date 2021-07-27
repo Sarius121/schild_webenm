@@ -56,6 +56,7 @@ if($loginHandler->isLoggedIn()){
         <link rel="stylesheet" href="css/style.css">
         <script src="js/jquery-3.5.1.min.js"></script>
         <script src="js/jquery-ui.min.js"></script>
+        <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.js"></script>
         <script src="lib/editablegrid/editablegrid.js"></script>
         <!-- [DO NOT DEPLOY] --> <script src="lib/editablegrid/editablegrid_renderers.js" ></script>
