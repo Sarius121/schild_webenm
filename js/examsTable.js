@@ -1,7 +1,7 @@
 class ExamsTable extends CustomEditableGrid{
 
     constructor(json, gradesJSON){
-        super("ExamsTable", json);
+        super("ExamsTable", json, ["Klasse", "FachKrz"]);
 
         var gradeValidator = new CellValidator({ 
 			isValid: function(value) {
@@ -22,6 +22,18 @@ class ExamsTable extends CustomEditableGrid{
         this.addCellValidator("NoteSchriftlich", gradeValidator);
         this.addCellValidator("NoteMuendlich", gradeValidator);
         this.addCellValidator("NoteAbschluss", gradeValidator);
+
+        const that = this;
+
+        //create auto-complete filters
+        $("#filter-exams datalist").each(function(){
+            var col = this.id.replace("filter-exams-", "").replace("-options", "");
+            that.possibleFilters[col].forEach(item => {
+                var option = document.createElement("option");
+                option.setAttribute("value", item);
+                this.appendChild(option);
+            });
+        });
     }
 
     onTableRendered(){

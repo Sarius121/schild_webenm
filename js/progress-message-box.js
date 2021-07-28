@@ -61,7 +61,7 @@ class ProgressMessageBox{
     }
 
     show() {
-        $("#" + this.id).modal();
+        $("#" + this.id).modal("show");
     }
 
     hide() {

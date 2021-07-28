@@ -24,6 +24,29 @@ function onMenuItemClicked(item, action){
         case "undo-backup":
             undoBackupRestore();
             break;
+        case "create-filter":
+            var id = $("#data-container .visible").first().attr("id");
+            $("#filter-modal .filter-group").toggleClass("hidden", true);
+            $("#" + id.replace("data", "filter")).toggleClass("hidden", false);
+
+            var dataName = $("#nav-data .active").first().text();
+            $("#filter-modal .modal-title").text(dataName + " filtern");
+            $("#filter-modal").modal("show");
+            break;
+        case "delete-filter":
+            var id = $("#data-container .visible").first().attr("id");
+            switch(id){
+                case "data-grades":
+                    gradeTable.filterTable();
+                    break;
+                case "data-class-teacher":
+                    classTeacherTable.filterTable();
+                    break;
+                case "data-exams":
+                    examsTable.filterTable();
+                    break;
+            }
+            break;
         case "information":
             $("#information-modal").modal("show");
             break;
@@ -137,4 +160,46 @@ function saveChanges(){
 
     preventAppClosing = true;
     httpRequest.send();
+}
+
+function filterDataTable(){
+    var id = $("#data-container .visible").first().attr("id");
+    var tablePrefix = id.replace("data-", "");
+    var table = null;
+    switch(id){
+        case "data-grades":
+            table = gradeTable;
+            break;
+        case "data-class-teacher":
+            table = classTeacherTable;
+            break;
+        case "data-exams":
+            table = examsTable;
+            break;
+        default:
+            return;
+    }
+    //delete old filters
+    table.filterTable();
+    
+    //filter table
+    $("#filter-" + tablePrefix + " input").each(function(){
+        var col = $(this).attr("id").replace("filter-" + tablePrefix + "-", "");
+        var value = $(this).val();
+        if(value == ""){
+            return;
+        }
+        if(col == "MissingGrade"){
+            if(this.checked){
+                if(tablePrefix == "grades"){
+                    table.filterTable("NotenKrz", [ "" ]);
+                } else if(tablePrefix == "exams"){
+                    table.filterTable("NoteAbschluss", [ "" ]);
+                }
+            }
+        } else {
+            table.filterTable(col, [ value ]);
+        }
+    });
+    $("#filter-modal").modal("hide");
 }

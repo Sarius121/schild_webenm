@@ -1,6 +1,9 @@
 class CustomEditableGrid{
 
-    constructor(name, json){
+    currentFilter = [];
+    possibleFilters = {};
+
+    constructor(name, json, filterCols = []){
         this.name = name;
         this.editableGrid = new EditableGrid(name, {editmode: "static"});
         this.editableGrid.load(json);
@@ -45,7 +48,25 @@ class CustomEditableGrid{
             });
             $("#" + name + " th a").attr("data-tooltip", "Sortieren");
 
+            //filter table after render
+            that.currentFilter.forEach(function(item){
+                that.filterTable(item.col, item.filter);
+            });
+
             that.onTableRendered();
+        }
+
+        if(filterCols.length > 0){
+            filterCols.forEach(function(col){
+                that.possibleFilters[col] = [];
+            });
+            json.data.forEach(function(row){
+                filterCols.forEach(function(col){
+                    if(row.values[col] != undefined && row.values[col] != "" && !that.possibleFilters[col].includes(row.values[col])){
+                        that.possibleFilters[col].push(row.values[col]);
+                    }
+                });
+            });
         }
 
     }
@@ -97,5 +118,25 @@ class CustomEditableGrid{
     
         //simulate click
         $(selector).trigger('click');
+    }
+
+    filterTable(col = "all", filterStrings = "all"){
+        if(col == "all" && typeof filterStrings === "string" && filterStrings == "all"){
+            $("#" + this.tableID + " tbody tr").toggleClass("hidden", false);
+            this.currentFilter = [];
+            return true;
+        } else if(col == "all"){
+            return false;
+        }
+        $("#" + this.tableID + " tbody tr").not(".hidden").each(function(){
+            var content = $(this).find(".editablegrid-" + col).text();
+            if(filterStrings.includes(content)){
+                $(this).toggleClass("hidden", false);
+            } else {
+                $(this).toggleClass("hidden", true);
+            }
+        });
+        this.currentFilter.push({col: col, filter: filterStrings});
+        return true;
     }
 }

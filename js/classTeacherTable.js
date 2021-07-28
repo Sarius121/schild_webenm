@@ -6,7 +6,7 @@
 class ClassTeacherTable extends CustomEditableGrid{
 
     constructor(json){
-        super( "ClassTeacherTable", json);
+        super( "ClassTeacherTable", json, ["Klasse"]);
 
         /*var positiveNumberValidator = new CellValidator({ 
 			isValid: function(value) {
@@ -20,6 +20,16 @@ class ClassTeacherTable extends CustomEditableGrid{
         const that = this;
         document.getElementById('btn-ct-previous').addEventListener("click", (event) => {that.changeSelectedUserRelative(-1)});
         document.getElementById('btn-ct-next').addEventListener("click", (event) => {that.changeSelectedUserRelative(1)});
+
+        //create auto-complete filters
+        $("#filter-class-teacher datalist").each(function(){
+            var col = this.id.replace("filter-class-teacher-", "").replace("-options", "");
+            that.possibleFilters[col].forEach(item => {
+                var option = document.createElement("option");
+                option.setAttribute("value", item);
+                this.appendChild(option);
+            });
+        });
     }
 
     renderGrid(){
@@ -91,39 +101,32 @@ class ClassTeacherTable extends CustomEditableGrid{
 class PhrasesTable extends CustomEditableGrid{
 
     autoCompleteBox = new AutoCompleteBox("class-teacher-head", "");
-    phraseGroups = [];
-    currentFilterGroups = [];
 
     constructor(json, classTeacherTable){
-        super("PhrasesTable", json);
+        super("PhrasesTable", json, ["Floskelgruppe"]);
         this.classTeacherTable = classTeacherTable;
 
-        json.data.forEach((item) => {
-            var group = item.values.Floskelgruppe;
-            if(!this.phraseGroups.includes(group)){
-                this.phraseGroups.push(group);
-                var phraseGroupFilter = document.createElement("li");
-                var html = "";
-                html = '<label class="form-check-label dropdown-item" for="phrasesFilterCheck' + group + '"><input class="form-check-input" type="checkbox" id="phrasesFilterCheck' + group + '" checked><span>';
-                html += item.values.Floskelgruppe;
-                html += '</span></label>';
-                phraseGroupFilter.innerHTML = html;
-                document.getElementById("phraseFilterList").appendChild(phraseGroupFilter);
-                const that = this;
-                $(phraseGroupFilter).find("input").change(function(){
-                    var group = $(this).attr("id").replace("phrasesFilterCheck", "");
-                    if(this.checked){
-                        that.currentFilterGroups.push(group);
-                        that.filterPhrasesTable(that.currentFilterGroups);
-                    } else {
-                        var index = that.currentFilterGroups.indexOf(group);
-                        that.currentFilterGroups.splice(index, 1);
-                        that.filterPhrasesTable(that.currentFilterGroups);
-                    }
-                });
-            }
+        this.possibleFilters["Floskelgruppe"].forEach(item => {
+            var phraseGroupFilter = document.createElement("li");
+            var html = "";
+            html = '<label class="form-check-label dropdown-item" for="phrasesFilterCheck' + item + '"><input class="form-check-input" type="checkbox" id="phrasesFilterCheck' + item + '" checked><span>';
+            html += item;
+            html += '</span></label>';
+            phraseGroupFilter.innerHTML = html;
+            document.getElementById("phraseFilterList").appendChild(phraseGroupFilter);
+            const that = this;
+            $(phraseGroupFilter).find("input").change(function(){
+                var group = $(this).attr("id").replace("phrasesFilterCheck", "");
+                if(this.checked){
+                    that.currentFilter[0].filter.push(group);
+                    that.filterPhrasesTable(that.currentFilter[0].filter);
+                } else {
+                    var index = that.currentFilter[0].filter.indexOf(group);
+                    that.currentFilter[0].filter.splice(index, 1);
+                    that.filterPhrasesTable(that.currentFilter[0].filter);
+                }
+            });
         });
-        this.currentFilterGroups = this.phraseGroups;
     }
 
     onTableRendered(){
@@ -143,13 +146,11 @@ class PhrasesTable extends CustomEditableGrid{
             item.addEventListener("keyup", (event) => {
                 if(this.autoCompleteBox.active == false){
                     if(event.key == "#"){
-                        console.log("start autocomplete");
                         var pos = getCaretCoordinates(event.currentTarget, event.currentTarget.selectionEnd);
                         var parent = document.getElementById("class-teacher-head");
                         var boundariesTop = event.currentTarget.getBoundingClientRect().top - parent.getBoundingClientRect().top;
                         var boundariesLeft = event.currentTarget.getBoundingClientRect().left - parent.getBoundingClientRect().left;
                         this.autoCompleteBox.startAutoComplete(boundariesLeft + pos["left"], boundariesTop + pos["top"] - event.currentTarget.scrollTop);
-                        console.log(pos);
                         var autoCompleteStart = event.currentTarget.selectionEnd - 1;
                         var textarea = event.currentTarget;
                         this.autoCompleteBox.committedListener = function(phrase){
@@ -168,7 +169,6 @@ class PhrasesTable extends CustomEditableGrid{
                         var boundariesLeft = event.currentTarget.getBoundingClientRect().left - parent.getBoundingClientRect().left;
                         this.autoCompleteBox.pushChange(event.key, boundariesLeft + pos["left"], boundariesTop + pos["top"] - event.currentTarget.scrollTop);
                     } else if(event.key != "Shift" && event.key != "ArrowUp" && event.key != "ArrowDown"){
-                        console.log("cancel autocomplete");
                         this.autoCompleteBox.cancel();
                     }
                 }
@@ -189,7 +189,6 @@ class PhrasesTable extends CustomEditableGrid{
             });
             item.addEventListener("mousedown", (event) => {
                 if(this.autoCompleteBox.active){
-                    console.log("cancel autocomplete");
                     this.autoCompleteBox.cancel();
                 }
             });
@@ -225,24 +224,14 @@ class PhrasesTable extends CustomEditableGrid{
                 $(this).prop("checked", false);
             }
         });
-
-        var table = document.getElementById("phrasesTable");
-        var rows = $("#phrasesTable tbody tr");
     
         if(origin != null){
             $("#class-teacher-head textarea").removeClass("active");
             origin.classList.add("active");
         }
-    
-        rows.each(function() {
-            var group = $(this).find('.editablegrid-Floskelgruppe').html();
-            if(filterGroups.includes(group)){
-                $(this).toggleClass("hidden", false);
-            } else {
-                $(this).toggleClass("hidden", true);
-            }
-        });
-        this.currentFilterGroups = filterGroups;
+
+        this.filterTable();
+        this.filterTable("Floskelgruppe", filterGroups);
     }
     
     onRowDoubleClicked(event){

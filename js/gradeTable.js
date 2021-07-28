@@ -8,7 +8,7 @@ class GradeTable extends CustomEditableGrid{
     loadingRemoved = false;
 
     constructor(json, gradesJSON){
-        super("GradeTable", json);
+        super("GradeTable", json, ["Klasse", "FachBez", "KurzBez"]);
 
         this.editableGrid.setCellEditor("NotenKrz", new UpperCaseTextEditor());
 
@@ -33,6 +33,18 @@ class GradeTable extends CustomEditableGrid{
 
         this.addCellValidator("Fehlstd", positiveNumberValidator);
         this.addCellValidator("uFehlstd", positiveNumberValidator);
+
+        const that = this;
+
+        //create auto-complete filters
+        $("#filter-grades datalist").each(function(){
+            var col = this.id.replace("filter-grades-", "").replace("-options", "");
+            that.possibleFilters[col].forEach(item => {
+                var option = document.createElement("option");
+                option.setAttribute("value", item);
+                this.appendChild(option);
+            });
+        });
     }
 
     onTableRendered(){    

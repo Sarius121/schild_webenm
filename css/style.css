@@ -221,7 +221,7 @@ svg
     background-color: white;
 }
 
-.tab-layout li:hover > ul.dropdown
+.tab-layout li:not(.disabled):hover > ul.dropdown
 {
     visibility: visible;
     display: block;
@@ -238,6 +238,7 @@ svg
     width: max-content;
     visibility: hidden;
     display: none;
+    z-index: 2;
 }
 
 .tab-layout ul.dropdown li.new-group
@@ -765,6 +766,13 @@ div.back-button svg
 /* Handle on hover */
 .auto-complete-box::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+/*#################### filter-modal #################### */
+
+#filter-modal .row+.row
+{
+    margin-top: 1em;
 }
 
 /*#################### progress-message-box #################### */

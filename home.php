@@ -96,14 +96,8 @@ if(!isset($loginHandler)){
             </li>
             <li><div class="group-header">Filter</div>
                 <ul>
-                    <li class="disabled">Gruppe</li>
-                    <li class="disabled">&#9013;
-                        <ul class="dropdown">
-                            <li>Filter Lerngruppe</li>
-                            <li>Filter erstellen</li>
-                            <li class="new-group">Filter löschen</li>
-                        </ul>
-                    </li>
+                    <li onclick="onMenuItemClicked(this, 'create-filter')">Filter erstellen</li>
+                    <li onclick="onMenuItemClicked(this, 'delete-filter')" data-tooltip="Filter löschen"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-counterclockwise"/></svg></li>
                 </ul>
             </li>
         </ul>
@@ -175,6 +169,14 @@ if(!isset($loginHandler)){
 
 
     $loginHandler->getGradeFile()->close();
+
+?>
+
+<?php //filter-Modal 
+    $filterModal = Modal::defaultModal("filter-modal", "Daten filtern", "filterDataTable()");
+    echo $filterModal->getHTMLBeforeBody();
+    include("modals/FilterModal.php");
+    echo $filterModal->getHTMLAfterBody(); 
 
 ?>
 
