@@ -104,7 +104,7 @@ if(!isset($loginHandler)){
         <ul class="body" id="tabHilfe">
             <li><div class="group-header">Hilfe</div>
                 <ul>
-                    <li class="disabled">Dokumentation</li>
+                    <li class="disabled"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-up-right"/></svg><span> Dokumentation</span></li>
                     <li onclick="onMenuItemClicked(this, 'information')">Informationen</li>
                 </ul>
             </li>

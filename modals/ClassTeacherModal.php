@@ -29,8 +29,8 @@
     </div>
     <div class="row separated">
         <div class="col-sm-auto">
-            <input id="multipleFirstnames" type="checkbox" checked>
-            <label class="no-margin" for="multipleFirstnames">Vorname nicht mehrfach</label>
+            <input id="multipleFirstnames" type="checkbox" class="form-check-input" checked>
+            <label class="no-margin" for="multipleFirstnames" class="form-check-label">Vorname nicht mehrfach</label>
         </div>
         <div class="col-sm">
             <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-tooltip="Floskelgruppen">
