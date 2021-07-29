@@ -47,6 +47,7 @@ class CustomEditableGrid{
                 }
             });
             $("#" + name + " th a").attr("data-tooltip", "Sortieren");
+            $("#" + name + " tbody input[type='checkbox']").toggleClass("form-check-input", true);
 
             //filter table after render
             that.currentFilter.forEach(function(item){

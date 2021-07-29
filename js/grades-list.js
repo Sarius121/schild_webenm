@@ -1,5 +1,5 @@
 window.addEventListener("load", function(event) {
-    $(".modal-dialog").draggable({ cancel: ".modal-body", containment: "html", scroll: false });
+    $(".modal-dialog").draggable({ cancel: ".modal-body, .modal-footer", containment: "html", scroll: false });
 });
 
 /*selectedGrade = "";

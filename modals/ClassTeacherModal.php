@@ -4,27 +4,27 @@
             <h6>Schüler:</h6> 
         </div>
         <div class="col-sm-auto">
-            <button id="btn-ct-previous" class="btn btn-primary"><</button> <!-- onclick="changeCTSelectedUserRelative(-1)" -->
+            <button id="btn-ct-previous" class="btn btn-primary"><svg class="bi"><use xlink:href="img/ui-icons.svg#caret-left-fill"/></svg></button> <!-- onclick="changeCTSelectedUserRelative(-1)" -->
         </div>
         <div class="col-sm-auto text">
             <h6 id="ct-selected-name">Max Mustermann (EF)</h6>
         </div>
         <div class="col-sm-auto">
-            <button id="btn-ct-next" class="btn btn-primary">></button>
+            <button id="btn-ct-next" class="btn btn-primary"><svg class="bi"><use xlink:href="img/ui-icons.svg#caret-right-fill"/></svg></button>
         </div>
     </div>
     <div class="row">
         <div class="col-sm">
-            <label for="ASV">Arbeits- und Sozialverhalten</label>
-            <textarea id="textarea-asv" name="ASV" rows="8" ></textarea><!--onfocus="filterPhrasesTable('ASV', this)" onchange="onPhrasesChanged()"-->
+            <label class="form-label" for="ASV">Arbeits- und Sozialverhalten</label>
+            <textarea class="form-control" id="textarea-asv" name="ASV" rows="8" ></textarea><!--onfocus="filterPhrasesTable('ASV', this)" onchange="onPhrasesChanged()"-->
         </div>
         <div class="col-sm">
-            <label for="AuE">Außerunterrichtliches Engagement</label>
-            <textarea id="textarea-aue" name="AuE" rows="8"></textarea>
+            <label class="form-label" for="AuE">Außerunterrichtliches Engagement</label>
+            <textarea class="form-control" id="textarea-aue" name="AuE" rows="8"></textarea>
         </div>
         <div class="col-sm">
-            <label for="ZB">Zeugnis-Bemerkung</label>
-            <textarea id="textarea-zb" name="ZB" rows="8"></textarea>
+            <label class="form-label" for="ZB">Zeugnis-Bemerkung</label>
+            <textarea class="form-control" id="textarea-zb" name="ZB" rows="8"></textarea>
         </div>
     </div>
     <div class="row separated">

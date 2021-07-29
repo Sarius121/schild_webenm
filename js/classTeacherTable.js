@@ -106,6 +106,7 @@ class PhrasesTable extends CustomEditableGrid{
         super("PhrasesTable", json, ["Floskelgruppe"]);
         this.classTeacherTable = classTeacherTable;
 
+        const that = this;
         this.possibleFilters["Floskelgruppe"].forEach(item => {
             var phraseGroupFilter = document.createElement("li");
             var html = "";
@@ -114,7 +115,6 @@ class PhrasesTable extends CustomEditableGrid{
             html += '</span></label>';
             phraseGroupFilter.innerHTML = html;
             document.getElementById("phraseFilterList").appendChild(phraseGroupFilter);
-            const that = this;
             $(phraseGroupFilter).find("input").change(function(){
                 var group = $(this).attr("id").replace("phrasesFilterCheck", "");
                 if(this.checked){
@@ -127,14 +127,6 @@ class PhrasesTable extends CustomEditableGrid{
                 }
             });
         });
-    }
-
-    onTableRendered(){
-        this.filterPhrasesTable("ASV", document.getElementsByName("ASV")[0]);
-    
-        //events
-        const that = this;
-        $("#phrasesTable tbody tr").dblclick((event) => {that.onRowDoubleClicked(event)});
 
         document.getElementById("textarea-asv").addEventListener("focus", (event) => {that.filterPhrasesTable(['ASV'], event.currentTarget)});
         document.getElementById('textarea-aue').addEventListener("focus", (event) => {that.filterPhrasesTable(['AUE'], event.currentTarget)});
@@ -142,10 +134,11 @@ class PhrasesTable extends CustomEditableGrid{
     
         document.querySelectorAll("#class-teacher-head textarea").forEach(item => {
             item.addEventListener("change", () => {
-                that.onPhrasesChanged()});
+                that.onPhrasesChanged();});
             item.addEventListener("keyup", (event) => {
                 if(this.autoCompleteBox.active == false){
                     if(event.key == "#"){
+                        console.log("Hashtag");
                         var pos = getCaretCoordinates(event.currentTarget, event.currentTarget.selectionEnd);
                         var parent = document.getElementById("class-teacher-head");
                         var boundariesTop = event.currentTarget.getBoundingClientRect().top - parent.getBoundingClientRect().top;
@@ -209,6 +202,16 @@ class PhrasesTable extends CustomEditableGrid{
             });
 
           });
+    }
+
+    onTableRendered(){
+        this.filterPhrasesTable("ASV", document.getElementsByName("ASV")[0]);
+    
+        //events
+        const that = this;
+        $("#phrasesTable tbody tr").dblclick((event) => {that.onRowDoubleClicked(event)});
+
+        
     }
     
     renderGrid(){
@@ -315,7 +318,7 @@ class AutoCompleteBox {
             if(!$(this).hasClass("hidden")){
                 var code = $(this).find(".editablegrid-Kuerzel").first().text();
                 var phrase = $(this).find(".editablegrid-Floskeltext").first().text();
-                innerHTML += "<div class='row'><div class='col-auto'>" + code + "</div><div class='col'>" + phrase + "</div></div>";
+                innerHTML += "<div class='row'><div class='col-auto'><span>" + code + "</span></div><div class='col'>" + phrase + "</div></div>";
                 itemCount++;
             }
         });

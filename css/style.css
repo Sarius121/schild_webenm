@@ -50,6 +50,14 @@ svg
     height: 1em;
 }
 
+.modal.show .modal-dialog
+{
+    margin: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 /*#################### login #################### */
 
 #login-box input
@@ -106,6 +114,11 @@ svg
 .nav button:hover
 {
     background-color: white;
+}
+
+.nav-tabs .nav-link
+{
+    border-radius: 0;
 }
 
 #data-container > div
@@ -278,6 +291,7 @@ svg
     overflow-y: auto;
     height: 100%;
     min-height: 250px;
+    scrollbar-color: #888 #f1f1f1;
 }
 
 @media (max-height: 250px){
@@ -404,13 +418,13 @@ input.invalid
     text-transform: uppercase;
 }
 
-.editablegrid-NotenKrz
+.dataTable .editablegrid-NotenKrz
 {
     background-color: #e6d281;
     transition: background-color 0.25s;
 }
 
-.editablegrid-uFehlstd
+.dataTable .editablegrid-uFehlstd
 {
     background-color: #e6908a;
     transition: background-color 0.25s;
@@ -500,16 +514,13 @@ div.back-button svg
 #grades-modal .modal-dialog
 {
     max-width: 700px;
-    margin: 0;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }
 
 .bootstrap-list
 {
     overflow-y: scroll;
     max-height: 500px; /*TODO*/
+    scrollbar-color: #888 #f1f1f1;
 }
 
 /* width */
@@ -609,6 +620,11 @@ div.back-button svg
     width: auto;
     text-align: center;
     position: relative;
+    margin: 0;
+    border: 0;
+    height: 1.5rem;
+    box-shadow: none;
+    filter: none;
 }
 
 #classTeacherTable.dataTable table input[type="checkbox"]:checked::after
@@ -618,9 +634,15 @@ div.back-button svg
     top: 50%;
     left: 50%;
     color: white;
-    padding: 0 0.5em;
-    background-color: green;
-    content: "\2713";
+    padding: 0 1em;
+    background-color: var(--bs-green);
+    content: "";
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 16 16'><path d='M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 /*#################### class-teacher-modal #################### */
@@ -661,11 +683,6 @@ div.back-button svg
     background-color: white;
 }
 
-#class-teacher-head textarea.active
-{
-    outline: -webkit-focus-ring-color auto 1px;
-}
-
 #class-teacher-head label.no-margin
 {
     margin: 0;
@@ -693,6 +710,18 @@ div.back-button svg
     max-height: 300px;
 }
 
+#phrasesTable td:nth-child(2),
+#phrasesTable th:nth-child(2)
+{
+    border-left: none; 
+}
+
+#phrasesTable td:nth-child(1),
+#phrasesTable th:nth-child(1)
+{
+    border-left: 1px solid #E0E0E0; 
+}
+
 /*#################### auto-complete-box #################### */
 
 .auto-complete-box
@@ -701,11 +730,13 @@ div.back-button svg
     max-width: 300px;
     max-height: 100px;
     background: white;
-    border: 1px solid lightgray;
+    border: 1px solid #86b7fe;
     z-index: 10;
     overflow-y: auto;
     overflow-x: hidden;
     margin-top: 1.5em;
+    scrollbar-color: #888 #f1f1f1;
+    scrollbar-width: thin;
 }
 
 #class-teacher-head .auto-complete-box .row
@@ -719,24 +750,18 @@ div.back-button svg
     border: none;
 }
 
+
+.auto-complete-box .row:hover .col-auto,
 .auto-complete-box .row:hover .col
 {
-    background-color: #aaaaaaa5;
+    background-color: lightgray;
 }
 
-.auto-complete-box .row:hover .col-auto
-{
-    background-color: #aaa;
-}
-
+.auto-complete-box .row.selected .col-auto,
 .auto-complete-box .row.selected .col
 {
-    background-color: #007bffa5;
-}
-
-.auto-complete-box .row.selected .col-auto
-{
-    background-color: #007bff;
+    background-color: var(--bs-blue);
+    color: white;
 }
 
 .auto-complete-box .col-auto,
@@ -746,13 +771,24 @@ div.back-button svg
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: background-color 0.25s;
+    transition: background-color 0.25s, color 0.25s;
     cursor: pointer;
 }
 
-.auto-complete-box .col-auto
+.auto-complete-box .row .col-auto span
 {
-    background-color: lightgray;
+    border: 1px solid black;
+    padding: 0 0.1em;
+    margin: 0.1em;
+    display: inline-block;
+    font-size: 0.8em;
+    transition: border-color 0.25s;
+    border-radius: 2px;
+}
+
+.auto-complete-box .row.selected .col-auto span
+{
+    border-color: white;
 }
 
 /* width */
