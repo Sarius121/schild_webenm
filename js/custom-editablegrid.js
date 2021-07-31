@@ -5,7 +5,7 @@ class CustomEditableGrid{
 
     constructor(name, json, filterCols = []){
         this.name = name;
-        this.editableGrid = new EditableGrid(name, {editmode: "static"});
+        this.editableGrid = new EditableGrid(name, {editmode: "static", sortIconUp: "img/caret-up-fill.svg", sortIconDown: "img/caret-down-fill.svg"});
         this.editableGrid.load(json);
 
         // override the function that will handle model changes
@@ -56,6 +56,17 @@ class CustomEditableGrid{
 
             that.onTableRendered();
         }
+
+        //override sort_stable function to allow sorting with mutliple columns
+        this.editableGrid.sort_stable = function(sort_function, descending) 
+        {
+            return function (a, b) {
+                var sort = descending ? sort_function(b, a) : sort_function(a, b);
+                //return sort even if the elements are equal
+                //in the original method elements are sorted by their original index if they are equal
+                return sort;
+            };
+        };
 
         if(filterCols.length > 0){
             filterCols.forEach(function(col){
@@ -139,5 +150,19 @@ class CustomEditableGrid{
         });
         this.currentFilter.push({col: col, filter: filterStrings});
         return true;
+    }
+
+    sortTable(cols = []){
+        if(cols == []){
+            this.editableGrid.sortedColumnName = -1;
+            this.editableGrid.sortDescending = false;
+            this.editableGrid.sort(-1, false, true);
+        } else {
+            for(var i = cols.length - 1; i >= 0; i--){
+                this.editableGrid.sortedColumnName = cols[i];
+                this.editableGrid.sortDescending = false;
+                this.editableGrid.sort(cols[i], false, true);
+            }
+        }
     }
 }

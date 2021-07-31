@@ -79,17 +79,17 @@ if(!isset($loginHandler)){
             </li>
             <li><div class="group-header">Sortierung</div>
                 <ul>
-                    <li class="disabled">Fach, Name</li>
+                    <li onclick="onMenuItemClicked(this, 'sort-Klasse-Name')">Klasse, Name</li>
                             <!--<option value="name-subject">Name, Fach</option>
                             <option value="subject-name">Fach, Name</option>
                             <option value="class-name">Klasse, Name</option>
                             <option value="class-subject">Klasse, Fach</option>-->
-                    <li class="disabled">&#9013;
+                    <li id="sort-menu-items">&#9013;
                         <ul class="dropdown">
-                            <li>Name, Fach</li>
-                            <li>Fach, Name</li>
-                            <li>Klasse, Name</li>
-                            <li>Klasse, Fach</li>
+                            <li onclick="onMenuItemClicked(this, 'sort-Name-Fach')">Name, Fach</li>
+                            <li onclick="onMenuItemClicked(this, 'sort-Fach-Name')">Fach, Name</li>
+                            <li onclick="onMenuItemClicked(this, 'sort-Klasse-Name')">Klasse, Name</li>
+                            <li onclick="onMenuItemClicked(this, 'sort-Klasse-Fach')">Klasse, Fach</li>
                         </ul>
                     </li>
                 </ul>

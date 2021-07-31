@@ -201,7 +201,7 @@ svg
     padding: 0 0.25em;
 }
 
-.tab-layout ul.body > li li
+.tab-layout ul.body > li > ul > li
 {
     display: flex;
     align-items: center;
@@ -254,7 +254,8 @@ svg
     flex-direction: column;
     background-color: white;
     border: 1px solid lightgray;
-    left: 0;
+    right: 0;
+    top: 100%;
     min-width: 100%;
     width: max-content;
     visibility: hidden;
@@ -385,6 +386,14 @@ svg
 .dataTable table th:hover
 {
     background-color: lightgrey;
+}
+
+.dataTable table th a+img
+{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 5px;
 }
 
 .dataTable table input

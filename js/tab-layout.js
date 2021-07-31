@@ -24,6 +24,18 @@ function onMenuItemClicked(item, action){
         case "undo-backup":
             undoBackupRestore();
             break;
+        case "sort-Fach-Name":
+            sortCurrentTable(["FachBez", "Name"]);
+            break;
+        case "sort-Name-Fach":
+            sortCurrentTable(["Name", "FachBez"]);
+            break;
+        case "sort-Klasse-Name":
+            sortCurrentTable(["Klasse", "Name"]);
+            break;
+        case "sort-Klasse-Fach":
+            sortCurrentTable(["Klasse", "FachBez"]);
+            break;
         case "create-filter":
             var id = $("#data-container .visible").first().attr("id");
             $("#filter-modal .filter-group").toggleClass("hidden", true);
@@ -202,4 +214,26 @@ function filterDataTable(){
         }
     });
     $("#filter-modal").modal("hide");
+}
+
+function sortCurrentTable(columns = []){
+    var id = $("#data-container .visible").first().attr("id");
+    var table = null;
+    switch(id){
+        case "data-grades":
+            table = gradeTable;
+            break;
+        case "data-class-teacher":
+            table = classTeacherTable;
+            break;
+        case "data-exams":
+            table = examsTable;
+            if((index = columns.indexOf("FachBez")) != -1){
+                columns[index] = "FachKrz";
+            }
+            break;
+        default:
+            return;
+    }
+    table.sortTable(columns);
 }
