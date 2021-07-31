@@ -4,7 +4,9 @@ body
 }
 
 .form-control,
-.btn
+.btn,
+.dropdown-menu,
+.nav-tabs .nav-link
 {
     border-radius: 0;
 }
@@ -114,11 +116,6 @@ svg
 .nav button:hover
 {
     background-color: white;
-}
-
-.nav-tabs .nav-link
-{
-    border-radius: 0;
 }
 
 #data-container > div
@@ -266,6 +263,71 @@ svg
 .tab-layout ul.dropdown li.new-group
 {
     border-top: 1px solid lightgray;
+}
+
+/*#################### tab-layout-2 #################### */
+.tab-layout-2.container
+{
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+    margin-top: 1em;
+}
+
+.tab-layout-2 .tab-content li
+{
+    list-style-type: none;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.tab-layout-2 .tab-content ul
+{
+    padding: 0;
+}
+
+.tab-layout-2 ul.body
+{
+    margin-bottom: 0;
+    width: 100%;
+    border: 1px solid lightgray;
+    border-top: none;
+    display: flex;
+    padding: 0.25em;
+}
+
+.tab-layout-2 ul.body > li
+{
+    border-right: 1px lightgray solid;
+    padding: 0.25em;
+    display: block;
+}
+
+.tab-layout-2 ul.body > li:last-of-type
+{
+    border-right: 0;
+}
+
+.tab-layout-2 ul.body > li .group-header
+{
+    text-align: center;
+    font-size: small;
+    background-color: var(--bs-secondary);
+    margin-bottom: 2px;
+    padding: 0 0.25em;
+    color: white;
+}
+
+.tab-layout-2 ul.body svg+span
+{
+    margin-left: 0.5em;
+}
+
+.tab-layout-2 .dropdown-item.active, 
+.tab-layout-2 .dropdown-item:active
+{
+    background-color: var(--bs-secondary);
 }
 
 /*#################### data-container #################### */

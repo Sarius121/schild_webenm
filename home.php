@@ -42,7 +42,87 @@ if(!isset($loginHandler)){
         </div>
     </div>
     <div class="separator"></div>
-    <div class="container tab-layout" id="menu-tab">
+    <div class="tab-layout-2">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="file-tab" data-bs-toggle="tab" data-bs-target="#file-tab-body" type="button" role="tab" aria-controls="file-tab-body" aria-selected="true">Datei</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="grade-data-tab" data-bs-toggle="tab" data-bs-target="#grade-data-tab-body" type="button" role="tab" aria-controls="grade-data-tab-body" aria-selected="false">Leistungsdaten</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="help-tab" data-bs-toggle="tab" data-bs-target="#help-tab-body" type="button" role="tab" aria-controls="help-tab-body" aria-selected="false">Hilfe</button>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane show active" id="file-tab-body" role="tabpanel" aria-labelledby="file-tab">
+                <ul class="body visible">
+                    <?php if(getConstant("ENABLE_MANUAL_SAVING", true)){ ?>
+                    <li><div class="group-header">Notendatei</div>
+                        <ul>
+                            <li class="btn btn-outline-secondary" onclick="onMenuItemClicked(this, 'save-changes')">Speichern</li>
+                        </ul>
+                    </li><?php } ?>
+                    <li><div class="group-header">Druck</div>
+                        <ul class="btn-group" role="group">
+                            <li class="btn btn-outline-secondary disabled">Formulardruck</li>
+                            <li type="button" class="btn btn-outline-secondary disabled" data-bs-toggle="dropdown" aria-expanded="false"><svg class="bi"><use xlink:href="img/ui-icons.svg#chevron-down"/></svg></li>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                            </ul>
+                        </ul>
+                    </li>
+                    <?php if(getConstant("ENABLE_LOCAL_BACKUPS", true)){ ?>
+                    <li><div class="group-header">Lokale Sicherung</div>
+                        <ul class="btn-group">
+                            <li class="btn btn-outline-secondary" onclick="onMenuItemClicked(this, 'create-backup')">Erstellen</li>
+                            <input name="backupFile" type="file" id="backupFile" accept=".enz" style="display:none" onchange="onRestoreBackupFileSelected(this.files)">
+                            <li class="btn btn-outline-secondary" onclick="onMenuItemClicked(this, 'restore-backup')">Einlesen</li>
+                            <li class="btn btn-outline-secondary<?php $backupHandler = new BackupHandler(); if(!$backupHandler->oldBackupExists($loginHandler->getUsername())){ ?> disabled<?php } ?>" onclick="onMenuItemClicked(this, 'undo-backup')" data-tooltip="zum Stand vor dem Einlesen des Backups zurückkehren"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-counterclockwise"/></svg></li>
+                        </ul>
+                    </li><?php } ?>
+                </ul>
+            </div>
+            <div class="tab-pane" id="grade-data-tab-body" role="tabpanel" aria-labelledby="grade-data-tab">
+                <ul class="body">
+                    <li><div class="group-header">Bearbeiten</div>
+                        <ul>
+                            <li class="btn btn-outline-secondary disabled">Fördern</li>
+                        </ul>
+                    </li>
+                    <li><div class="group-header">Sortierung</div>
+                        <ul class="btn-group">
+                            <li class="btn btn-outline-secondary" onclick="onMenuItemClicked(this, 'sort-Klasse-Name')">Klasse, Name</li>
+                            <li id="sort-menu-items" class="btn btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false"><svg class="bi"><use xlink:href="img/ui-icons.svg#chevron-down"/></svg></li>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li class="dropdown-item" onclick="onMenuItemClicked(this, 'sort-Name-Fach')">Name, Fach</li>
+                                <li class="dropdown-item" onclick="onMenuItemClicked(this, 'sort-Fach-Name')">Fach, Name</li>
+                                <li class="dropdown-item" onclick="onMenuItemClicked(this, 'sort-Klasse-Name')">Klasse, Name</li>
+                                <li class="dropdown-item" onclick="onMenuItemClicked(this, 'sort-Klasse-Fach')">Klasse, Fach</li>
+                            </ul>
+                        </ul>
+                    </li>
+                    <li><div class="group-header">Filter</div>
+                        <ul class="btn-group">
+                            <li class="btn btn-outline-secondary" onclick="onMenuItemClicked(this, 'create-filter')">Filter erstellen</li>
+                            <li class="btn btn-outline-secondary" onclick="onMenuItemClicked(this, 'delete-filter')" data-tooltip="Filter löschen"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-counterclockwise"/></svg></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-pane" id="help-tab-body" role="tabpanel" aria-labelledby="help-tab">
+                <ul class="body">
+                    <li><div class="group-header">Hilfe</div>
+                        <ul class="btn-group">
+                            <li class="btn btn-outline-secondary disabled"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-up-right"/></svg><span> Dokumentation</span></li>
+                            <li class="btn btn-outline-secondary" onclick="onMenuItemClicked(this, 'information')">Informationen</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <?php /*<div class="separator hidden"></div>
+    <div class="container tab-layout hidden" id="menu-tab">
         <ul class="header">
             <li class="active" onclick="onTabClicked(this, 'tabDatei');">Datei</li>
             <li onclick="onTabClicked(this, 'tabLeistungsdaten');">Leistungsdaten</li>
@@ -58,14 +138,14 @@ if(!isset($loginHandler)){
             <li><div class="group-header">Druck</div>
                 <ul>
                     <li class="disabled">Formulardruck</li>
-                    <li class="disabled">&#9013;</li>
+                    <li class="disabled"><svg class="bi"><use xlink:href="img/ui-icons.svg#chevron-down"/></svg></li>
                 </ul>
             </li>
             <?php if(getConstant("ENABLE_LOCAL_BACKUPS", true)){ ?>
             <li><div class="group-header">Lokale Sicherung</div>
                 <ul>
                     <li onclick="onMenuItemClicked(this, 'create-backup')">Erstellen</li>
-                    <input name="backupFile" type="file" id="backupFile" accept=".enz" style="display:none" onchange="onRestoreBackupFileSelected(this.files)">
+                    <input name="backupFile" type="file" id="backupFile-old" accept=".enz" style="display:none" onchange="onRestoreBackupFileSelected(this.files)">
                     <li onclick="onMenuItemClicked(this, 'restore-backup')">Einlesen</li>
                     <li <?php $backupHandler = new BackupHandler(); if(!$backupHandler->oldBackupExists($loginHandler->getUsername())){ ?>class="disabled" <?php } ?> onclick="onMenuItemClicked(this, 'undo-backup')" data-tooltip="zum Stand vor dem Einlesen des Backups zurückkehren"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-counterclockwise"/></svg></li>
                 </ul>
@@ -84,7 +164,7 @@ if(!isset($loginHandler)){
                             <option value="subject-name">Fach, Name</option>
                             <option value="class-name">Klasse, Name</option>
                             <option value="class-subject">Klasse, Fach</option>-->
-                    <li id="sort-menu-items">&#9013;
+                    <li id="sort-menu-items-old"><svg class="bi"><use xlink:href="img/ui-icons.svg#chevron-down"/></svg>
                         <ul class="dropdown">
                             <li onclick="onMenuItemClicked(this, 'sort-Name-Fach')">Name, Fach</li>
                             <li onclick="onMenuItemClicked(this, 'sort-Fach-Name')">Fach, Name</li>
@@ -110,6 +190,7 @@ if(!isset($loginHandler)){
             </li>
         </ul>
     </div>
+    */ ?>
     <!--<form id="search-form" method="GET" action="?page=home">
         <label class="header">Nach einem Benutzer suchen: </label>
         <div class="row">
