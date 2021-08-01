@@ -478,7 +478,8 @@ input.invalid
 
 .dataTable .editablegrid-ID,
 .dataTable .editablegrid-Leistung_ID,
-.dataTable .editablegrid-Abschnitt_ID
+.dataTable .editablegrid-Abschnitt_ID,
+.dataTable .editablegrid-Geschlecht
 {
     visibility: hidden;
     display: none;

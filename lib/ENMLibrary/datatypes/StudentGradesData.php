@@ -12,13 +12,32 @@ class StudentGradesData extends GradeFileData{
                             ["name" => "FachBez", "label" => "Fach", "datatype" => "string", "editable" => false],
                             /*["name" => "KursartKrz", "label" => "Art", "datatype" => "string", "editable" => false],*/
                             ["name" => "KurzBez", "label" => "Kurs", "datatype" => "string", "editable" => false],
-                            ["name" => "NotenKrz", "label" => "Note", "datatype" => "string", "editable" => true],
-                            ["name" => "Fehlstd", "label" => "FS", "datatype" => "integer", "editable" => true],
-                            ["name" => "uFehlstd", "label" => "uFS", "datatype" => "integer", "editable" => true]/*,
+                            ["name" => "NotenKrz", "label" => "Note", "datatype" => "string", "editable" => true]
+                            /*["name" => "Fehlstd", "label" => "FS", "datatype" => "integer", "editable" => true],
+                            ["name" => "uFehlstd", "label" => "uFS", "datatype" => "integer", "editable" => true],
 ["name" => "Warnung", "label" => "Mahnung", "datatype" => "string", "editable" => true, "values" => ["-" => "keine Mahnung","+" =>"Mahnung"]]*/];
 
     public function __construct($gradeFile) {
-        parent::__construct($gradeFile, StudentGradesData::STUDENT_GRADES_COLUMNS, "SchuelerLeistungsdaten");
+        $columns = StudentGradesData::STUDENT_GRADES_COLUMNS;
+        //add optional columns
+        $insertionCount = 0;
+        if(SHOW_DATA_STUDENT_KURSART){
+            array_splice($columns, 4, 0, [["name" => "KursartKrz", "label" => "Art", "datatype" => "string", "editable" => false]]);
+            $insertionCount++;
+        }
+        if(SHOW_DATA_STUDENT_GRADES_FS){
+            array_splice($columns, 6 + $insertionCount, 0, [["name" => "Fehlstd", "label" => "FS", "datatype" => "integer", "editable" => true]]);
+            $insertionCount++;
+        }
+        if(SHOW_DATA_STUDENT_GRADES_uFS){
+            array_splice($columns, 6 + $insertionCount, 0, [["name" => "uFehlstd", "label" => "uFS", "datatype" => "integer", "editable" => true]]);
+            $insertionCount++;
+        }
+        if(SHOW_DATA_STUDENT_GRADES_MAHNUNG){
+            array_splice($columns, 6 + $insertionCount, 0, [["name" => "Warnung", "label" => "Mahnung", "datatype" => "string", "editable" => true, "values" => ["-" => "keine Mahnung","+" =>"Mahnung"]]]);
+        }
+
+        parent::__construct($gradeFile, $columns, "SchuelerLeistungsdaten");
     }
 
     public function fetchGradesData()

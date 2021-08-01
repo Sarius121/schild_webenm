@@ -2,11 +2,34 @@
 
 namespace ENMLibrary;
 
+/**
+ * ##############
+ * # GRADE FILE #
+ * ##############
+ */
+
 define("DEFAULT_ZIP_PASSWORD", "default zip password");
 define("DEFAULT_DB_PASSWORD", "default database password");
 define("SOURCE_GRADE_FILES_DIRECTORY", "grade-files/source/");
 define("GRADE_FILES_DIRECTORY", "grade-files/working/");
 define("TMP_GRADE_FILES_DIRECTORY", "grade-files/tmp/");
 define("FILE_SUFFIX", "_2020_2");
+
+/**
+ * ################
+ * # VISIBLE DATA #
+ * ################
+ */
+
+/*
+ * define which of the following optional (and mostly editable) columns should be shown in the ui
+ */
+define("SHOW_DATA_STUDENT_KURSART", false); //not editable
+define("SHOW_DATA_STUDENT_GRADES_FS", true);
+define("SHOW_DATA_STUDENT_GRADES_uFS", true);
+define("SHOW_DATA_STUDENT_GRADES_MAHNUNG", false);
+
+define("SHOW_DATA_CLASS_TEACHER_FS", false);
+define("SHOW_DATA_CLASS_TEACHER_uFS", false);
 
 ?>

@@ -9,6 +9,7 @@ class ClassTeacherData extends GradeFileData{
     public const CLASS_TEACHER_COLUMNS = [["name" => "Abschnitt_ID", "label" => "Abschnitt_ID", "datatype" => "string", "editable" => false],
                                         ["name" => "Klasse", "label" => "Klasse", "datatype" => "string", "editable" => false], //Table: Kopfnoten
                                         ["name" => "Name", "label" => "Name", "datatype" => "string", "editable" => false],
+                                        ["name" => "Geschlecht", "label" => "Geschlecht", "datatype" => "number", "editable" => false],
                                         /*["name" => "SumFehlstd", "label" => "FS", "datatype" => "integer", "editable" => true], 
                                         ["name" => "SumFehlstdU", "label" => "uFS", "datatype" => "integer", "editable" => true],*/
                                         ["name" => "hasASV", "label" => "ASV", "datatype" => "boolean", "editable" => true], //Table: PSFachBem
@@ -19,7 +20,7 @@ class ClassTeacherData extends GradeFileData{
                                         ["name" => "ZeugnisBem", "label" => "ZB", "datatype" => "string", "editable" => true]
                                     ];
 
-    public const COLUMNS_KOPFNOTEN = [["name" => "Abschnitt_ID"], ["name" => "S_GUID"], ["name" => "Name"], ["name" => "Klasse"]/*, ["name" => "SumFehlstd"], ["name" => "SumFehlstdU"]*/];
+    public const COLUMNS_KOPFNOTEN = [["name" => "Abschnitt_ID"], ["name" => "S_GUID"], ["name" => "Name"], ["name" => "Klasse"], ["name" => "Geschlecht"], ["name" => "SumFehlstd"], ["name" => "SumFehlstdU"]];
     public const COLUMNS_LEISTUNGSDATEN = [["name" => "S_GUID"], ["name" => "Abschnitt_ID"]];
     public const COLUMNS_PSFACHBEM = [["name" => "Abschnitt_ID"], ["name" => "ASV"], ["name" => "LELS"], ["name" => "ZeugnisBem"]];
 
@@ -27,7 +28,17 @@ class ClassTeacherData extends GradeFileData{
     //private $students; //cols: name, class, FS, uFS, ASV, AuE, ZeugnisBem, S_GUID, Abschnitt_ID, hasASV, hasAuE, hasZeugnisBem
 
     public function __construct($gradeFile) {
-        parent::__construct($gradeFile, ClassTeacherData::CLASS_TEACHER_COLUMNS, "SchuelerLD_PSFachBem");
+        $columns = ClassTeacherData::CLASS_TEACHER_COLUMNS;
+        $insertionCount = 0;
+        if(SHOW_DATA_CLASS_TEACHER_FS){
+            array_splice($columns, 4, 0, [["name" => "SumFehlstd", "label" => "FS", "datatype" => "integer", "editable" => true]]);
+            $insertionCount++;
+        }
+        if(SHOW_DATA_CLASS_TEACHER_uFS){
+            array_splice($columns, 4 + $insertionCount, 0, [["name" => "SumFehlstdU", "label" => "uFS", "datatype" => "integer", "editable" => true]]);
+        }
+
+        parent::__construct($gradeFile, $columns, "SchuelerLD_PSFachBem");
         //$this->file = $gradeFile;
     }
 

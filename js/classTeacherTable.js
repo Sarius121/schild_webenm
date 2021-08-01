@@ -150,7 +150,7 @@ class PhrasesTable extends CustomEditableGrid{
                             if(phrase != null){
                                 var autoCompleteEnd = textarea.selectionEnd;
                                 var content = textarea.value;
-                                textarea.value = content.slice(0, autoCompleteStart) + phrase + content.slice(autoCompleteEnd);
+                                textarea.value = content.slice(0, autoCompleteStart) + that.getFormattedPhrase(phrase, content) + content.slice(autoCompleteEnd);
                             }
                         };
                     }
@@ -237,29 +237,13 @@ class PhrasesTable extends CustomEditableGrid{
         this.filterTable("Floskelgruppe", filterGroups);
     }
     
-    onRowDoubleClicked(event){
-        var multipleVorname = !document.getElementById("multipleFirstnames").checked;
-        
+    onRowDoubleClicked(event){        
         var text = $(event.currentTarget).find(".editablegrid-Floskeltext").first().text();
-    
-        var firstname = $("#ClassTeacherTable_" + this.classTeacherTable.activeRow + " .editablegrid-Name").html().split(", ")[1];
         
         var textarea = $("#class-teacher-head textarea.active").first();
         var currentText = textarea.val();
         
-        if(multipleVorname || !currentText.includes(firstname)){
-            text = text.replaceAll('$Vorname$', firstname);
-        } else {
-            text = text.replaceAll('$Vorname$', 'Er/Sie'); //TODO Geschlecht
-        }
-        text = text.replaceAll('$Anrede$', 'Ihre/Seine'); //TODO Geschlecht
-
-        //replace variables with options: e.g. &Klassensprecher%Klassensprecherin& -> Klassensprecher/Klassensprecherin
-        var foundMatch = text.match(/&(\S*)%(\S*)&/);
-        while(foundMatch != null){
-            text = text.replace(foundMatch[0], foundMatch[1] + "/" + foundMatch[2]); //TODO Geschlecht -> first match is male, second female
-            foundMatch = text.match(/&(\S*)%(\S*)&/);
-        }
+        text = this.getFormattedPhrase(text, currentText);
     
         if(currentText.length > 0){
             currentText += " ";
@@ -267,6 +251,46 @@ class PhrasesTable extends CustomEditableGrid{
         textarea.val(currentText + text);
     
         this.onPhrasesChanged();
+    }
+
+    getFormattedPhrase(phrase, currentText){
+        var multipleVorname = !document.getElementById("multipleFirstnames").checked;
+        var firstname = $("#ClassTeacherTable_" + this.classTeacherTable.activeRow + " .editablegrid-Name").html().split(", ")[1];
+        var gender = $("#ClassTeacherTable_" + this.classTeacherTable.activeRow + " .editablegrid-Geschlecht").text();
+
+        if(multipleVorname || !currentText.includes(firstname)){
+            phrase = phrase.replaceAll('$Vorname$', firstname);
+        } else {
+            if(gender == "3"){
+                phrase = phrase.replaceAll('$Vorname$', 'Er');
+            } else if(gender == "4"){
+                phrase = phrase.replaceAll('$Vorname$', 'Sie');
+            } else {
+                phrase = phrase.replaceAll('$Vorname$', 'Sie/Er');
+            }
+        }
+        if(gender == "3"){
+            phrase = phrase.replaceAll('$Anrede$', 'Seine');
+        } else if(gender == "4"){
+            phrase = phrase.replaceAll('$Anrede$', 'Ihre');
+        } else {
+            phrase = phrase.replaceAll('$Anrede$', 'Ihre/Seine');
+        }
+
+        //replace variables with options: e.g. &Klassensprecher%Klassensprecherin& -> Klassensprecher/Klassensprecherin
+        var foundMatch = phrase.match(/&(\S*)%(\S*)&/);
+        while(foundMatch != null){
+            if(gender == "3"){
+                phrase = phrase.replace(foundMatch[0], foundMatch[1]);
+            } else if(gender == "4"){
+                phrase = phrase.replace(foundMatch[0], foundMatch[2]);
+            } else {
+                phrase = phrase.replace(foundMatch[0], foundMatch[1] + "/" + foundMatch[2]);
+            }
+            foundMatch = phrase.match(/&(\S*)%(\S*)&/);
+        }
+
+        return phrase;
     }
     
     onPhrasesChanged(){
