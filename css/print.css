@@ -1,0 +1,113 @@
+@media print {
+    body
+    {
+        font-size: 12px;
+    }
+
+    #top-box > div
+    {
+        display: none;
+    }
+
+    #top-box #nav-data
+    {
+        display: block;
+    }
+
+    #nav-data button:not(.active)
+    {
+        display: none;
+    }
+
+    #nav-data
+    {
+        border: none;
+    }
+
+    #nav-data button.active
+    {
+        color: black;
+        border: none;
+        padding: 0;
+        margin: 0;
+        font-size: 2em;
+    }
+
+    #nav-data button.active::before
+    {
+        content: "webENM - ";
+    }
+
+    .modal,
+    .modal-backdrop
+    {
+        display: none;
+        visibility: hidden;
+    }
+
+    #home-container #print-header
+    {
+        display: block;
+    }
+
+    #home-container
+    {
+        width: 100%;
+        height: auto;
+        padding: 0;
+    }
+
+    #data-container
+    {
+        position: relative;
+    }
+
+    .dataTable
+    {
+        overflow: visible;
+    }
+
+    .dataTable table
+    {
+        font-size: 12px;
+    }
+
+    .dataTable table tbody tr
+    {
+        height: auto;
+    }
+
+    .dataTable .editablegrid-NotenKrz,
+    .dataTable .editablegrid-uFehlstd
+    {
+        background-color: transparent;
+    }
+
+    .dataTable table th,
+    .dataTable th.editablegrid-NotenKrz,
+    .dataTable th.editablegrid-uFehlstd
+    {
+        background-color: lightgray;
+        -webkit-print-color-adjust: exact;
+    }
+
+    #classTeacherTable .editablegrid-Name
+    {
+        white-space: nowrap;
+    }
+
+    #classTeacherTable .editablegrid-ASV, 
+    #classTeacherTable .editablegrid-AuE, 
+    #classTeacherTable .editablegrid-ZeugnisBem
+    {
+        visibility: visible;
+        display: table-cell;
+    }
+
+    #classTeacherTable .editablegrid-hasASV, 
+    #classTeacherTable .editablegrid-hasAuE, 
+    #classTeacherTable .editablegrid-hasZeugnisBem
+    {
+        display: none;
+    }
+}

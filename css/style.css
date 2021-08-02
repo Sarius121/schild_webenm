@@ -60,6 +60,11 @@ svg
     transform: translate(-50%, -50%);
 }
 
+#print-header
+{
+    display: none;
+}
+
 /*#################### login #################### */
 
 #login-box input
@@ -458,7 +463,7 @@ svg
     right: 5px;
 }
 
-.dataTable table input
+.dataTable table input:not([type="checkbox"])
 {
     width: unset;
 }

@@ -13,9 +13,13 @@ $jsonPhrasesTable = $phrasesData->getJSON();
 <div id="data-class-teacher">
     <script>
         window.addEventListener("load", function(event) {
-            classTeacherTable = new ClassTeacherTable(<?php echo $jsonClassTeacherTable; ?>);
-            classTeacherTable.renderGrid();
-            classTeacherTable.renderPhrasesTable(<?php echo $jsonPhrasesTable; ?>);
+            <?php if($jsonClassTeacherTable != false){ ?>
+                classTeacherTable = new ClassTeacherTable(<?php echo $jsonClassTeacherTable; ?>);
+                classTeacherTable.renderGrid();
+                classTeacherTable.renderPhrasesTable(<?php echo $jsonPhrasesTable; ?>);
+            <?php } else { ?>
+                document.getElementById("tab-class-teacher").classList.add("disabled");
+            <?php } ?>
         });
     </script>
     <div id="classTeacherTable" class="dataTable"></div>

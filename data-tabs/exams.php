@@ -8,8 +8,12 @@ $jsonExamsTable = $examsData->getJSON();
 <div id="data-exams">
     <script>
         window.addEventListener("load", function(event) {
-            examsTable = new ExamsTable(<?php echo $jsonExamsTable; ?>, <?php echo json_encode($grades); ?>);
-            examsTable.renderGrid();
+            <?php if($jsonExamsTable != false){ ?>
+                examsTable = new ExamsTable(<?php echo $jsonExamsTable; ?>, <?php echo json_encode($grades); ?>);
+                examsTable.renderGrid();
+            <?php } else { ?>
+                document.getElementById("tab-exams").classList.add("disabled");
+            <?php } ?>
         });
     </script>
     <div id="examsTable" class="dataTable"></div>

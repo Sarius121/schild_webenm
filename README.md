@@ -22,6 +22,7 @@ It is used because there is no MDB-file driver for php on linux (no one that can
 ## not supported
 - not encrypted grade files (.enm)
 - support measures
+- form print (print with designer)
 
 # Installation notices
 ## Permissions

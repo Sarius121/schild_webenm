@@ -49,11 +49,8 @@ if(!isset($loginHandler)){
                             </ul>
                         </li><?php } ?>
                         <li><div class="group-header">Druck</div>
-                            <ul class="btn-group" role="group">
-                                <li class="btn btn-outline-secondary disabled">Formulardruck</li>
-                                <li type="button" class="btn btn-outline-secondary disabled" data-bs-toggle="dropdown" aria-expanded="false"><svg class="bi"><use xlink:href="img/ui-icons.svg#chevron-down"/></svg></li>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                </ul>
+                            <ul>
+                                <li class="btn btn-outline-secondary" onclick="window.print()">Schnelldruck</li>
                             </ul>
                         </li>
                         <?php if(getConstant("ENABLE_LOCAL_BACKUPS", true)){ ?>
@@ -81,7 +78,6 @@ if(!isset($loginHandler)){
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li class="dropdown-item" onclick="onMenuItemClicked(this, 'sort-Name-Fach')">Name, Fach</li>
                                     <li class="dropdown-item" onclick="onMenuItemClicked(this, 'sort-Fach-Name')">Fach, Name</li>
-                                    <li class="dropdown-item" onclick="onMenuItemClicked(this, 'sort-Klasse-Name')">Klasse, Name</li>
                                     <li class="dropdown-item" onclick="onMenuItemClicked(this, 'sort-Klasse-Fach')">Klasse, Fach</li>
                                 </ul>
                             </ul>
@@ -194,13 +190,16 @@ if(!isset($loginHandler)){
             </div>
             <?php if(getConstant("SHOW_CLASS_TEACHER_TAB", true)){ ?>
             <div class="nav-item">
-                <button class="nav-link" onclick="onNavButtonClicked(this, 'data-class-teacher')">Klassenleitung</button>
+                <button id="tab-class-teacher" class="nav-link" onclick="onNavButtonClicked(this, 'data-class-teacher')">Klassenleitung</button>
             </div><?php } ?>
             <?php if(getConstant("SHOW_EXAMS_TAB", true)){ ?>
                 <div class="nav-item">
-                <button class="nav-link" onclick="onNavButtonClicked(this, 'data-exams')">Zentr. Prf.</button>
+                <button id="tab-exams" class="nav-link" onclick="onNavButtonClicked(this, 'data-exams')">Zentr. Prf.</button>
             </div><?php } ?>
         </div>
+    </div>
+    <div id="print-header">
+        <p>Lehrer: <?php echo $loginHandler->getUsername(); ?> | Datum: <?php echo date("d.m.Y"); ?></p>
     </div>
     <div id="data-container-boundary">
         <div id="data-container">

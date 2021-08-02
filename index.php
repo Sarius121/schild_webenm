@@ -54,6 +54,7 @@ if($loginHandler->isLoggedIn()){
         <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="lib/editablegrid/editablegrid.css">
         <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/print.css">
         <script src="js/jquery-3.5.1.min.js"></script>
         <script src="js/jquery-ui.min.js"></script>
         <script src="js/popper.min.js"></script>
