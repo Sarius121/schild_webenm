@@ -6,7 +6,9 @@ body
 .form-control,
 .btn,
 .dropdown-menu,
-.nav-tabs .nav-link
+.nav-tabs .nav-link,
+.modal-content,
+.form-check-input[type=checkbox]
 {
     border-radius: 0;
 }
@@ -65,7 +67,49 @@ svg
     display: none;
 }
 
+input:hover,
+textarea:hover
+{
+    border-color: #86b7fe;
+}
+
 /*#################### login #################### */
+#login-box
+{
+    background-color: transparent;
+    padding: 0;
+}
+
+#login-box div.logo
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1em;
+    color: var(--bs-gray-dark);
+}
+
+#login-box div.logo img
+{
+    width: 3em;
+    padding-right: 1em;
+}
+
+#login-box div.form
+{
+    background-color: #FFF;
+    padding: 1em;
+}
+
+#login-box div.form form
+{
+    margin-bottom: 0;
+}
+
+#login-box div.form input[type="submit"]
+{
+    margin-bottom: 0;
+}
 
 #login-box input
 {
@@ -76,7 +120,6 @@ svg
     padding: 0.5em;
     transition-property: border-color, background-color;
     transition-duration:  0.5s;
-    
 }
 
 #login-box input:focus
@@ -84,14 +127,28 @@ svg
     outline: none;
 }
 
-#login-box input:hover
-{
-    border-color: black;
-}
-
 #login-box label
 {
     margin: 0;
+}
+
+.footer
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--bs-gray-dark);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5em 1em;
+    color: #FFF;
+}
+
+.footer a
+{
+    color: #FFF;
 }
 
 /*#################### header #################### */
@@ -103,11 +160,13 @@ svg
 #header h2
 {
     margin: 0;
+    color: var(--bs-gray-dark);
 }
 
 #header img
 {
     height: 2.5rem; /* TODO */
+    padding-left: 1em;
 }
 
 /*#################### nav #################### */

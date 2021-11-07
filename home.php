@@ -14,7 +14,7 @@ if(!isset($loginHandler)){
     <div id="top-box">
         <div id="header" class="row">
             <div class="col-sm-auto">
-                <img src="img/schild_logo.png">
+                <img src="img/webenm-logo-color.svg">
             </div>
             <div class="col-sm">
                 <h2>webENM</h2>
@@ -94,7 +94,7 @@ if(!isset($loginHandler)){
                     <ul class="body">
                         <li><div class="group-header">Hilfe</div>
                             <ul class="btn-group">
-                                <li class="btn btn-outline-secondary disabled"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-up-right"/></svg><span> Dokumentation</span></li>
+                                <li class="btn btn-outline-secondary" onclick="window.open('doc/webENM Benutzerdokumentation.pdf', '_blank')"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-up-right"/></svg><span> Dokumentation</span></li>
                                 <li class="btn btn-outline-secondary" onclick="onMenuItemClicked(this, 'information')">Informationen</li>
                             </ul>
                         </li>
@@ -254,7 +254,6 @@ if(!isset($loginHandler)){
     <p>Copyright © Sarius121</p>
     <p>Programmversion: 0.1.1 (14.06.2021)</p>
     <p>Diese Software ist OpenSource und in Github einsehbar: <a href="https://github.com/Sarius121/schild_webenm">https://github.com/Sarius121/schild_webenm</a></p>
-    <p>Das Logo ist Eigentum des Ministeriums für Schule und Bildung, 40190 Düsseldorf<br>Die Symbole stammen von Bootstrap (<a href="https://icons.getbootstrap.com">https://icons.getbootstrap.com</a>)</p>
     <?php
     echo $informationModal->getHTMLAfterBody();
 ?>

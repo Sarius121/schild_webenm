@@ -9,3 +9,4 @@ grade-files/tmp/*
 grade-files/source/*
 !grade-files/working/
 grade-files/working/*
+doc/

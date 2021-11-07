@@ -49,7 +49,7 @@ if($loginHandler->isLoggedIn()){
     <head>
         <title>webENM</title>
 
-        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+        <link rel="icon" class="js-site-favicon" type="image/svg+xml" href="img/webenm-logo-color.svg">
 
         <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="lib/editablegrid/editablegrid.css">
