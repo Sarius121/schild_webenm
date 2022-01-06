@@ -1,5 +1,7 @@
 <?php
 
+require_once("utils.php");
+
 require_once("lib/MDBConnector/MDBDatabase.php");
 
 require_once("lib/ENMLibrary/BackupHandler.php");

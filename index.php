@@ -51,30 +51,30 @@ if($loginHandler->isLoggedIn()){
 
         <link rel="icon" class="js-site-favicon" type="image/svg+xml" href="img/webenm-logo-color.svg">
 
-        <link rel="stylesheet" href="css/bootstrap.css">
-        <link rel="stylesheet" href="lib/editablegrid/editablegrid.css">
-        <link rel="stylesheet" href="css/style.css">
-        <link rel="stylesheet" href="css/print.css">
-        <script src="js/jquery-3.5.1.min.js"></script>
-        <script src="js/jquery-ui.min.js"></script>
-        <script src="js/popper.min.js"></script>
-        <script src="js/bootstrap.js"></script>
-        <script src="lib/editablegrid/editablegrid.js"></script>
-        <!-- [DO NOT DEPLOY] --> <script src="lib/editablegrid/editablegrid_renderers.js" ></script>
-		<!-- [DO NOT DEPLOY] --> <script src="js/editablegrid_editors.js" ></script>
-		<!-- [DO NOT DEPLOY] --> <script src="lib/editablegrid/editablegrid_validators.js" ></script>
-		<!-- [DO NOT DEPLOY] --> <script src="lib/editablegrid/editablegrid_utils.js" ></script>
-		<!-- [DO NOT DEPLOY] --> <script src="lib/editablegrid/editablegrid_charts.js" ></script>
-        <script src="js/nav.js"></script>
-        <script src="js/tab-layout.js"></script>
-        <script src="js/custom-editablegrid.js"></script>
-        <script src="js/gradeTable.js"></script>
-        <script src="js/grades-list.js"></script>
-        <script src="js/textarea-caret-position.js"></script>
-        <script src="js/classTeacherTable.js"></script>
-        <script src="js/examsTable.js"></script>
+        <link rel="stylesheet" href="<?php echo auto_version('/css/bootstrap.css'); ?>">
+        <link rel="stylesheet" href="<?php echo auto_version('/lib/editablegrid/editablegrid.css'); ?>">
+        <link rel="stylesheet" href="<?php echo auto_version('/css/style.css'); ?>">
+        <link rel="stylesheet" href="<?php echo auto_version('/css/print.css'); ?>">
+        <script src="<?php echo auto_version('/js/jquery-3.5.1.min.js'); ?>"></script>
+        <script src="<?php echo auto_version('/js/jquery-ui.min.js'); ?>"></script>
+        <script src="<?php echo auto_version('/js/popper.min.js'); ?>"></script>
+        <script src="<?php echo auto_version('/js/bootstrap.js'); ?>"></script>
+        <script src="<?php echo auto_version('/lib/editablegrid/editablegrid.js'); ?>"></script>
+        <!-- [DO NOT DEPLOY] --> <script src="<?php echo auto_version('/lib/editablegrid/editablegrid_renderers.js'); ?>" ></script>
+		<!-- [DO NOT DEPLOY] --> <script src="<?php echo auto_version('/js/editablegrid_editors.js'); ?>" ></script>
+		<!-- [DO NOT DEPLOY] --> <script src="<?php echo auto_version('/lib/editablegrid/editablegrid_validators.js'); ?>" ></script>
+		<!-- [DO NOT DEPLOY] --> <script src="<?php echo auto_version('/lib/editablegrid/editablegrid_utils.js'); ?>" ></script>
+		<!-- [DO NOT DEPLOY] --> <script src="<?php echo auto_version('/lib/editablegrid/editablegrid_charts.js'); ?>" ></script>
+        <script src="<?php echo auto_version('/js/nav.js'); ?>"></script>
+        <script src="<?php echo auto_version('/js/tab-layout.js'); ?>"></script>
+        <script src="<?php echo auto_version('/js/custom-editablegrid.js'); ?>"></script>
+        <script src="<?php echo auto_version('/js/gradeTable.js'); ?>"></script>
+        <script src="<?php echo auto_version('/js/grades-list.js'); ?>"></script>
+        <script src="<?php echo auto_version('/js/textarea-caret-position.js'); ?>"></script>
+        <script src="<?php echo auto_version('/js/classTeacherTable.js'); ?>"></script>
+        <script src="<?php echo auto_version('/js/examsTable.js'); ?>"></script>
 
-        <script src="js/progress-message-box.js"></script>
+        <script src="<?php echo auto_version('/js/progress-message-box.js'); ?>"></script>
     </head>
     <body>
         <?php 
