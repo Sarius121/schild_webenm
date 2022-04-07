@@ -2,48 +2,68 @@
 
 namespace ENMLibrary;
 
-//TODO new basename
 class BackupHandler {
 
-    public function oldBackupExists($username){
-        return file_exists(GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz-old");
+    /**
+     * check whether a backup file for a user exists
+     * 
+     * @param string $basename name of the file in the source directory (without file extension)
+     * @return true|false true if an old backup exists, false otherwise
+     */
+    public function oldBackupExists($basename){
+        return file_exists(GRADE_FILES_DIRECTORY . $basename . ".enz-old");
     }
 
-    public function upload($file, $username, $password) {
+    /**
+     * upload file
+     * 
+     * @param string $basename name of the file in the source directory (without file extension)
+     */
+    public function upload($file, $password, $basename) {
         if(!$this->doSuperficialFileCheck($file)){
             return false;
         }
 
-        $target_file = GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz-new";
+        // move file to working directory (with -new suffix)
+        $target_file = GRADE_FILES_DIRECTORY . $basename . ".enz-new";
         if(!move_uploaded_file($file["tmp_name"], $target_file)){
             return false;
         }
 
-        if(!$this->doDetailedFileCheck($target_file, $username, $password)){
-            //delete uploaded file
+        if(!$this->doDetailedFileCheck($target_file, $password, $basename)){
+            // delete uploaded file if check fails
             unlink($target_file);
             return false;
         }
 
-        $current_file = GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz";
-        $old_target_file = GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz-old";
+        $current_file = SOURCE_GRADE_FILES_DIRECTORY . $basename . ".enz";
+        // old files are not stored in source directory but the working directory
+        $old_target_file = GRADE_FILES_DIRECTORY . $basename . ".enz-old";
 
+        // add -old suffix to old file
         if(rename($current_file, $old_target_file)){
             if(rename($target_file, $current_file)){
-                //upload accomplished
+                // upload accomplished
                 return true;
             } else {
-                //if an error occurs move old file back
+                // if an error occurs move old file back
                 rename($old_target_file, $current_file);
-                //unlink($old_target_file); -> TODO too risky?
+                // unlink($old_target_file); -> TODO too risky?
             }
         }
 
+        // delete uploaded file
         unlink($target_file);
 
         return false;
     }
 
+    /**
+     * check size and file extension (valid grade files without the enz-extension are not accepted)
+     * 
+     * @param $file file to check
+     * @return true|false true if file passes checks, false otherwise
+     */
     private function doSuperficialFileCheck($file){
         //check size
         if($file["size"] > 10000000){
@@ -60,10 +80,18 @@ class BackupHandler {
         return true;
     }
 
-    private function doDetailedFileCheck($target, $username, $password){
-        //detailed file type check
+    /**
+     * check if file is an encrypted zip file, is accessable with zip-password and contains a file.
+     * check if the file inside the archive is accessable with user's password and contains all required tables
+     * 
+     * @param string $target archive file to check
+     * @param string $password user's password
+     * @param string $basename name of the file in the source directory (without file extension)
+     * @return true|false true if file passes checks, false otherwise
+     */
+    private function doDetailedFileCheck($target, $password, $basename){
         //is file zip archive encrypted with the right password?
-        $tmp_grade_file = TMP_GRADE_FILES_DIRECTORY . "new-" . $username . FILE_SUFFIX . ".enm";
+        $tmp_grade_file = TMP_GRADE_FILES_DIRECTORY . "new-" . $basename . ".enm";
         $zipArchive = new EncryptedZipArchive($target, $tmp_grade_file);
         if(!$zipArchive->open()){
             //file is not an encrypted zip archive or the password is wrong
@@ -93,23 +121,25 @@ class BackupHandler {
     }
 
     /**
-     * remove current grade file and rename old file
+     * remove current grade file and move old file to current file
+     * 
+     * @param string $basename name of the file in the source directory (without file extension)
      */
-    public function undoBackupRestore($username){
-        if(!$this->oldBackupExists($username)){
+    public function undoBackupRestore($basename){
+        if(!$this->oldBackupExists($basename)){
             return false;
         }
-        $current_file = GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz";
-        $old_file = GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz-old";
+        $current_file = SOURCE_GRADE_FILES_DIRECTORY . $basename . ".enz";
+        $old_file = GRADE_FILES_DIRECTORY . $basename . ".enz-old";
 
-        $current_safety_file = GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . ".enz-safe";
+        $current_safety_file = GRADE_FILES_DIRECTORY . $basename . ".enz-safe";
 
         if(rename($current_file, $current_safety_file)){
             if(rename($old_file, $current_file)){
                 unlink($current_safety_file);
                 return true;
             } else {
-                //undo rename
+                // undo rename
                 rename($current_safety_file, $current_file);
             }
         }

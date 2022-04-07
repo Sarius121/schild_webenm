@@ -199,21 +199,33 @@ class LoginHandler {
         return $this->encryptedGradeFile->saveChanges() && $this->sourceFile->saveFile();
     }
 
+    /**
+     * close file completely (tmp-file and working-file)
+     * 
+     * @param bool $saveChanges shall the changes be saved before closing the file?
+     * @return true|false true if closing succeeds, false otherwise
+     */
     public function closeFile($saveChanges = true){
         if($this->gradeFile != null) { $this->gradeFile->close(); }
         $success = true;
         if($this->encryptedGradeFile != null) { $success = $this->encryptedGradeFile->close($saveChanges); }
-        if($this->sourceFile != null) { $success = $success && $this->sourceFile->closeFile(); }
+        if($this->sourceFile != null) { $success = $success && $this->sourceFile->closeFile($saveChanges); }
         return $success;
     }
 
-    public function reopenFile($saveChanges){
+    /**
+     * reopen file
+     * 
+     * @param bool $saveChanges shall the changes be saved before reopening the file?
+     * @return true|false true if reopening succeeds, false otherwise
+     */
+    public function reopenFile($saveChanges = true){
         if(!$this->isLoggedIn()){
             return false;
         }
-        //source file is not reopened!
         if($this->closeFile($saveChanges)){
-            return $this->encryptedGradeFile->open();
+            $success = $this->sourceFile->openFile();
+            return $success && $this->encryptedGradeFile->open();
         }
         return false;
     }
