@@ -6,7 +6,7 @@ class Modal{
 
     private const HTML_START = '<div id="';
     private const HTML_AFTER_ID = '" class="modal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">';
-    private const HTML_AFTER_TITLE = '</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body">';
+    private const HTML_AFTER_TITLE = '</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button></div><div class="modal-body">';
     private const HTML_AFTER_BODY = '</div><div class="modal-footer">';
     private const HTML_END = '</div></div></div></div>';
 
