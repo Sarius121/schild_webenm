@@ -12,8 +12,8 @@ class LoginHandler {
     private $username;
     private $error = false;
     private $gradeFile;
-    private $encryptedGradeFile;
-    private $sourceFile;
+    private EncryptedZipArchive $encryptedGradeFile;
+    private SourceFileHandler $sourceFile;
     private $differentSessionActive = false;
 
     private $basename;
