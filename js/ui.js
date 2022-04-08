@@ -1,3 +1,35 @@
+// specifies whether a warning should be displayed before closing or reloading the website
+preventAppClosing = false;
+
+/**
+ * prevent app from closing if there are unsaved changes
+ * is currently triggered if a backup is uploaded or being undone
+ * annotation regarding data changes: data changes are directly saved on the server (but not necessarily directly to the source file)
+ */
+window.onbeforeunload = function(){
+    if(preventAppClosing){
+        console.log("prevent");
+        return "Ein Vorgang ist nicht beendet. Wenn du das Fenster schließt, wird der Vorgang abgebrochen.";
+    } else {
+        return;
+    }
+}
+
+/**
+ * make modals draggable at the modal header
+ */
+window.addEventListener("load", function(event) {
+    $(".modal-dialog").draggable({ cancel: ".modal-body, .modal-footer", containment: "html", scroll: false });
+});
+
+
+/**
+ * is called when menu tab button is clicked
+ * changes the visible menu tab
+ * 
+ * @param {*} tabHeader tab button on which the user clicked
+ * @param {*} tabName menu tab to show
+ */
 function onTabClicked(tabHeader, tabName){
     $("#menu-tab ul.body").removeClass('visible');
     document.getElementById(tabName).classList.add("visible");
@@ -6,6 +38,13 @@ function onTabClicked(tabHeader, tabName){
     $(tabHeader).addClass('active');
 }
 
+/**
+ * is called when a menu item is clicked
+ * do action which belongs to the clicked menu item
+ * 
+ * @param {*} item clicked menu item
+ * @param {*} action action to do
+ */
 function onMenuItemClicked(item, action){
     if(item.classList.contains("disabled")){
         return;
@@ -65,17 +104,12 @@ function onMenuItemClicked(item, action){
     }
 }
 
-preventAppClosing = false;
-
-window.onbeforeunload = function(){
-    if(preventAppClosing){
-        console.log("prevent");
-        return "Ein Vorgang ist nicht beendet. Wenn du das Fenster schließt, wird der Vorgang abgebrochen.";
-    } else {
-        return;
-    }
-}
-
+/**
+ * is called when a local backup file was selected
+ * uploads the backup and tries to restore it
+ * 
+ * @param {*} files selected backup files
+ */
 function onRestoreBackupFileSelected(files){
     if(files.length > 0){
         var formData = new FormData();
@@ -114,6 +148,10 @@ function onRestoreBackupFileSelected(files){
     }
 }
 
+/**
+ * is called when the menu item undo backup is clicked
+ * try to undo last backup
+ */
 function undoBackupRestore(){
     var httpRequest = new XMLHttpRequest();
     httpRequest.open("POST", "backup-file.php?action=undo");
@@ -144,6 +182,10 @@ function undoBackupRestore(){
     httpRequest.send();
 }
 
+/**
+ * is called when the menu item save is clicked
+ * saves the current changes in the grade file to the source file
+ */
 function saveChanges(){
     var httpRequest = new XMLHttpRequest();
     httpRequest.open("POST", "inactive-actions.php?action=save-changes");
@@ -174,6 +216,10 @@ function saveChanges(){
     httpRequest.send();
 }
 
+/**
+ * is called when the filter modal is submitted
+ * filters the current data table by the selected filters
+ */
 function filterDataTable(){
     var id = $("#data-container .visible").first().attr("id");
     var tablePrefix = id.replace("data-", "");
@@ -216,6 +262,11 @@ function filterDataTable(){
     $("#filter-modal").modal("hide");
 }
 
+/**
+ * is called when the menu item sort is clicked
+ * 
+ * @param {*} columns columns to sort by
+ */
 function sortCurrentTable(columns = []){
     var id = $("#data-container .visible").first().attr("id");
     var table = null;
@@ -236,4 +287,33 @@ function sortCurrentTable(columns = []){
             return;
     }
     table.sortTable(columns);
+}
+
+/**
+ * is called when tab navigation button was clicked
+ * change visible data tab
+ * 
+ * @param {*} btn button on which the user clicked
+ * @param {*} data data tab to show
+ */
+function onNavButtonClicked(btn, data){
+    $("#data-container > div").removeClass('visible');
+    document.getElementById(data).classList.add("visible");
+
+    //add active class to nav-link
+    $("#nav-data .nav-link").removeClass('active');
+    btn.classList.add('active');
+
+    //adjust possible sort methods
+    switch(data){
+        case "data-grades":
+            $("#sort-menu-items").toggleClass("disabled", false);
+            break;
+        case "data-class-teacher":
+            $("#sort-menu-items").toggleClass("disabled", true);
+            break;
+        case "data-exams":
+            $("#sort-menu-items").toggleClass("disabled", false);
+            break;
+    }
 }

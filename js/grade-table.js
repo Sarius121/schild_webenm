@@ -1,8 +1,6 @@
-window.addEventListener("load", function(event) {
-    //$(".editablegrid-NotenKrz").click(onGradeCellClicked);
-    //$("#gradeTable .editablegrid-NotenKrz").css("color", "red");
-});
-
+/**
+ * this table contains the students' grades
+ */
 class GradeTable extends CustomEditableGrid{
 
     loadingRemoved = false;
@@ -76,46 +74,21 @@ class GradeTable extends CustomEditableGrid{
     }
 }
 
+/**
+ * custom text editor for editablegrid which converts the input to upper case letters
+ * 
+ * @class UpperCaseTextEditor
+ */
 function UpperCaseTextEditor() 
 {
 
 };
 
-//inherits TextCellEditor functionalities
+// inherits TextCellEditor functionalities
 UpperCaseTextEditor.prototype = new TextCellEditor();
 
-//redefine displayEditor to setup autocomplete
+// redefine displayEditor to setup autocomplete
 UpperCaseTextEditor.prototype.formatValue = function(value)
 {
 	return value.toUpperCase();
 };
-
-/*function onGradeTableLoaded(){
-    $("#gradeTable .editablegrid-NotenKrz").dblclick(onGradeCellDoubleClicked);
-}
-
-activeRow = 1;
-
-function onGradeCellDoubleClicked(event){
-    //get row
-    cell = event.currentTarget;
-    activeRow = parseInt(cell.parentElement.id.split("_")[1]);
-
-    //show grade selection modal
-    //TODO show grades modal
-    
-    cell.parentElement.classList.add("active");
-}
-
-function onGradeCellKeyPressed(event){
-    cell = event.target;
-    cell.style.setProperty("background-color", "red");
-}
-
-function focusCell(row, col){
-    //get row (activeRow is set in gradeTable.js)
-    selector = "#GradeTable_" + row + " " + col;
-
-    //simulate click and set value of input
-    $(selector).trigger('click');
-}*/

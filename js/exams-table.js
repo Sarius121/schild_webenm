@@ -1,3 +1,6 @@
+/**
+ * this table contains the students' exam data
+ */
 class ExamsTable extends CustomEditableGrid{
 
     constructor(json, gradesJSON){

@@ -1,5 +1,6 @@
 /**
- * ClassTeacherTable
+ * this table contains the class teacher data i.e. data about social behaviour, missing hours, ...
+ * 
  * @constructor
  * @class ClassTeacherTable Class
  */
@@ -94,7 +95,8 @@ class ClassTeacherTable extends CustomEditableGrid{
 }
 
 /**
- * PhrasesTable
+ * this table contains the available phrases to include in the class teacher data cells about social behaviour and something like that
+ * 
  * @constructor
  * @class PhrasesTable Class
  */
@@ -320,6 +322,9 @@ class PhrasesTable extends CustomEditableGrid{
     }
 }
 
+/**
+ * this class controls the auto complete box showed while typing in the phrase codes into the phrase textareas in the phrases modal
+ */
 class AutoCompleteBox {
 
     active = false;

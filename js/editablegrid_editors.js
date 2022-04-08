@@ -1,4 +1,7 @@
 /**
+ * this class was adjusted to allow users to switch between cells with the arrow keys by Sarius121
+ * original class belongs to editable-grid
+ * 
  * Abstract cell editor
  * @constructor
  * @class Base class for all cell editors

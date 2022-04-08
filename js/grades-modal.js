@@ -1,51 +1,7 @@
-window.addEventListener("load", function(event) {
-    $(".modal-dialog").draggable({ cancel: ".modal-body, .modal-footer", containment: "html", scroll: false });
-});
-
-/*selectedGrade = "";
-
-function onGradesListRowClicked(row, grade){
-    $("#grades-list .row").removeClass('selected');
-    row.classList.add("selected");
-
-    selectedGrade = grade;
-}
-
-function onGradesListRowDoubleClicked(grade){
-    selectedGrade = grade;
-    onGradesListOKClicked();
-}
-
-function onGradesListOKClicked(){
-    //hide modal
-    $('gradeTable .active').removeClass('active');
-    $('#grades-modal').modal('hide');
-
-    //get row (activeRow is set in gradeTable.js)
-    row = activeRow;
-
-    //set value of input
-    //focusCell(row, ".editablegrid-NotenKrz") //focus is already set by modal.onhide
-    $("#gradeTable input").val(selectedGrade);
-}
-
-function filterGrades(filterType){
-    console.log("filter");
-    var rows = $("#grades-list .row");
-
-    rows.each(function() {
-        if($(this).hasClass("grid-header")){
-            return;
-        }
-        var type = $(this).children().last().html();
-        if(filterType == null || type == filterType){
-            $(this).removeClass("hidden");
-        } else {
-            $(this).addClass("hidden");
-        }
-    });
-}*/
-
+/**
+ * this modal shows all valid grades for a specific cell and allows the user to select a grade instead of typing it
+ * this modal is based on the bootstrap grid and not on the editable grid
+ */
 class GradesModal{
     constructor(){
         const that = this;
