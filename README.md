@@ -54,7 +54,7 @@ For the following configuration files, *constants.php-example* files are include
 The source directory can be synchronized with a file location. In my setup it is synchronized with a WebDAV share. At the moment this synchonization has to be configured on the machine and cannot be handled by this application.
 
 ## Security
-As I am not a professional software developer or cyber security specialist I cannot guarantee that there are no security issues in this app. You should only use it in an internal network or provide extra security e.g. with a HTTP authentication. When using it outside a safe environment it is furthermore highly recommended to use HTTPS and HSTS as the passwords are send as plain text. There are at least some measures against sql injections but since I couldn't get prepared statements to work in the mdb_connector_server it is not perfectly secured at all. Furthermore there are no security measures against XSS or other attacks.
+As I am not a professional software developer or cyber security specialist I cannot guarantee that there are no security issues in this app. You should only use it in an internal network or provide extra security e.g. with a HTTP authentication. When using it outside a safe environment it is furthermore highly recommended to use HTTPS and HSTS.
 
 I don't take any responsibility for security flaws and this app does not follow the german data processing laws. In my opinion, this app is nevertheless more secure than the often usual "sending not encrypted grade files by email" method (by working on this project I noticed how badly protected the not encrypted grade files are).
 

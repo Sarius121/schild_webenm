@@ -91,10 +91,10 @@ class GradeFile {
             $value = "NULL";
         }
 
-        $sql = 'UPDATE [%s] SET [%s] = %s WHERE [%s] = %s;';
-        $values = [$table, $col, $value, $priKeyCol, $priKey];
+        $sql = 'UPDATE [' . $table . '] SET [' . $col . '] = ' . $value . ' WHERE [' . $priKeyCol . '] = ' . $priKey . ';';
+        print_r($sql);
         try{
-            $result = $this->db->execute($this->db->prepareStatement($sql, $values));
+            $result = $this->db->execute($sql);
             print_r($result);
             return $result;
         } catch(Exception $e){
@@ -104,7 +104,6 @@ class GradeFile {
     }
 
     public function fetchTableData($tablename, $columns, $filter = null, $dict = false){
-        $values = [];
         $columnList = "";
         $first = true;
         if(count($columns) == 0){
@@ -116,19 +115,17 @@ class GradeFile {
                 } else {
                     $columnList .= ", ";
                 }
-                $columnList .= "[%s]";
-                $values[] = $col["name"];
+                $columnList .= "[" . $col["name"] . "]";
             }
         }
 
-        $sql = "SELECT " . $columnList . " FROM [%s]";
-        $values[] = $tablename;
+        $sql = "SELECT " . $columnList . " FROM [" . $tablename . "]";
         if($filter != null){
             $sql .= " WHERE " . $filter;
         }
         $sql .= ";";
 
-        $result = $this->db->query($this->db->prepareStatement($sql, $values), $dict);
+        $result = $this->db->query($sql, $dict);
         return $result;
     }
 

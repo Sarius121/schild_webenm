@@ -3,7 +3,6 @@
 namespace MDBConnector;
 
 use Exception;
-use mysqli;
 
 require_once("constants.php");
 
@@ -116,29 +115,6 @@ class MDBDatabase{
 
     public function isConnected(){
         return $this->connID != null;
-    }
-
-    public function prepareStatement($sql, $values){
-        for($i = 0; $i < count($values); $i++){
-            $values[$i] = $this->escape($values[$i]);
-        }
-        return sprintf($sql, $values);
-    }
-
-    /**
-     * edited function from https://stackoverflow.com/questions/4892882/mysql-real-escape-string-for-multibyte-without-a-connection
-     */
-    public function escape($string) {
-        $return = '';
-        for($i = 0; $i < strlen($string); $i++) {
-            $char = $string[$i];
-            $ord = ord($char);
-            if($char !== "'" && $char !== "\"" && $char !== '\\' && $ord >= 32 && $ord <= 126)
-                $return .= $char;
-            else
-                $return .= '\\x' . dechex($ord);
-        }
-        return $return;
     }
 
 }
