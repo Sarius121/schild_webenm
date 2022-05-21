@@ -9,7 +9,7 @@ $jsonExamsTable = $examsData->getJSON();
     <script>
         window.addEventListener("load", function(event) {
             <?php if($jsonExamsTable != false){ ?>
-                examsTable = new ExamsTable(<?php echo $jsonExamsTable; ?>, <?php echo json_encode($grades); ?>);
+                examsTable = new ExamsTable(requests, <?php echo $jsonExamsTable; ?>, <?php echo json_encode($grades); ?>);
                 examsTable.renderGrid();
             <?php } else { ?>
                 document.getElementById("tab-exams").classList.add("disabled");

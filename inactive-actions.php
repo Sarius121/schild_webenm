@@ -1,11 +1,12 @@
 <?php
 
 use ENMLibrary\LoginHandler;
+use ENMLibrary\RequestResponse;
 
 include("imports.php");
 
-if(!isset($_GET["action"])){
-    die("missing arguments");
+if(!isset($_POST["action"]) || !isset($_POST["csrf_token"])){
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_MISSING_ARGUMENTS)->getResponse());
 }
 
 //try opening database
@@ -17,19 +18,23 @@ if(!$loginHandler->isLoggedIn()){
     die();
 }
 
+if(!$loginHandler->checkCSRFToken($_POST["csrf_token"])){
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_CSRF_TOKEN)->getResponse());
+}
+
 //database is now accessable
 
-if($_GET["action"] == "save-changes"){
+if($_POST["action"] == "save-changes"){
     $loginHandler->getGradeFile()->close();
 
     if($loginHandler->saveFileChanges()){
-        echo "success";
+        echo RequestResponse::SuccessfulResponse($loginHandler->getCSRFToken())->getResponse();
         exit;
     }
-    echo "error saving changes";
+    echo RequestResponse::ErrorResponse(RequestResponse::ERROR_FUNCTION_SPECIFIC)->getResponse();
     exit;
 } else {
-    die("wrong arguments");
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_WRONG_ARGUMENTS)->getResponse());
 }
     
 ?>

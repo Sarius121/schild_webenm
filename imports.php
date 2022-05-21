@@ -4,6 +4,7 @@ require_once("utils.php");
 
 require_once("lib/MDBConnector/MDBDatabase.php");
 
+require_once("lib/ENMLibrary/RequestResponse.php");
 require_once("lib/ENMLibrary/BackupHandler.php");
 require_once("lib/ENMLibrary/LoginHandler.php");
 require_once("lib/ENMLibrary/GradeFile.php");

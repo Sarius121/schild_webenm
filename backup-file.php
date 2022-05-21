@@ -2,11 +2,12 @@
 
 use ENMLibrary\BackupHandler;
 use ENMLibrary\LoginHandler;
+use ENMLibrary\RequestResponse;
 
 include("imports.php");
 
-if(!isset($_GET["action"])){
-    die("missing arguments");
+if(!isset($_POST["action"]) || !isset($_POST["csrf_token"])){
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_MISSING_ARGUMENTS)->getResponse());
 }
 
 //try opening database
@@ -18,39 +19,30 @@ if(!$loginHandler->isLoggedIn()){
     die();
 }
 
+if(!$loginHandler->checkCSRFToken($_POST["csrf_token"])){
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_CSRF_TOKEN)->getResponse());
+}
+
 //database is now accessable
 $loginHandler->getGradeFile()->close();
 $loginHandler->saveFileChanges();
 
-//print_r($loginHandler->getGradeFilename());
-
-/*header("Content-Disposition: attachment; filename=\"" . $loginHandler->getGradeFilename() . "\"");
-header("Pragma: public");
-header("Cache-Control: must-revalidate, post-check=0, pre-check=0");*/
-
 $path = $loginHandler->getSourceFilename($loginHandler->getUsername());
 if(!file_exists($path)){
-    http_response_code(404);
-    die();
+    //http_response_code(404);
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_FUNCTION_SPECIFIC, $loginHandler->getCSRFToken())->getResponse());
 }
 
-if($_GET["action"] == "create"){
+if($_POST["action"] == "create"){
     /*
-     * download grade file from source directory
+     * create download token and return it
      */
-    header('Content-Description: File Transfer');
-    header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename='.basename($path));
-    header('Content-Transfer-Encoding: binary');
-    header('Expires: 0');
-    header('Cache-Control: must-revalidate');
-    header('Pragma: public');
-    header('Content-Length: ' . filesize($path));
-    ob_clean();
-    flush();
-    readfile($path);
+    $token = $loginHandler->generateDownloadToken();
+    $response = RequestResponse::SuccessfulResponse($loginHandler->getCSRFToken());
+    $response->addData("download_token", $token);
+    echo $response->getResponse();
     exit;
-} else if($_GET["action"] == "restore"){
+} else if($_POST["action"] == "restore"){
     /*
      * upload grade file
      */
@@ -60,26 +52,26 @@ if($_GET["action"] == "create"){
             $fileUploader = new BackupHandler();
             if($fileUploader->upload($file, $loginHandler->getPassword(), $loginHandler->getBasename($loginHandler->getUsername()))){
                 $loginHandler->reopenFile(false);
-                echo "success";
+                echo RequestResponse::SuccessfulResponse($loginHandler->getCSRFToken())->getResponse();
                 exit;
             }
         }
     }
-    echo "error uploading file";
+    echo RequestResponse::ErrorResponse(RequestResponse::ERROR_FUNCTION_SPECIFIC, $loginHandler->getCSRFToken())->getResponse();
     exit;
-} else if($_GET["action"] == "undo"){
+} else if($_POST["action"] == "undo"){
     /*
      * return to last backup
      */
     $fileUploader = new BackupHandler();
     if($fileUploader->undoBackupRestore($loginHandler->getBasename($loginHandler->getUsername()))){
         $loginHandler->reopenFile(false);
-        echo "success";
+        echo RequestResponse::SuccessfulResponse($loginHandler->getCSRFToken())->getResponse();
         exit;
     }
-    echo "error undo backup";
+    echo RequestResponse::ErrorResponse(RequestResponse::ERROR_FUNCTION_SPECIFIC, $loginHandler->getCSRFToken())->getResponse();
     exit;
 } else{
-    die("wrong arguments");
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_WRONG_ARGUMENTS, $loginHandler->getCSRFToken())->getResponse());
 }
 ?>

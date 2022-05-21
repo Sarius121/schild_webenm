@@ -9,6 +9,9 @@ if(!isset($loginHandler)){
         die("An Error occurred!");
     }
 ?>
+<script>
+    requests = new Requests("<?php echo $loginHandler->getCSRFToken(); ?>");
+</script>
 
 <div id="home-container">
     <div id="top-box">

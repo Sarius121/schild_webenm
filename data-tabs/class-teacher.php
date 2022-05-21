@@ -14,7 +14,7 @@ $jsonPhrasesTable = $phrasesData->getJSON();
     <script>
         window.addEventListener("load", function(event) {
             <?php if($jsonClassTeacherTable != false){ ?>
-                classTeacherTable = new ClassTeacherTable(<?php echo $jsonClassTeacherTable; ?>);
+                classTeacherTable = new ClassTeacherTable(requests, <?php echo $jsonClassTeacherTable; ?>);
                 classTeacherTable.renderGrid();
                 classTeacherTable.renderPhrasesTable(<?php echo $jsonPhrasesTable; ?>);
             <?php } else { ?>

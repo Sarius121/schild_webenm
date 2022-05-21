@@ -6,8 +6,8 @@
  */
 class ClassTeacherTable extends CustomEditableGrid{
 
-    constructor(json){
-        super( "ClassTeacherTable", json, ["Klasse"]);
+    constructor(requests, json){
+        super(requests, "ClassTeacherTable", json, ["Klasse"]);
 
         /*var positiveNumberValidator = new CellValidator({ 
 			isValid: function(value) {
@@ -105,7 +105,7 @@ class PhrasesTable extends CustomEditableGrid{
     autoCompleteBox = new AutoCompleteBox("class-teacher-head", "");
 
     constructor(json, classTeacherTable){
-        super("PhrasesTable", json, ["Floskelgruppe"]);
+        super(null, "PhrasesTable", json, ["Floskelgruppe"]);
         this.classTeacherTable = classTeacherTable;
 
         const that = this;

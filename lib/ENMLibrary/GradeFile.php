@@ -92,10 +92,8 @@ class GradeFile {
         }
 
         $sql = 'UPDATE [' . $table . '] SET [' . $col . '] = ' . $value . ' WHERE [' . $priKeyCol . '] = ' . $priKey . ';';
-        print_r($sql);
         try{
             $result = $this->db->execute($sql);
-            print_r($result);
             return $result;
         } catch(Exception $e){
             $this->error = $e->getMessage();

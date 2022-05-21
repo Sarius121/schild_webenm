@@ -20,7 +20,7 @@ $grades = $gradesData->getGradesArray();
 				editableGrid.load();
                 editableGrid.renderGrid("gradeTable", "gradeGrid");*/
 
-                gradeTable = new GradeTable(<?php echo $jsonStudentGradesTable; ?>, <?php echo json_encode($grades); ?>);
+                gradeTable = new GradeTable(requests, <?php echo $jsonStudentGradesTable; ?>, <?php echo json_encode($grades); ?>);
                 gradeTable.renderGrid();
 			} 
 		</script>

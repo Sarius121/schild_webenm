@@ -69,6 +69,7 @@ if($loginHandler->isLoggedIn()){
 		<script src="<?php echo auto_version('/lib/editablegrid/editablegrid_utils.js'); ?>" ></script>
 		<script src="<?php echo auto_version('/lib/editablegrid/editablegrid_charts.js'); ?>" ></script>
 
+        <script src="<?php echo auto_version('/js/requests.js'); ?>"></script>
         <script src="<?php echo auto_version('/js/ui.js'); ?>"></script>
         <script src="<?php echo auto_version('/js/custom-editablegrid.js'); ?>"></script>
         <script src="<?php echo auto_version('/js/grade-table.js'); ?>"></script>

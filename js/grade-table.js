@@ -5,8 +5,8 @@ class GradeTable extends CustomEditableGrid{
 
     loadingRemoved = false;
 
-    constructor(json, gradesJSON){
-        super("GradeTable", json, ["Klasse", "FachBez", "KurzBez"]);
+    constructor(requests, json, gradesJSON){
+        super(requests, "GradeTable", json, ["Klasse", "FachBez", "KurzBez"]);
 
         this.editableGrid.setCellEditor("NotenKrz", new UpperCaseTextEditor());
 

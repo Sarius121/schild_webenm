@@ -264,6 +264,7 @@ class LoginHandler {
         $_SESSION['username'] = $username;
         $_SESSION['password'] = $password;
         $_SESSION['create'] = time();
+        $this->generateCSRFToken();
         $this->extendSession();
     }
 
@@ -330,6 +331,49 @@ class LoginHandler {
             return $this->basename;
         }
         return false;
+    }
+
+    /**
+     * checks whether the provided csrf token matches the csrf token stored in the session
+     * if it matches, it regenerates the token
+     * 
+     * @param $token the csrf token to compare
+     * @return true|false true if token matches, false otherwise
+     */
+    public function checkCSRFToken($token){
+        if(hash_equals($token, $_SESSION["csrf_token"])){
+            $this->generateCSRFToken();
+            return true;
+        }
+        return false;
+    }
+
+    private function generateCSRFToken(){
+        $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
+    }
+
+    public function getCSRFToken(){
+        return $_SESSION["csrf_token"];
+    }
+
+    /**
+     * checks whether the provided csrf token matches the csrf token stored in the session
+     * if it matches, it regenerates the token
+     * 
+     * @param $token the csrf token to compare
+     * @return true|false true if token matches, false otherwise
+     */
+    public function checkDownloadToken($token){
+        if(hash_equals($token, $_SESSION["download_token"])){
+            unset($_SESSION["download_token"]);
+            return true;
+        }
+        return false;
+    }
+
+    public function generateDownloadToken(){
+        $_SESSION["download_token"] = bin2hex(random_bytes(32));
+        return $_SESSION["download_token"];
     }
 
     public function getGradeFile()

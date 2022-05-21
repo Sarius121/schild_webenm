@@ -2,35 +2,35 @@
 
 use ENMLibrary\GradeFileDataHelper;
 use ENMLibrary\LoginHandler;
+use ENMLibrary\RequestResponse;
 
 include("imports.php");
 
-// POST arguments: session_id, data (json) -> array(["table", "priKeyCol", "priKey", "col", "value"])
-if(!isset($_POST["session_id"])){
-    http_response_code(403);
-    die();
-}
+// POST arguments: data (json) -> array(["table", "priKeyCol", "priKey", "col", "value"])
 
-if(!isset($_POST["data"])){
-    die("missing arguments");
+if(!isset($_POST["data"]) || !isset($_POST["csrf_token"])){
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_MISSING_ARGUMENTS)->getResponse());
 }
 
 //try opening database
-$loginHandler = new LoginHandler($_POST["session_id"]);
+$loginHandler = new LoginHandler();
 $loginHandler->loginWithSession();
  
 if(!$loginHandler->isLoggedIn()){
     http_response_code(403);
     die();
 }
+if(!$loginHandler->checkCSRFToken($_POST["csrf_token"])){
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_CSRF_TOKEN)->getResponse());
+}
 
 //database is now accessable
 try{
     $data = json_decode($_POST["data"]);
 } catch(Exception $e) {
-    die("cannot decode arguments");
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_WRONG_ARGUMENTS, $loginHandler->getCSRFToken())->getResponse());
 }
-print_r($data);
+//print_r($data);
 //die("handling data...");
 
 $fileHelper = new GradeFileDataHelper($loginHandler->getGradeFile());
@@ -43,7 +43,10 @@ foreach($data as $updateRequest){
 }
 
 if(array_search(false, $response)){
-    echo $loginHandler->getGradeFile()->getError();
+    echo RequestResponse::ErrorResponse(RequestResponse::ERROR_FUNCTION_SPECIFIC, $loginHandler->getCSRFToken())->getResponse();
+    //echo $loginHandler->getGradeFile()->getError();
+} else {
+    echo RequestResponse::SuccessfulResponse($loginHandler->getCSRFToken())->getResponse();
 }
 
 $loginHandler->getGradeFile()->close();

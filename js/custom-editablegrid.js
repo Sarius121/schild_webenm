@@ -2,15 +2,24 @@ class CustomEditableGrid{
 
     currentFilter = [];
     possibleFilters = {};
+    requests;
 
-    constructor(name, json, filterCols = []){
+    /**
+     * 
+     * @param {Requests} requests 
+     * @param {*} name 
+     * @param {*} json 
+     * @param {*} filterCols 
+     */
+    constructor(requests, name, json, filterCols = []){
+        this.requests = requests;
         this.name = name;
         this.editableGrid = new EditableGrid(name, {editmode: "static", sortIconUp: "img/caret-up-fill.svg", sortIconDown: "img/caret-down-fill.svg"});
         this.editableGrid.load(json);
 
         // override the function that will handle model changes
         this.editableGrid.modelChanged = function(rowIndex, columnIndex, oldValue, newValue, row) {
-            var sessionID = document.cookie.match(/PHPSESSID=[^;]+/)[0].substring(10);
+            //var sessionID = document.cookie.match(/PHPSESSID=[^;]+/)[0].substring(10);
             
             var priKeyCol = this.columns[0]["name"];
             var priKey = this.data[rowIndex]["columns"][0];
@@ -23,8 +32,12 @@ class CustomEditableGrid{
                 col : col,
                 value : newValue,
             }];
+            var data = new FormData();
+            data.append("data", JSON.stringify(postData));
 
-            var post = "session_id=" + sessionID + "&data=" + encodeURIComponent(JSON.stringify(postData));
+            requests.addRequestToQueue("POST", "push-data.php", data, null);
+
+            /*var post = "session_id=" + sessionID + "&data=" + encodeURIComponent(JSON.stringify(postData));
             //console.log(post);
 
             //TODO send
@@ -35,7 +48,7 @@ class CustomEditableGrid{
             request.onload = function(e){
                 console.log(request.response);
             };
-            request.send(post);
+            request.send(post);*/
         }
 
         var that = this;

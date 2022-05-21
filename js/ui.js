@@ -55,7 +55,13 @@ function onMenuItemClicked(item, action){
             saveChanges();
             break;
         case "create-backup":
-            window.open("backup-file.php?action=create");
+            var data = new FormData();
+            data.append("action", "create");
+            requests.addRequestToQueue("POST", "backup-file.php", data, function(result){
+                if("download_token" in result){
+                    window.open("download.php?token=" + result.download_token);
+                }
+            });
             break;
         case "restore-backup":
             document.getElementById("backupFile").click();
@@ -114,37 +120,30 @@ function onRestoreBackupFileSelected(files){
     if(files.length > 0){
         var formData = new FormData();
         formData.append("backupFile", files[0]);
+        formData.append("action", "restore");
 
-        console.log(formData);
+        var messageBox = new ProgressMessageBox("restoring-backup-modal", "Backup einlesen", "Lese das Backup ein...", "Schließe nicht das Fenster oder lade die Seite neu, während das Backup eingelesen wird!", true);
+        messageBox.show();
+        preventAppClosing = true;
 
         //send file
-        var httpRequest = new XMLHttpRequest();
-        httpRequest.open("POST", "backup-file.php?action=restore");
-        httpRequest.onreadystatechange = function(){
-            if (this.readyState == 4 && this.status == 200) {
-                //success
+        requests.addRequestToQueue("POST", "backup-file.php", formData, function(result){
+            if(result.code == 0){
                 preventAppClosing = false;
-                if(this.responseText == "success"){
-                    messageBox.setStatus(ProgressMessageBox.STATUS_SUCCESS);
-                    messageBox.setMessage("Das Backup wurde erfolgreich hochgeladen. Wenn sich diese Seite nicht automatisch neu lädt, lade die Seite manuell neu, um das hochgeladene Backup zu sehen.");
-                    location.reload();
-                } else {
-                    messageBox.setStatus(ProgressMessageBox.STATUS_FAIL);
-                    messageBox.setMessage("Es ist ein Fehler aufgetreten! Möglicherweise ist die Datei keine Notendatei.");
-                    console.log(this.responseText);
-                }
-            } else if(this.readyState == 4) {
+                messageBox.setStatus(ProgressMessageBox.STATUS_SUCCESS);
+                messageBox.setMessage("Das Backup wurde erfolgreich hochgeladen. Wenn sich diese Seite nicht automatisch neu lädt, lade die Seite manuell neu, um das hochgeladene Backup zu sehen.");
+                location.reload();
+            } else {
                 preventAppClosing = false;
                 //error
                 messageBox.setStatus(ProgressMessageBox.STATUS_FAIL);
-                messageBox.setMessage("Es ist ein Fehler aufgetreten! Kontaktiere den Administrator.");
+                if(result.code == 50){
+                    messageBox.setMessage("Es ist ein Fehler aufgetreten! Möglicherweise ist die Datei keine Notendatei.");
+                } else {
+                    messageBox.setMessage("Es ist ein unbekannter Fehler aufgetreten!");
+                }
             }
-        }
-        var messageBox = new ProgressMessageBox("restoring-backup-modal", "Backup einlesen", "Lese das Backup ein...", "Schließe nicht das Fenster oder lade die Seite neu, während das Backup eingelesen wird!", true);
-        messageBox.show();
-
-        preventAppClosing = true;
-        httpRequest.send(formData);
+        });
     }
 }
 
@@ -153,33 +152,32 @@ function onRestoreBackupFileSelected(files){
  * try to undo last backup
  */
 function undoBackupRestore(){
-    var httpRequest = new XMLHttpRequest();
-    httpRequest.open("POST", "backup-file.php?action=undo");
-    httpRequest.onreadystatechange = function(){
-        if (this.readyState == 4 && this.status == 200) {
-            //success
-            preventAppClosing = false;
-            if(this.responseText == "success"){
-                messageBox.setStatus(ProgressMessageBox.STATUS_SUCCESS);
-                messageBox.setMessage("Es wurde erfolgreich zum letzten Backup zurückgekehrt.");
-                location.reload();
-            } else {
-                messageBox.setStatus(ProgressMessageBox.STATUS_FAIL);
-                messageBox.setMessage("Es ist ein Fehler aufgetreten! Möglicherweise gibt es gar kein altes Backup.");
-                console.log(this.responseText);
-            }
-        } else if(this.readyState == 4) {
-            preventAppClosing = false;
-            //error
-            messageBox.setStatus(ProgressMessageBox.STATUS_FAIL);
-            messageBox.setMessage("Es ist ein Fehler aufgetreten! Kontaktiere den Administrator.");
-        }
-    }
     var messageBox = new ProgressMessageBox("undo-backup-modal", "Backup rückgängig machen", "Kehre zum alten Backup zurück...", "Schließe nicht das Fenster oder lade die Seite neu, während zum alten Backup zurückgekehrt wird!", true);
     messageBox.show();
 
     preventAppClosing = true;
-    httpRequest.send();
+
+    var data = new FormData();
+    data.append("action", "undo");
+
+    requests.addRequestToQueue("POST", "backup-file.php", data, function(result){
+        if(result.code == 0){
+            //success
+            preventAppClosing = false;
+            messageBox.setStatus(ProgressMessageBox.STATUS_SUCCESS);
+            messageBox.setMessage("Es wurde erfolgreich zum letzten Backup zurückgekehrt.");
+            location.reload();
+        } else {
+            preventAppClosing = false;
+            //error
+            messageBox.setStatus(ProgressMessageBox.STATUS_FAIL);
+            if(result.code == 50){
+                messageBox.setMessage("Es ist ein Fehler aufgetreten! Möglicherweise gibt es gar kein altes Backup.");
+            } else {
+                messageBox.setMessage("Es ist ein unbekannter Fehler aufgetreten!");
+            }
+        }
+    });
 }
 
 /**
@@ -187,33 +185,28 @@ function undoBackupRestore(){
  * saves the current changes in the grade file to the source file
  */
 function saveChanges(){
-    var httpRequest = new XMLHttpRequest();
-    httpRequest.open("POST", "inactive-actions.php?action=save-changes");
-    httpRequest.onreadystatechange = function(){
-        if (this.readyState == 4 && this.status == 200) {
+    var messageBox = new ProgressMessageBox("save-changes", "Änderungen speichern", "Die Änderungen werden gesichert...", "Schließe nicht das Fenster oder lade die Seite neu, während die Änderungen gesichert werden! Übrigens: Die Änderungen werden auch automatisch beim Abmelden gesichert.", true);
+    messageBox.show();
+
+    preventAppClosing = true;
+
+    var data = new FormData();
+    data.append("action", "save-changes");
+
+    requests.addRequestToQueue("POST", "inactive-actions.php", data, function(result){
+        if(result.code == 0){
             //success
             preventAppClosing = false;
-            if(this.responseText == "success"){
-                messageBox.setStatus(ProgressMessageBox.STATUS_SUCCESS);
-                messageBox.setMessage("Die Änderungen wurden gesichert.");
-                messageBox.hide();
-            } else {
-                messageBox.setStatus(ProgressMessageBox.STATUS_FAIL);
-                messageBox.setMessage("Es ist ein unbekannter Fehler aufgetreten!");
-                console.log(this.responseText);
-            }
-        } else if(this.readyState == 4) {
+            messageBox.setStatus(ProgressMessageBox.STATUS_SUCCESS);
+            messageBox.setMessage("Die Änderungen wurden gesichert.");
+            messageBox.hide();
+        } else {
             preventAppClosing = false;
             //error
             messageBox.setStatus(ProgressMessageBox.STATUS_FAIL);
             messageBox.setMessage("Es ist ein unbekannter Fehler aufgetreten!");
         }
-    }
-    var messageBox = new ProgressMessageBox("save-changes", "Änderungen speichern", "Die Änderungen werden gesichert...", "Schließe nicht das Fenster oder lade die Seite neu, während die Änderungen gesichert werden! Übrigens: Die Änderungen werden auch automatisch beim Abmelden gesichert.", true);
-    messageBox.show();
-
-    preventAppClosing = true;
-    httpRequest.send();
+    });
 }
 
 /**

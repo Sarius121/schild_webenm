@@ -3,8 +3,8 @@
  */
 class ExamsTable extends CustomEditableGrid{
 
-    constructor(json, gradesJSON){
-        super("ExamsTable", json, ["Klasse", "FachKrz"]);
+    constructor(requests, json, gradesJSON){
+        super(requests, "ExamsTable", json, ["Klasse", "FachKrz"]);
 
         var gradeValidator = new CellValidator({ 
 			isValid: function(value) {
