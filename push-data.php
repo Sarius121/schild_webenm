@@ -4,7 +4,7 @@ use ENMLibrary\GradeFileDataHelper;
 use ENMLibrary\LoginHandler;
 use ENMLibrary\RequestResponse;
 
-include("imports.php");
+include("includes/imports.php");
 
 // POST arguments: data (json) -> array(["table", "priKeyCol", "priKey", "col", "value"])
 

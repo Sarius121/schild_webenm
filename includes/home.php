@@ -127,12 +127,12 @@ if(!isset($loginHandler)){
         <div id="data-container">
             <div id="data-container-loading" class="d-flex justify-content-center" style="margin: 1em 0; visibility: visible; position: absolute; width: 100%;"><div class="spinner-border" role="status" aria-hidden="true"></div></div>
             <?php 
-            include("data-tabs/grades.php");
+            include("includes/data-tabs/grades.php");
             if(getConstant("SHOW_CLASS_TEACHER_TAB", true)){
-                include("data-tabs/class-teacher.php");
+                include("includes/data-tabs/class-teacher.php");
             }
             if(getConstant("SHOW_EXAMS_TAB", true)){
-                include("data-tabs/exams.php");
+                include("includes/data-tabs/exams.php");
             }
             ?>
         </div>
@@ -141,7 +141,7 @@ if(!isset($loginHandler)){
 <?php //grades-Modal 
     $gradesModal = Modal::defaultModal("grades-modal", "Noten", null);
     echo $gradesModal->getHTMLBeforeBody();
-    include("modals/GradesModal.php");
+    include("includes/modals/GradesModal.php");
     echo $gradesModal->getHTMLAfterBody();?>
     <script>
         gradesModal = new GradesModal();
@@ -151,7 +151,7 @@ if(!isset($loginHandler)){
     $classTeacherModal = new Modal("class-teacher-modal", "Klassenlehrer");
     $classTeacherModal->addButton("OK", "btn-primary", true);
     echo $classTeacherModal->getHTMLBeforeBody();
-    include("modals/ClassTeacherModal.php");
+    include("includes/modals/ClassTeacherModal.php");
     echo $classTeacherModal->getHTMLAfterBody(); 
 
 
@@ -162,7 +162,7 @@ if(!isset($loginHandler)){
 <?php //filter-Modal 
     $filterModal = Modal::defaultModal("filter-modal", "Daten filtern", "filterDataTable()");
     echo $filterModal->getHTMLBeforeBody();
-    include("modals/FilterModal.php");
+    include("includes/modals/FilterModal.php");
     echo $filterModal->getHTMLAfterBody(); 
 
 ?>

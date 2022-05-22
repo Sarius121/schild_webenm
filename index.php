@@ -1,6 +1,6 @@
 <?php
 
-include("imports.php");
+include("includes/imports.php");
 require_once("config/ui-conf.php");
 
 function getConstant(string $name, $defaultValue){
@@ -82,7 +82,7 @@ if($loginHandler->isLoggedIn()){
     </head>
     <body>
         <?php 
-        include($page . ".php")
+        include("includes/" . $page . ".php")
         ?>
     </body>
 </html>

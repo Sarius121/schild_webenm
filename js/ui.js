@@ -57,7 +57,7 @@ function onMenuItemClicked(item, action){
         case "create-backup":
             var data = new FormData();
             data.append("action", "create");
-            requests.addRequestToQueue("POST", "backup-file.php", data, function(result){
+            requests.addRequestToQueue("POST", "inactive-actions.php", data, function(result){
                 if("download_token" in result){
                     window.open("download.php?token=" + result.download_token);
                 }
@@ -127,7 +127,7 @@ function onRestoreBackupFileSelected(files){
         preventAppClosing = true;
 
         //send file
-        requests.addRequestToQueue("POST", "backup-file.php", formData, function(result){
+        requests.addRequestToQueue("POST", "inactive-actions.php", formData, function(result){
             if(result.code == 0){
                 preventAppClosing = false;
                 messageBox.setStatus(ProgressMessageBox.STATUS_SUCCESS);
@@ -160,7 +160,7 @@ function undoBackupRestore(){
     var data = new FormData();
     data.append("action", "undo");
 
-    requests.addRequestToQueue("POST", "backup-file.php", data, function(result){
+    requests.addRequestToQueue("POST", "inactive-actions.php", data, function(result){
         if(result.code == 0){
             //success
             preventAppClosing = false;

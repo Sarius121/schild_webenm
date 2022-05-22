@@ -1,10 +1,9 @@
 <?php
 
-use ENMLibrary\BackupHandler;
 use ENMLibrary\LoginHandler;
 use ENMLibrary\RequestResponse;
 
-include("imports.php");
+include("includes/imports.php");
 
 if(!isset($_GET["token"])){
     die(RequestResponse::ErrorResponse(RequestResponse::ERROR_MISSING_ARGUMENTS)->getResponse());

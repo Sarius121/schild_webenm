@@ -1,3 +1,5 @@
 RewriteEngine on
 RewriteOptions Inherit
 RewriteRule ^(.*)\.[\d]{6}\.(css|js)$ $1.$2 [L]
+
+Header always set X-Frame-Options "DENY"
