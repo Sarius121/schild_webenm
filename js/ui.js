@@ -20,6 +20,8 @@ window.onbeforeunload = function(){
  */
 window.addEventListener("load", function(event) {
     $(".modal-dialog").draggable({ cancel: ".modal-body, .modal-footer", containment: "html", scroll: false });
+    addUIEventListeners();
+    initObjects();
 });
 
 
@@ -40,19 +42,22 @@ function onTabClicked(tabHeader, tabName){
 
 /**
  * is called when a menu item is clicked
- * do action which belongs to the clicked menu item
+ * do action which belongs to the clicked menu item (specified by name attribute)
  * 
- * @param {*} item clicked menu item
- * @param {*} action action to do
+ * @param {Event} event
  */
-function onMenuItemClicked(item, action){
-    if(item.classList.contains("disabled")){
+function onMenuItemClicked(event){
+    if(event.currentTarget.classList.contains("disabled")){
         return;
     }
+    var action = event.currentTarget.getAttribute("name");
 
     switch(action){
         case "save-changes":
             saveChanges();
+            break;
+        case "fast-print":
+            window.print();
             break;
         case "create-backup":
             var data = new FormData();
@@ -104,6 +109,9 @@ function onMenuItemClicked(item, action){
                     break;
             }
             break;
+        case "documentation":
+            window.open('doc/webENM Benutzerdokumentation.pdf', '_blank');
+            break;
         case "information":
             $("#information-modal").modal("show");
             break;
@@ -116,7 +124,8 @@ function onMenuItemClicked(item, action){
  * 
  * @param {*} files selected backup files
  */
-function onRestoreBackupFileSelected(files){
+function onRestoreBackupFileSelected(event){
+    var files = event.currentTarget.files;
     if(files.length > 0){
         var formData = new FormData();
         formData.append("backupFile", files[0]);
@@ -283,19 +292,19 @@ function sortCurrentTable(columns = []){
 }
 
 /**
- * is called when tab navigation button was clicked
- * change visible data tab
+ * is called when data tab navigation button was clicked
+ * change visible data tab (specified by name attribute)
  * 
- * @param {*} btn button on which the user clicked
- * @param {*} data data tab to show
+ * @param {Event} event 
  */
-function onNavButtonClicked(btn, data){
+function onNavDataTabsButtonClicked(event){
+    var data = event.currentTarget.getAttribute("name");
     $("#data-container > div").removeClass('visible');
     document.getElementById(data).classList.add("visible");
 
     //add active class to nav-link
     $("#nav-data .nav-link").removeClass('active');
-    btn.classList.add('active');
+    event.currentTarget.classList.add('active');
 
     //adjust possible sort methods
     switch(data){
@@ -309,4 +318,52 @@ function onNavButtonClicked(btn, data){
             $("#sort-menu-items").toggleClass("disabled", false);
             break;
     }
+}
+
+function addUIEventListeners(){
+    Array.from(document.getElementsByClassName("nav-menu-button")).forEach(item => {
+        item.addEventListener("click", onMenuItemClicked)
+    });
+    document.getElementById("backupFile").addEventListener("change", onRestoreBackupFileSelected);
+    Array.from(document.getElementsByClassName("nav-data-tabs-button")).forEach(item => {
+        item.addEventListener("click", onNavDataTabsButtonClicked);
+    });
+}
+
+function initObjects(){
+    var token = document.getElementById("csrf_token");
+    requests = new Requests(token.innerText);
+    token.remove();
+
+    gradesModal = new GradesModal();
+
+    var tablesToFetch = ["GradeTable", "Grades"];
+    if(document.getElementById("tab-class-teacher")){
+        tablesToFetch.push("ClassTeacherTable");
+        tablesToFetch.push("Phrases");
+    }
+    if(document.getElementById("tab-exams")){
+        tablesToFetch.push("ExamsTable");
+    }
+
+    var postData = new FormData();
+    postData.append("tables", JSON.stringify(tablesToFetch));
+
+    requests.addRequestToQueue("POST", "fetch-data.php", postData, function(result){
+        if(result.code == 0){
+            if("GradeTable" in result.data && "Grades" in result.data){
+                gradeTable = new GradeTable(requests, result.data.GradeTable, result.data.Grades);
+                gradeTable.renderGrid();
+            }
+            if("ClassTeacherTable" in result.data && "Phrases" in result.data){
+                classTeacherTable = new ClassTeacherTable(requests, result.data.ClassTeacherTable);
+                classTeacherTable.renderGrid();
+                classTeacherTable.renderPhrasesTable(result.data.Phrases);
+            }
+            if("ExamsTable" in result.data && "Grades" in result.data){
+                examsTable = new ExamsTable(requests, result.data.ExamsTable, result.data.Grades);
+                examsTable.renderGrid();
+            }
+        }
+    });
 }

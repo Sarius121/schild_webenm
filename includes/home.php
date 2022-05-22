@@ -1,7 +1,6 @@
 <?php
 
 use ENMLibrary\BackupHandler;
-use ENMLibrary\GradeFile;
 use ENMLibrary\Modal;
 
 if(!isset($loginHandler)){
@@ -9,9 +8,8 @@ if(!isset($loginHandler)){
         die("An Error occurred!");
     }
 ?>
-<script>
-    requests = new Requests("<?php echo $loginHandler->getCSRFToken(); ?>");
-</script>
+
+<div id="csrf_token"><?php echo $loginHandler->getCSRFToken(); ?></div>
 
 <div id="home-container">
     <div id="top-box">
@@ -48,21 +46,21 @@ if(!isset($loginHandler)){
                         <?php if(getConstant("ENABLE_MANUAL_SAVING", true)){ ?>
                         <li><div class="group-header">Notendatei</div>
                             <ul>
-                                <li class="btn btn-outline-secondary" onclick="onMenuItemClicked(this, 'save-changes')">Speichern</li>
+                                <li class="btn btn-outline-secondary nav-menu-button" name="save-changes">Speichern</li>
                             </ul>
                         </li><?php } ?>
                         <li><div class="group-header">Druck</div>
                             <ul>
-                                <li class="btn btn-outline-secondary" onclick="window.print()">Schnelldruck</li>
+                                <li class="btn btn-outline-secondary nav-menu-button" name="fast-print">Schnelldruck</li>
                             </ul>
                         </li>
                         <?php if(getConstant("ENABLE_LOCAL_BACKUPS", true)){ ?>
                         <li><div class="group-header">Lokale Sicherung</div>
                             <ul class="btn-group">
-                                <li class="btn btn-outline-secondary" onclick="onMenuItemClicked(this, 'create-backup')">Erstellen</li>
-                                <input name="backupFile" type="file" id="backupFile" accept=".enz" style="display:none" onchange="onRestoreBackupFileSelected(this.files)">
-                                <li class="btn btn-outline-secondary" onclick="onMenuItemClicked(this, 'restore-backup')">Einlesen</li>
-                                <li class="btn btn-outline-secondary<?php $backupHandler = new BackupHandler(); if(!$backupHandler->oldBackupExists($loginHandler->getUsername())){ ?> disabled<?php } ?>" onclick="onMenuItemClicked(this, 'undo-backup')" data-tooltip="zum Stand vor dem Einlesen des Backups zurückkehren"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-counterclockwise"/></svg></li>
+                                <li class="btn btn-outline-secondary nav-menu-button" name="create-backup">Erstellen</li>
+                                <input name="backupFile" type="file" id="backupFile" accept=".enz">
+                                <li class="btn btn-outline-secondary nav-menu-button" name="restore-backup">Einlesen</li>
+                                <li class="btn btn-outline-secondary nav-menu-button<?php $backupHandler = new BackupHandler(); if(!$backupHandler->oldBackupExists($loginHandler->getUsername())){ ?> disabled<?php } ?>" name="undo-backup" data-tooltip="zum Stand vor dem Einlesen des Backups zurückkehren"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-counterclockwise"/></svg></li>
                             </ul>
                         </li><?php } ?>
                     </ul>
@@ -76,19 +74,19 @@ if(!isset($loginHandler)){
                         </li>
                         <li><div class="group-header">Sortierung</div>
                             <ul class="btn-group">
-                                <li class="btn btn-outline-secondary" onclick="onMenuItemClicked(this, 'sort-Klasse-Name')">Klasse, Name</li>
+                                <li class="btn btn-outline-secondary nav-menu-button" name="sort-Klasse-Name">Klasse, Name</li>
                                 <li id="sort-menu-items" class="btn btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false"><svg class="bi"><use xlink:href="img/ui-icons.svg#chevron-down"/></svg></li>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li class="dropdown-item" onclick="onMenuItemClicked(this, 'sort-Name-Fach')">Name, Fach</li>
-                                    <li class="dropdown-item" onclick="onMenuItemClicked(this, 'sort-Fach-Name')">Fach, Name</li>
-                                    <li class="dropdown-item" onclick="onMenuItemClicked(this, 'sort-Klasse-Fach')">Klasse, Fach</li>
+                                    <li class="dropdown-item nav-menu-button" name="sort-Name-Fach">Name, Fach</li>
+                                    <li class="dropdown-item nav-menu-button" name="sort-Fach-Name">Fach, Name</li>
+                                    <li class="dropdown-item nav-menu-button" name="sort-Klasse-Fach">Klasse, Fach</li>
                                 </ul>
                             </ul>
                         </li>
                         <li><div class="group-header">Filter</div>
                             <ul class="btn-group">
-                                <li class="btn btn-outline-secondary" onclick="onMenuItemClicked(this, 'create-filter')">Filter erstellen</li>
-                                <li class="btn btn-outline-secondary" onclick="onMenuItemClicked(this, 'delete-filter')" data-tooltip="Filter löschen"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-counterclockwise"/></svg></li>
+                                <li class="btn btn-outline-secondary nav-menu-button" name="create-filter">Filter erstellen</li>
+                                <li class="btn btn-outline-secondary nav-menu-button" name="delete-filter" data-tooltip="Filter löschen"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-counterclockwise"/></svg></li>
                             </ul>
                         </li>
                     </ul>
@@ -97,8 +95,8 @@ if(!isset($loginHandler)){
                     <ul class="body">
                         <li><div class="group-header">Hilfe</div>
                             <ul class="btn-group">
-                                <li class="btn btn-outline-secondary" onclick="window.open('doc/webENM Benutzerdokumentation.pdf', '_blank')"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-up-right"/></svg><span> Dokumentation</span></li>
-                                <li class="btn btn-outline-secondary" onclick="onMenuItemClicked(this, 'information')">Informationen</li>
+                                <li class="btn btn-outline-secondary nav-menu-button" name="documentation"><svg class="bi"><use xlink:href="img/ui-icons.svg#arrow-up-right"/></svg><span> Dokumentation</span></li>
+                                <li class="btn btn-outline-secondary nav-menu-button" name="information">Informationen</li>
                             </ul>
                         </li>
                     </ul>
@@ -108,15 +106,15 @@ if(!isset($loginHandler)){
         <div class="separator"></div>
         <div id="nav-data" class="nav nav-tabs">
             <div class="nav-item">
-                <button class="nav-link active" onclick="onNavButtonClicked(this, 'data-grades')">Leistungsdaten</button>
+                <button class="nav-link active nav-data-tabs-button" name="data-grades">Leistungsdaten</button>
             </div>
             <?php if(getConstant("SHOW_CLASS_TEACHER_TAB", true)){ ?>
             <div class="nav-item">
-                <button id="tab-class-teacher" class="nav-link" onclick="onNavButtonClicked(this, 'data-class-teacher')">Klassenleitung</button>
+                <button id="tab-class-teacher" class="nav-link nav-data-tabs-button" name="data-class-teacher">Klassenleitung</button>
             </div><?php } ?>
             <?php if(getConstant("SHOW_EXAMS_TAB", true)){ ?>
                 <div class="nav-item">
-                <button id="tab-exams" class="nav-link" onclick="onNavButtonClicked(this, 'data-exams')">Zentr. Prf.</button>
+                <button id="tab-exams" class="nav-link nav-data-tabs-button" name="data-exams">Zentr. Prf.</button>
             </div><?php } ?>
         </div>
     </div>
@@ -125,7 +123,7 @@ if(!isset($loginHandler)){
     </div>
     <div id="data-container-boundary">
         <div id="data-container">
-            <div id="data-container-loading" class="d-flex justify-content-center" style="margin: 1em 0; visibility: visible; position: absolute; width: 100%;"><div class="spinner-border" role="status" aria-hidden="true"></div></div>
+            <div id="data-container-loading" class="d-flex justify-content-center"><div class="spinner-border" role="status" aria-hidden="true"></div></div>
             <?php 
             include("includes/data-tabs/grades.php");
             if(getConstant("SHOW_CLASS_TEACHER_TAB", true)){
@@ -143,9 +141,6 @@ if(!isset($loginHandler)){
     echo $gradesModal->getHTMLBeforeBody();
     include("includes/modals/GradesModal.php");
     echo $gradesModal->getHTMLAfterBody();?>
-    <script>
-        gradesModal = new GradesModal();
-    </script>
 
 <?php //class-teacher-Modal 
     $classTeacherModal = new Modal("class-teacher-modal", "Klassenlehrer");

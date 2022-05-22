@@ -4,7 +4,7 @@ class Requests {
     requestQueue;
     isRequesting = false;
     csrfToken;
-    debug = true;
+    debug = false;
     curOnload = null;
 
     constructor(csrfToken){

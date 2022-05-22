@@ -44,7 +44,7 @@ class GradeFileData {
             $jsonArray["data"][] = $row;
         }
 
-        return json_encode($jsonArray);
+        return $jsonArray;
     }
 
     protected function setDBTable($table){

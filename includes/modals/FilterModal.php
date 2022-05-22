@@ -1,3 +1,4 @@
+<?php ?>
 <div id="filter-grades" class="filter-group">
     <div class="row">
         <div class="col">

@@ -1,6 +1,7 @@
 <?php
 
 require_once("includes/utils.php");
+require_once("config/ui-conf.php");
 
 require_once("lib/MDBConnector/MDBDatabase.php");
 

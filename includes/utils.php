@@ -23,4 +23,12 @@ function auto_version($file)
     return substr(preg_replace('{\\.([^./]+)$}', ".$version.\$1", $file), 1);
 }
 
+function getConstant(string $name, $defaultValue){
+    if(defined($name)){
+        return constant($name);
+    } else {
+        return $defaultValue;
+    }
+}
+
 ?>
