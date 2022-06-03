@@ -6,7 +6,7 @@ use ENMLibrary\RequestResponse;
 
 include("includes/imports.php");
 
-if(!isset($_POST["action"]) || !isset($_POST["csrf_token"])){
+if(!isset($_POST["csrf_token"])){
     die(RequestResponse::ErrorResponse(RequestResponse::ERROR_MISSING_ARGUMENTS)->getResponse());
 }
 
@@ -21,6 +21,10 @@ if(!$loginHandler->isLoggedIn()){
 
 if(!$loginHandler->checkCSRFToken($_POST["csrf_token"])){
     die(RequestResponse::ErrorResponse(RequestResponse::ERROR_CSRF_TOKEN)->getResponse());
+}
+
+if(!isset($_POST["action"])){
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_MISSING_ARGUMENTS, $loginHandler->getCSRFToken())->getResponse());
 }
 
 //database is now accessable

@@ -8,7 +8,7 @@ include("includes/imports.php");
 
 // POST arguments: data (json) -> array(["table", "priKeyCol", "priKey", "col", "value"])
 
-if(!isset($_POST["data"]) || !isset($_POST["csrf_token"])){
+if(!isset($_POST["csrf_token"])){
     die(RequestResponse::ErrorResponse(RequestResponse::ERROR_MISSING_ARGUMENTS)->getResponse());
 }
 
@@ -23,6 +23,11 @@ if(!$loginHandler->isLoggedIn()){
 if(!$loginHandler->checkCSRFToken($_POST["csrf_token"])){
     die(RequestResponse::ErrorResponse(RequestResponse::ERROR_CSRF_TOKEN)->getResponse());
 }
+
+if(!isset($_POST["data"])){
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_MISSING_ARGUMENTS, $loginHandler->getCSRFToken())->getResponse());
+}
+
 
 //database is now accessable
 try{
