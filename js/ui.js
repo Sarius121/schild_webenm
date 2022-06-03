@@ -328,6 +328,7 @@ function addUIEventListeners(){
     Array.from(document.getElementsByClassName("nav-data-tabs-button")).forEach(item => {
         item.addEventListener("click", onNavDataTabsButtonClicked);
     });
+    document.getElementById("filter-data-table-button").addEventListener("click", filterDataTable);
 }
 
 function initObjects(){

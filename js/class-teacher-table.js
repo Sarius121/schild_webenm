@@ -7,7 +7,7 @@
 class ClassTeacherTable extends CustomEditableGrid{
 
     constructor(requests, json){
-        super(requests, "ClassTeacherTable", json, ["Klasse"]);
+        super(requests, "classTeacherTable", json, ["Klasse"]);
 
         /*var positiveNumberValidator = new CellValidator({ 
 			isValid: function(value) {
@@ -39,10 +39,10 @@ class ClassTeacherTable extends CustomEditableGrid{
     
     onTableRendered(){
         const that = this;
-        $("#classTeacherTable tbody tr").dblclick((event) => {that.onRowDoubleClicked(event)});
+        $("#" + this.tableID + " tbody tr").dblclick((event) => {that.onRowDoubleClicked(event)});
 
         //dblclick on checkbox should be handled but click not because it shouldn't be editable (disabled -> no dblclick event)
-        $('#classTeacherTable .boolean input').attr("onclick", "return false;")
+        $("#" + this.tableID + " .boolean input").attr("onclick", "return false;")
     }
     
     onRowDoubleClicked(event){
@@ -70,7 +70,7 @@ class ClassTeacherTable extends CustomEditableGrid{
         var rowFullID = document.getElementById(this.tableID).getElementsByTagName("tbody")[0].children.item(rowIndex).id.split("_");
         var rowID = rowFullID[rowFullID.length - 1];
     
-        var name = $("#" + this.tableID + "_" + rowID + " .editablegrid-Name").html() + " (" + $("#ClassTeacherTable_" + rowID + " .editablegrid-Klasse").html() + ")";
+        var name = $("#" + this.tableID + "_" + rowID + " .editablegrid-Name").html() + " (" + $("#" + this.tableID + "_" + rowID + " .editablegrid-Klasse").html() + ")";
         var asv = $("#" + this.tableID + "_" + rowID + " .editablegrid-ASV").html();
         var aue = $("#" + this.tableID + "_" + rowID + " .editablegrid-AuE").html();
         var zb = $("#" + this.tableID + "_" + rowID + " .editablegrid-ZeugnisBem").html();
@@ -257,8 +257,8 @@ class PhrasesTable extends CustomEditableGrid{
 
     getFormattedPhrase(phrase, currentText){
         var multipleVorname = !document.getElementById("multipleFirstnames").checked;
-        var firstname = $("#ClassTeacherTable_" + this.classTeacherTable.activeRow + " .editablegrid-Name").html().split(", ")[1];
-        var gender = $("#ClassTeacherTable_" + this.classTeacherTable.activeRow + " .editablegrid-Geschlecht").text();
+        var firstname = $("#classTeacherTable_" + this.classTeacherTable.activeRow + " .editablegrid-Name").html().split(", ")[1];
+        var gender = $("#classTeacherTable_" + this.classTeacherTable.activeRow + " .editablegrid-Geschlecht").text();
 
         if(multipleVorname || !currentText.includes(firstname)){
             phrase = phrase.replaceAll('$Vorname$', firstname);
@@ -303,9 +303,9 @@ class PhrasesTable extends CustomEditableGrid{
         var aue = $("#textarea-aue").val();
         var zb = $("#textarea-zb").val();
     
-        /*$("#ClassTeacherTable_" + rowID + " .editablegrid-ASV").html(asv);
-        $("#ClassTeacherTable_" + rowID + " .editablegrid-AuE").html(aue);
-        $("#ClassTeacherTable_" + rowID + " .editablegrid-ZeugnisBem").html(zb);*/
+        /*$("#classTeacherTable_" + rowID + " .editablegrid-ASV").html(asv);
+        $("#classTeacherTable_" + rowID + " .editablegrid-AuE").html(aue);
+        $("#classTeacherTable_" + rowID + " .editablegrid-ZeugnisBem").html(zb);*/
         $('#class-teacher-modal').modal("hide");
         this.classTeacherTable.changeTextCell(activeCTRow, "editablegrid-ASV", asv);
         this.classTeacherTable.changeTextCell(activeCTRow, "editablegrid-AuE", aue);

@@ -37,7 +37,8 @@ if($loginHandler->isLoggedIn()){
 }
 
 ?>
-<html>
+<!DOCTYPE html>
+<html lang="de">
     <head>
         <title>webENM</title>
 

@@ -10,8 +10,8 @@ class Modal{
     private const HTML_AFTER_BODY = '</div><div class="modal-footer">';
     private const HTML_END = '</div></div></div></div>';
 
-    private const DEFAULT_BUTTONS = [["name" => "Abbrechen", "layer" => "btn-secondary", "closeOnClick" => true, "onclick" => null],
-                                    ["name" => "OK", "layer" => "btn-primary", "closeOnClick" => false, "onclick" => null]];
+    private const DEFAULT_BUTTONS = [["name" => "Abbrechen", "layer" => "btn-secondary", "closeOnClick" => true, "id" => null],
+                                    ["name" => "OK", "layer" => "btn-primary", "closeOnClick" => false, "id" => null]];
 
     private $id;
     private $title;
@@ -37,23 +37,23 @@ class Modal{
         $this->id = $id;
     }
 
-    public static function defaultModal($id, $title, $onOKClicked, $body=null){
+    public static function defaultModal($id, $title, $okId, $body=null){
         $modal = new self($id, $title, $body);
-        $modal->defaultButtons($onOKClicked);
+        $modal->defaultButtons($okId);
         return $modal;
     }
 
-    public function addButton($name, $btnLayer="btn-primary", $closeOnClick=true, $onclick=null) {
-        $this->buttons[] = array("name" => $name, "layer" => $btnLayer, "closeOnClick" => $closeOnClick, "onclick" => $onclick);
+    public function addButton($name, $btnLayer="btn-primary", $closeOnClick=true, $id=null) {
+        $this->buttons[] = array("name" => $name, "layer" => $btnLayer, "closeOnClick" => $closeOnClick, "id" => $id);
     }
 
     public function setButtons($buttons) {
         $this->buttons = $buttons;
     }
 
-    private function defaultButtons($onclick) {
+    private function defaultButtons($id) {
         $this->buttons = Modal::DEFAULT_BUTTONS;
-        $this->buttons[1]["onclick"] = $onclick;
+        $this->buttons[1]["id"] = $id;
     }
 
     private function getButtonsHTML(){
@@ -61,8 +61,8 @@ class Modal{
         foreach($this->buttons as $button){
 
             $html .= '<button type="button" class="btn ' . $button["layer"] . '"';
-            if($button["onclick"] != null){
-                $html .= ' onclick="' . $button["onclick"] . '"';
+            if($button["id"] != null){
+                $html .= ' id="' . $button["id"] . '"';
             }
             if($button["closeOnClick"] != null){
                 $html .= ' data-bs-dismiss="modal"';

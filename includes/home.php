@@ -15,7 +15,7 @@ if(!isset($loginHandler)){
     <div id="top-box">
         <div id="header" class="row">
             <div class="col-sm-auto">
-                <img src="img/webenm-logo-color.svg">
+                <img src="img/webenm-logo-color.svg" alt="logo">
             </div>
             <div class="col-sm">
                 <h2>webENM</h2>
@@ -124,13 +124,22 @@ if(!isset($loginHandler)){
     <div id="data-container-boundary">
         <div id="data-container">
             <div id="data-container-loading" class="d-flex justify-content-center"><div class="spinner-border" role="status" aria-hidden="true"></div></div>
-            <?php 
-            include("includes/data-tabs/grades.php");
-            if(getConstant("SHOW_CLASS_TEACHER_TAB", true)){
-                include("includes/data-tabs/class-teacher.php");
+            <div id="data-grades" class="visible">
+                <div id="gradeTable" class="dataTable"></div>
+            </div>
+            <?php if(getConstant("SHOW_CLASS_TEACHER_TAB", true)){
+                ?>
+                <div id="data-class-teacher">
+                    <div id="classTeacherTable" class="dataTable"></div>
+                </div>
+                <?php 
             }
             if(getConstant("SHOW_EXAMS_TAB", true)){
-                include("includes/data-tabs/exams.php");
+                ?>
+                <div id="data-exams">
+                    <div id="examsTable" class="dataTable"></div>
+                </div>
+                <?php
             }
             ?>
         </div>
@@ -155,7 +164,7 @@ if(!isset($loginHandler)){
 ?>
 
 <?php //filter-Modal 
-    $filterModal = Modal::defaultModal("filter-modal", "Daten filtern", "filterDataTable()");
+    $filterModal = Modal::defaultModal("filter-modal", "Daten filtern", "filter-data-table-button");
     echo $filterModal->getHTMLBeforeBody();
     include("includes/modals/FilterModal.php");
     echo $filterModal->getHTMLAfterBody(); 
