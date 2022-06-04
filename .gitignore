@@ -10,3 +10,14 @@ grade-files/source/*
 !grade-files/working/
 grade-files/working/*
 doc/
+
+webenm-logo-color.png
+webenm-logo.svg
+node_modules/
+/test-results/
+/playwright-report/
+/playwright/.cache/
+example.spec.ts
+*.log
+package.json
+package-lock.json

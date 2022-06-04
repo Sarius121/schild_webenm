@@ -162,7 +162,7 @@ CellEditor.prototype.edit = function(rowIndex, columnIndex, element, value)
 	// display the resulting editor widget
 	this.displayEditor(element, editorInput);
 
-	//added by ***REMOVED***
+	//added by Sarius121
 	element.parentElement.classList.add("active");
 
 	// give focus to the created editor
@@ -196,9 +196,9 @@ CellEditor.prototype.displayEditor = function(element, editorInput, adjustX, adj
 		while (element.hasChildNodes()) element.removeChild(element.firstChild);
 		element.appendChild(editorInput);
 
-		//added by ***REMOVED***
-		inputWidth = editorInput.offsetWidth;
-        element.style.setProperty("width", inputWidth);
+		//added by Sarius121
+		var inputWidth = editorInput.offsetWidth;
+        element.style.width = inputWidth + "px";
 	}
 
 	// absolute mode: add input field in absolute position over table cell, leaving current content
@@ -244,9 +244,9 @@ CellEditor.prototype._clearEditor = function(element)
 	// untag element
 	element.isEditing = false;
 
-	//added by ***REMOVED***
+	//added by Sarius121
 	element.parentElement.classList.remove("active");
-	element.style.removeProperty("width");
+	element.style.width = "";
 
 	// clear fixed editor zone if any
 	if (this.editablegrid.editmode == "fixed") {

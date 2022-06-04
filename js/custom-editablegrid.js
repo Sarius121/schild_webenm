@@ -14,6 +14,7 @@ class CustomEditableGrid{
     constructor(requests, name, json, filterCols = []){
         this.requests = requests;
         this.name = name;
+        // for debugging purposes the option allowSimultaneousEdition: true may be useful
         this.editableGrid = new EditableGrid(name, {editmode: "static", sortIconUp: "img/caret-up-fill.svg", sortIconDown: "img/caret-down-fill.svg"});
         this.editableGrid.load(json);
 

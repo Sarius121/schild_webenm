@@ -7,7 +7,7 @@
 class ClassTeacherTable extends CustomEditableGrid{
 
     constructor(requests, json){
-        super(requests, "classTeacherTable", json, ["Klasse"]);
+        super(requests, "ClassTeacherTable", json, ["Klasse"]);
 
         /*var positiveNumberValidator = new CellValidator({ 
 			isValid: function(value) {
@@ -70,10 +70,10 @@ class ClassTeacherTable extends CustomEditableGrid{
         var rowFullID = document.getElementById(this.tableID).getElementsByTagName("tbody")[0].children.item(rowIndex).id.split("_");
         var rowID = rowFullID[rowFullID.length - 1];
     
-        var name = $("#" + this.tableID + "_" + rowID + " .editablegrid-Name").html() + " (" + $("#" + this.tableID + "_" + rowID + " .editablegrid-Klasse").html() + ")";
-        var asv = $("#" + this.tableID + "_" + rowID + " .editablegrid-ASV").html();
-        var aue = $("#" + this.tableID + "_" + rowID + " .editablegrid-AuE").html();
-        var zb = $("#" + this.tableID + "_" + rowID + " .editablegrid-ZeugnisBem").html();
+        var name = $("#" + this.name + "_" + rowID + " .editablegrid-Name").html() + " (" + $("#" + this.name + "_" + rowID + " .editablegrid-Klasse").html() + ")";
+        var asv = $("#" + this.name + "_" + rowID + " .editablegrid-ASV").html();
+        var aue = $("#" + this.name + "_" + rowID + " .editablegrid-AuE").html();
+        var zb = $("#" + this.name + "_" + rowID + " .editablegrid-ZeugnisBem").html();
     
         $("#ct-selected-name").html(name);
         $("#textarea-asv").val(asv);
