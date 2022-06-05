@@ -1273,7 +1273,7 @@
 		</row>
 		<row id='113'>
 			<column name='name'><![CDATA[Paul]]></column>
-			<column name='firstname'><![CDATA[***REMOVED***]]></column>
+			<column name='firstname'><![CDATA[Christopher]]></column>
 			<column name='age'><![CDATA[57]]></column>
 			<column name='height'><![CDATA[1.63]]></column>
 			<column name='country'><![CDATA[fr]]></column>

@@ -73,9 +73,29 @@ test.describe('data.class-teacher', () => {
     });
 });
 
+test.describe('data.exams', () => {
+    test.beforeEach(async ({ page }) => {
+        await page.click("#tab-exams");
+    });
+
+    test("FS-input", async ({ page }) => {
+        var row = await getRandomRow(page, "classTeacherTable");
+        var value = (Math.random() * 10).toFixed(0);
+
+        await insertValueIntoTable(page, "ClassTeacherTable", row, "SumFehlstd", value);
+    });
+
+    test("uFS-input", async ({ page }) => {
+        var row = await getRandomRow(page, "classTeacherTable");
+        var value = (Math.random() * 10).toFixed(0);
+
+        await insertValueIntoTable(page, "ClassTeacherTable", row, "SumFehlstdU", value);
+    });
+});
+
 async function login(page: Page) {
-    var user = "***REMOVED***";
-    var pwd = "***REMOVED***";
+    var user = "***username***";
+    var pwd = "***password***";
 
     await page.locator('#login-box form input[name="username"]').fill(user);
     await page.locator('#login-box form input[name="password"]').fill(pwd);
