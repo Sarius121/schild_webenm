@@ -27,7 +27,7 @@ class LoginHandler {
     }
 
     public function login($username, $password) {
-        $username = strtoupper($username);
+        $username = mb_strtoupper($username, 'UTF-8');
         if($this->checkLogin($username, $password, true)){
             $this->loggedin = true;
             $this->username = $username;
