@@ -7,23 +7,40 @@ use ENMLibrary\LoginHandler;
 
 $loginHandler = new LoginHandler();
 
+$pageArg = "login";
 $page = "login";
 if(isset($_GET["page"])){
-    $page = $_GET["page"];
+    $pageArg = $_GET["page"];
 }
 
-if($page == "logout"){
+if($pageArg == "logout"){
     $loginHandler->loginWithSession();
     if(!$loginHandler->logout()){
         header("Location: .");
     }
 }
-else if ($page == "login" && isset($_POST['username']) && isset($_POST['password']))
+else if ($pageArg == "login" && isset($_POST['username']) && isset($_POST['password']))
 {
-    if($loginHandler->login($_POST['username'], $_POST['password'])){
+    if ($loginHandler->checkChangesToSave($_POST['username'])) {
+        if ($loginHandler->checkLoginAgainstForeignFile($_POST['username'], $_POST['password'])) {
+            $page = "unsaved-changes";
+        }
+    } else if($loginHandler->login($_POST['username'], $_POST['password'])){
         header("Location: .");
         exit();
     }
+}
+else if ($pageArg == "login" && (isset($_POST['yes']) || isset($_POST['no'])))
+{
+    if (isset($_POST['yes'])) {
+        // save changes
+        $loginHandler->loginWithTmpSession(true);
+    } else {
+        // don't save changes
+        $loginHandler->loginWithTmpSession(false);
+    }
+    header("Location: .");
+    exit();
 }
 else
 {
@@ -32,8 +49,6 @@ else
 
 if($loginHandler->isLoggedIn()){
     $page = "home";
-} else {
-    $page = "login";
 }
 
 ?>
