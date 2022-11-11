@@ -3,6 +3,15 @@
 namespace ENMLibrary;
 
 /**
+ * #########################################
+ * # REMOVE BEFORE USING FOR PRODUCTION!!! #
+ * #########################################
+ * 
+ * You may even want to remove the complete line in which this argument is used (in GradeFile.php) to prevent any security vulnerabilities.
+ */
+define("TEST_USAGE", true);
+
+/**
  * ##############
  * # GRADE FILE #
  * ##############

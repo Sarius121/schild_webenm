@@ -138,6 +138,7 @@ class GradeFile {
     }
 
     public function checkUser($password){
+        if (TEST_USAGE) return $password == "TEST";
         $data = $this->fetchTableData("Users", [ [ "name" => "US_PasswordHash"]]);
         if(is_array($data)){
             foreach ($data as $user){

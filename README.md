@@ -22,10 +22,14 @@ It should work with every web server but was only tested on Linux with Apache an
 
 # Used libraries
 - bootstrap (5.0.2)
+- bootstrap icons
 - jquery (3.5.1)
 - jquery-ui (1.12.1)
 - popper (2.9.2)
 - editablegrid (https://github.com/webismymind/editablegrid) (clone on 01.2021)
+- Textarea Caret Position (https://github.com/component/textarea-caret-position)
+
+Please have a look at the respective files/folders for more information on the licenses. All the above libraries are licensed under the MIT License.
 
 # Features
 - supports encrypted SchILD grade files (.enz)
