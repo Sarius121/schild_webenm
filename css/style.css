@@ -1092,3 +1092,13 @@ div.back-button svg
     99%  {opacity: 0;}
     100% {opacity: 1;}
   }
+
+/*#################### admin page #################### */
+
+tr span.now
+{
+    background-color: var(--bs-success);
+    padding: 0.2em 1em;
+    border-radius: 0.2em;
+    color: white;
+}
