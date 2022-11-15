@@ -2,35 +2,24 @@
 
 namespace ENMLibrary\datasource;
 
+use ENMLibrary\datasource\modules\LocalFolderDataSource;
 use ENMLibrary\datasource\modules\WebDavDataSource;
 
 class DataSourceModuleHelper {
 
-    public static function getAvailableModules() {
-        return [ WebDavDataSource::getName() ];
+    public static function getModuleName(): string {
+        return DATA_SOURCE_MODULE;
     }
 
-    public static function createModule(string $module): DataSourceModule {
-        if (!in_array($module, DataSourceModuleHelper::getAvailableModules())) {
-            return null;
-        }
-        switch($module) {
+    public static function createModule(): DataSourceModule {
+        switch(DATA_SOURCE_MODULE) {
+            case LocalFolderDataSource::getName():
+                return new LocalFolderDataSource();
             case WebDavDataSource::getName():
                 return new WebDavDataSource();
             default:
                 return null;
         }
-    }
-
-    private DataSourceModule $module;
-
-    public function __construct(string $module)
-    {
-        $this->module = DataSourceModuleHelper::createModule($module);
-    }
-
-    public function getModule(): DataSourceModule {
-        return $this->module;
     }
 }
 
