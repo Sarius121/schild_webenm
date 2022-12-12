@@ -1,23 +1,17 @@
 <?php
-require_once("lib/ENMLibrary/datasource/DataSourceModule.php");
-require_once("lib/ENMLibrary/datasource/modules/WebDavDataSource.php");
-require_once("lib/ENMLibrary/datasource/DataSourceModuleHelper.php");
 
 use ENMLibrary\datasource\DataSourceModuleHelper;
-use ENMLibrary\datasource\modules\WebDavDataSource;
-
-$moduleHelper = new DataSourceModuleHelper(WebDavDataSource::getName());
 
 ?>
 
 <div class="absolute-container">
-    <h2>Admin page</h2>
+    <h2>Admin-Seite</h2>
     <ul class="nav nav-tabs mb-3" id="tabAdmin" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">Übersicht</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Einstellungen</button>
+            <button class="nav-link" id="information-tab" data-bs-toggle="tab" data-bs-target="#information" type="button" role="tab" aria-controls="information" aria-selected="false">Informationen</button>
         </li>
     </ul>
     <div class="tab-content" id="tabAdminContent">
@@ -32,41 +26,39 @@ $moduleHelper = new DataSourceModuleHelper(WebDavDataSource::getName());
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>TEST1</td>
-                        <td><span class="now">jetzt</span></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>TEST</td>
-                        <td>11.11.22 10:12</td>
-                        <td></td>
-                    </tr>
+                    <?php
+                    $i = 1;
+                    foreach(DataSourceModuleHelper::createModule()->getFilesInfos() as $file) {
+                        ?>
+                        <tr>
+                            <th scope="row"><?php echo $i ?></th>
+                            <td><?php echo $file["name"] ?></td>
+                            <td><?php
+                            if (time() - $file["last-edit"] < 60 * 5) {
+                                echo "<span class=\"now\">jetzt</span>";
+                            } else {
+                                echo date('d-m-Y H:i', $file["last-edit"]);
+                            }
+                            ?></td>
+                            <td></td>
+                        </tr>
+                        <?php
+                        $i++;
+                    }
+                    ?>
                 </tbody>
             </table>
+            "Jetzt" heißt in den letzten 5 Minuten.
         </div>
-        <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-            <form class="needs-validation">
-                <div class="row mb-3">
-                    <div class="col">
-                        <label for="source-module" class="col-form-label">Daten-Quellen-Modul</label>
-                    </div>
-                    <div class="col-auto">
-                        <select id="source-module" class="form-select">
-                            <?php foreach (DataSourceModuleHelper::getAvailableModules() as $module) { ?>
-                                <option <?php if ($module == $moduleHelper->getModule()::getName()) { echo "selected"; } ?>><?php echo $module ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
+        <div class="tab-pane fade" id="information" role="tabpanel" aria-labelledby="information-tab">
+            <div class="row">
+                <div class="col">
+                    Daten-Quellen-Modul:
                 </div>
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="safety-check" required>
-                    <label class="form-check-label" for="safety-check">Ich bin mir bewusst, dass alle jetzigen Notendateien gelöscht werden.</label>
+                <div class="col-auto">
+                    <?php echo DataSourceModuleHelper::getModuleName(); ?>
                 </div>
-                <button type="submit" class="btn btn-primary">Speichern</button>
-            </form>
+            </div>
         </div>
     </div>
 </div>
