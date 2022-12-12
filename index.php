@@ -51,6 +51,10 @@ if($loginHandler->isLoggedIn()){
     $page = "home";
 }
 
+if($pageArg == "admin") {
+    $page = "admin";
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="de">
