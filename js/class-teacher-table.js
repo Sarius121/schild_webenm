@@ -257,8 +257,8 @@ class PhrasesTable extends CustomEditableGrid{
 
     getFormattedPhrase(phrase, currentText){
         var multipleVorname = !document.getElementById("multipleFirstnames").checked;
-        var firstname = $("#classTeacherTable_" + this.classTeacherTable.activeRow + " .editablegrid-Name").html().split(", ")[1];
-        var gender = $("#classTeacherTable_" + this.classTeacherTable.activeRow + " .editablegrid-Geschlecht").text();
+        var firstname = $("#" + this.classTeacherTable.name + "_" + this.classTeacherTable.activeRow + " .editablegrid-Name").html().split(", ")[1];
+        var gender = $("#" + this.classTeacherTable.name + "_" + this.classTeacherTable.activeRow + " .editablegrid-Geschlecht").text();
 
         if(multipleVorname || !currentText.includes(firstname)){
             phrase = phrase.replaceAll('$Vorname$', firstname);
@@ -303,9 +303,9 @@ class PhrasesTable extends CustomEditableGrid{
         var aue = $("#textarea-aue").val();
         var zb = $("#textarea-zb").val();
     
-        /*$("#classTeacherTable_" + rowID + " .editablegrid-ASV").html(asv);
-        $("#classTeacherTable_" + rowID + " .editablegrid-AuE").html(aue);
-        $("#classTeacherTable_" + rowID + " .editablegrid-ZeugnisBem").html(zb);*/
+        /*$("#" + this.classTeacherTable.name + "_" + rowID + " .editablegrid-ASV").html(asv);
+        $("#" + this.classTeacherTable.name + "_" + rowID + " .editablegrid-AuE").html(aue);
+        $("#" + this.classTeacherTable.name + "_" + rowID + " .editablegrid-ZeugnisBem").html(zb);*/
         $('#class-teacher-modal').modal("hide");
         this.classTeacherTable.changeTextCell(activeCTRow, "editablegrid-ASV", asv);
         this.classTeacherTable.changeTextCell(activeCTRow, "editablegrid-AuE", aue);
@@ -353,8 +353,8 @@ class AutoCompleteBox {
         });
         this.itemCount = itemCount;
         this.autoCompleteBox.innerHTML = innerHTML;
-        this.autoCompleteBox.style.top = posY;
-        this.autoCompleteBox.style.left = posX;
+        this.autoCompleteBox.style.top = posY + "px";
+        this.autoCompleteBox.style.left = posX + "px";
         const that = this;
         this.autoCompleteBox.addEventListener("click", (event) => {
             var target = $(event.target);
