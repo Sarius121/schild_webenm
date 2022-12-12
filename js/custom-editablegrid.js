@@ -115,20 +115,20 @@ class CustomEditableGrid{
     }
 
     changeCheckboxCell(row, col, value){
-        var selector = "#" + this.tableID + "_" + row + " ." + col + " input";
+        var selector = "#" + this.name + "_" + row + " ." + col + " input";
         $(selector).prop('checked', value);
     }
     
     changeTextCell(row, col, value){
         //get row
-        var colSelector = "#" + this.tableID + "_" + row + " ." + col;
+        var colSelector = "#" + this.name + "_" + row + " ." + col;
     
         //display cols
         $(colSelector).addClass("show");
 
 
         this.focusCell(row, col);
-        var selector = "#" + this.tableID + "_" + row + " ." + col + " input";
+        var selector = "#" + this.name + "_" + row + " ." + col + " input";
         $(selector).val(value);
 
         //apply changes by bluring input
@@ -140,7 +140,7 @@ class CustomEditableGrid{
     
     focusCell(row, col){
         //get row (activeRow is set in gradeTable.js)
-        var selector = "#" + this.tableID + "_" + row + " ." + col;
+        var selector = "#" + this.name + "_" + row + " ." + col;
     
         //simulate click
         $(selector).trigger('click');
