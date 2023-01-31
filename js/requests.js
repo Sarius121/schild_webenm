@@ -28,13 +28,17 @@ class Requests {
                     if(result.code == 0){
                         // success
                         if(that.curOnload != null){
-                            that.curOnload(result);
+                            try {
+                                that.curOnload(result);
+                            } catch (error) {
+                                
+                            }
                             that.curOnload = null;
                         }
                         that.csrfToken = result.csrf_token;
                     } else {
                         // errror
-                        if(that.logging){
+                        if(that.debug){
                             console.log(result.message);
                         }
                         if(result.code == 21){
@@ -45,7 +49,11 @@ class Requests {
                             that.csrfToken = result.csrf_token;
                         }
                         if(that.curOnload != null){
-                            that.curOnload(result);
+                            try {
+                                that.curOnload(result);
+                            } catch (error) {
+                                
+                            }
                             that.curOnload = null;
                         }
                     }

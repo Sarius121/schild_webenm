@@ -49,7 +49,7 @@ class LoginHandler {
     public function loginWithSession(){
         if(!$this->session->isSessionValid()){
             //not loggedin
-            $this->error = "Unbekannter Fehler. Versuche, dich erneut anzumelden.";
+            //$this->error = "Unbekannter Fehler. Versuche, dich erneut anzumelden.";
             return false;
         } elseif ($this->session->isTmpSession()) {
             // logging in with tmp session is not allowed
