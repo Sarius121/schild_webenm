@@ -324,7 +324,10 @@ function addUIEventListeners(){
     Array.from(document.getElementsByClassName("nav-menu-button")).forEach(item => {
         item.addEventListener("click", onMenuItemClicked)
     });
-    document.getElementById("backupFile").addEventListener("change", onRestoreBackupFileSelected);
+    var backupFileElement = document.getElementById("backupFile");
+    if (backupFileElement != null) {
+        backupFileElement.addEventListener("change", onRestoreBackupFileSelected);
+    }
     Array.from(document.getElementsByClassName("nav-data-tabs-button")).forEach(item => {
         item.addEventListener("click", onNavDataTabsButtonClicked);
     });
