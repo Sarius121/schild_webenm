@@ -214,8 +214,6 @@ textarea:hover
 
 #data-container > div
 {
-    visibility: hidden;
-    display: none;
     height: 100%;
 }
 
@@ -1101,4 +1099,38 @@ tr span.now
     padding: 0.2em 1em;
     border-radius: 0.2em;
     color: white;
+}
+
+.admin-area
+{
+    background-color: var(--bs-gray-dark);
+    color: white;
+    padding: 0 0.25em;
+}
+
+#overview
+{
+    height: 100%;
+}
+
+#overview-content
+{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#overview-content #overview-explanations
+{
+    margin-top: 1em;
+}
+
+#overview-content ul
+{
+    margin-bottom: 0;
+}
+
+#information
+{
+    padding-top: 1em;
 }

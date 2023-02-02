@@ -95,17 +95,29 @@ class WebDavDataSource extends DataSourceModule {
         $response = $this->client->propfind('', array(
             '{DAV:}getlastmodified'
         ), 1);
-        // TODO filter by resource type
         
         $result = array();
         foreach ($response as $file => $info) {
+            if (pathinfo($file, PATHINFO_EXTENSION) !== "enz") {
+                continue;
+            }
             $fileInfos = array();
-            $fileInfos["name"] = basename($file);
+            $fileInfos["name"] = basename($file, ".enz");
             $fileInfos["last-edit"] = strtotime($info["{DAV:}getlastmodified"]);
             $result[] = $fileInfos;
         }
 
         return $result;
+    }
+
+    public function getModuleInformation(): array
+    {
+        $status = "Verbindung nicht möglich";
+        if ($this->client != null) {
+            $status = "Verbunden";
+        }
+        $infos = ["WebDAV-Status:" => $status];
+        return $infos;
     }
 }
 

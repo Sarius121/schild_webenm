@@ -291,35 +291,6 @@ function sortCurrentTable(columns = []){
     table.sortTable(columns);
 }
 
-/**
- * is called when data tab navigation button was clicked
- * change visible data tab (specified by name attribute)
- * 
- * @param {Event} event 
- */
-function onNavDataTabsButtonClicked(event){
-    var data = event.currentTarget.getAttribute("name");
-    $("#data-container > div").removeClass('visible');
-    document.getElementById(data).classList.add("visible");
-
-    //add active class to nav-link
-    $("#nav-data .nav-link").removeClass('active');
-    event.currentTarget.classList.add('active');
-
-    //adjust possible sort methods
-    switch(data){
-        case "data-grades":
-            $("#sort-menu-items").toggleClass("disabled", false);
-            break;
-        case "data-class-teacher":
-            $("#sort-menu-items").toggleClass("disabled", true);
-            break;
-        case "data-exams":
-            $("#sort-menu-items").toggleClass("disabled", false);
-            break;
-    }
-}
-
 function addUIEventListeners(){
     Array.from(document.getElementsByClassName("nav-menu-button")).forEach(item => {
         item.addEventListener("click", onMenuItemClicked)
@@ -329,13 +300,34 @@ function addUIEventListeners(){
         backupFileElement.addEventListener("change", onRestoreBackupFileSelected);
     }
     Array.from(document.getElementsByClassName("nav-data-tabs-button")).forEach(item => {
-        item.addEventListener("click", onNavDataTabsButtonClicked);
+        item.addEventListener('shown.bs.tab', function (event) {
+            var data = event.currentTarget.getAttribute("name");
+            //adjust possible sort methods
+            switch(data){
+                case "data-grades":
+                    $("#sort-menu-items").toggleClass("disabled", false);
+                    break;
+                case "data-class-teacher":
+                    $("#sort-menu-items").toggleClass("disabled", true);
+                    break;
+                case "data-exams":
+                    $("#sort-menu-items").toggleClass("disabled", false);
+                    break;
+            }
+        });
     });
-    document.getElementById("filter-data-table-button").addEventListener("click", filterDataTable);
+    var filterDataTableElement = document.getElementById("filter-data-table-button");
+    if (filterDataTableElement != null) {
+        filterDataTableElement.addEventListener("click", filterDataTable);
+    }
 }
 
 function initObjects(){
     var token = document.getElementById("csrf_token");
+    if (token == null) {
+        // probably not on home-page
+        return;
+    }
     requests = new Requests(token.innerText);
     token.remove();
 

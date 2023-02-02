@@ -95,6 +95,13 @@ abstract class DataSourceModule {
     protected function getTargetFile(): string {
         return $this->targetFile;
     }
+
+    /**
+     * returns some information provided by the module as key value pairs
+     */
+    public function getModuleInformation(): array {
+        return [];
+    }
 }
 
 ?>

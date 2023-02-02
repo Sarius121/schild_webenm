@@ -21,3 +21,8 @@ example.spec.ts
 *.log
 package.json
 package-lock.json
+
+# temporary:
+composer.json
+composer.lock
+vendor/

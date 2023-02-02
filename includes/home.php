@@ -104,39 +104,39 @@ if(!isset($loginHandler)){
             </div>
         </div>
         <div class="separator"></div>
-        <div id="nav-data" class="nav nav-tabs">
-            <div class="nav-item">
-                <button class="nav-link active nav-data-tabs-button" name="data-grades">Leistungsdaten</button>
-            </div>
+        <ul id="nav-data" class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button id="tab-grades" class="nav-link active nav-data-tabs-button" name="data-grades" data-bs-toggle="tab" data-bs-target="#data-grades" role="tab" aria-controls="data-grades" aria-selected="true">Leistungsdaten</button>
+            </li>
             <?php if(getConstant("SHOW_CLASS_TEACHER_TAB", true)){ ?>
-            <div class="nav-item">
-                <button id="tab-class-teacher" class="nav-link nav-data-tabs-button" name="data-class-teacher">Klassenleitung</button>
-            </div><?php } ?>
+            <li class="nav-item" role="presentation">
+                <button id="tab-class-teacher" class="nav-link nav-data-tabs-button" name="data-class-teacher" data-bs-toggle="tab" data-bs-target="#data-class-teacher" role="tab" aria-controls="data-class-teacher" aria-selected="false">Klassenleitung</button>
+            </li><?php } ?>
             <?php if(getConstant("SHOW_EXAMS_TAB", true)){ ?>
-                <div class="nav-item">
-                <button id="tab-exams" class="nav-link nav-data-tabs-button" name="data-exams">Zentr. Prf.</button>
-            </div><?php } ?>
-        </div>
+            <li class="nav-item" role="presentation">
+                <button id="tab-exams" class="nav-link nav-data-tabs-button" name="data-exams" data-bs-toggle="tab" data-bs-target="#data-exams" role="tab" aria-controls="data-exans" aria-selected="false">Zentr. Prf.</button>
+            </li><?php } ?>
+        </ul>
     </div>
     <div id="print-header">
         <p>Lehrer: <?php echo $loginHandler->getUsername(); ?> | Datum: <?php echo date("d.m.Y"); ?></p>
     </div>
     <div id="data-container-boundary">
-        <div id="data-container">
+        <div id="data-container" class="tab-content">
             <div id="data-container-loading" class="d-flex justify-content-center"><div class="spinner-border" role="status" aria-hidden="true"></div></div>
-            <div id="data-grades" class="visible">
+            <div id="data-grades" class="tab-pane active" role="tabpanel" aria-labelledby="tab-grades">
                 <div id="gradeTable" class="dataTable"></div>
             </div>
             <?php if(getConstant("SHOW_CLASS_TEACHER_TAB", true)){
                 ?>
-                <div id="data-class-teacher">
+                <div id="data-class-teacher" class="tab-pane" role="tabpanel" aria-labelledby="tab-class-teacher">
                     <div id="classTeacherTable" class="dataTable"></div>
                 </div>
                 <?php 
             }
             if(getConstant("SHOW_EXAMS_TAB", true)){
                 ?>
-                <div id="data-exams">
+                <div id="data-exams" class="tab-pane" role="tabpanel" aria-labelledby="tab-exams">
                     <div id="examsTable" class="dataTable"></div>
                 </div>
                 <?php
