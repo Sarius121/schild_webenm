@@ -28,6 +28,10 @@ class LoginHandler {
 
     public function login($username, $password, $saveChanges=true) {
         $username = $this->normalizeUsername($username);
+        if ($username == ADMIN_USER) {
+            // login as admin instead of normal
+            return $this->loginAdmin($password);
+        }
         if($this->checkLogin($username, $password, true, $saveChanges)){
             $this->loggedin = true;
             $this->username = $username;
@@ -51,6 +55,15 @@ class LoginHandler {
             //not loggedin
             //$this->error = "Unbekannter Fehler. Versuche, dich erneut anzumelden.";
             return false;
+        } elseif ($this->session->isAdmin()) {
+            if ($this->session->isSessionExpired()) {
+                $this->logout();
+                return false;
+            }
+            $this->loggedin = true;
+            $this->username = $this->session->getUsername();
+            $this->session->extendSession();
+            return true;
         } elseif ($this->session->isTmpSession()) {
             // logging in with tmp session is not allowed
             $this->session->destroySession();
@@ -129,7 +142,7 @@ class LoginHandler {
             }
             //TODO what if db exists but working zip not or source zip?
         } elseif(($foreignFilename = $this->foreignTmpFileExists($username)) != false){
-            $this->differentSessionActive = true;
+            //$this->differentSessionActive = true;
             if(!$newlogin){
                 //when it's not a new login and a foreign file is opened, the user has to login again to close the foreign session
                 $this->error = "Du hast dich an einem anderen Gerät angemeldet und wurdest deswegen auf diesem Gerät abgemeldet. Deine Änderungen wurden gesichert!";
@@ -168,7 +181,7 @@ class LoginHandler {
             } else {
                 //different session was opened and closed -> user should be logged out
                 //nothing opened yet
-                $this->differentSessionActive = true;
+                //$this->differentSessionActive = true;
                 $this->error = "Du hast dich an einem anderen Gerät angemeldet und wurdest deswegen auf diesem Gerät abgemeldet. Deine Änderungen wurden gesichert!";
                 return false;
             }
@@ -212,11 +225,21 @@ class LoginHandler {
 
     public function checkChangesToSave(string $username) {
         $username = $this->normalizeUsername($username);
+
+        if(is_null($this->dataSource->findFilename($username))){
+            return false;
+        }
+
         return $this->foreignTmpFileExists($username) != false;
     }
 
     public function checkLoginAgainstForeignFile(string $username, string $password) {
         $username = $this->normalizeUsername($username);
+
+        if(is_null($this->dataSource->findFilename($username))){
+            return false;
+        }
+
         if (($foreignFilename = $this->foreignTmpFileExists($username)) != false) {
             $foreignGradeFile = new GradeFile($foreignFilename);
             if ($foreignGradeFile->openFile()) {
@@ -280,7 +303,7 @@ class LoginHandler {
         if(!$force && !$this->isLoggedIn()){
             return false;
         }
-        if($this->closeFile()){
+        if($this->isAdmin() || $this->closeFile()){
             $this->loggedin = false;
             $this->username = null;
             $this->gradeFile = null;
@@ -291,8 +314,33 @@ class LoginHandler {
         return false;
     }
 
+    /**
+     * login the current user as admin if the user is allowed to
+     */
+    public function loginAdmin($password) {
+        if ($password == ADMIN_PWD) {
+            $this->session->createAdminSession();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * check if the current user is logged in as admin
+     */
+    public function isAdmin() {
+        if (!$this->isLoggedIn()) {
+            return false;
+        }
+        return $this->session->isAdmin();
+    }
+
     private function foreignTmpFileExists($username){
-        $found = glob(TMP_GRADE_FILES_DIRECTORY . $this->dataSource->findFilename($username) . "*");
+        $foundSrcFilename = $this->dataSource->findFilename($username);
+        if (is_null($foundSrcFilename)) {
+            return false;
+        }
+        $found = glob(TMP_GRADE_FILES_DIRECTORY . $foundSrcFilename . "*");
         if($found == false || count($found) <= 0){
             return false;
         }
@@ -308,7 +356,11 @@ class LoginHandler {
     }
 
     private function foreignZipFileExists($username){
-        $found = glob(GRADE_FILES_DIRECTORY . $this->dataSource->findFilename($username) . "*");
+        $foundSrcFilename = $this->dataSource->findFilename($username);
+        if (is_null($foundSrcFilename)) {
+            return false;
+        }
+        $found = glob(GRADE_FILES_DIRECTORY . $foundSrcFilename . "*");
         if($found == false || count($found) <= 0){
             return false;
         }

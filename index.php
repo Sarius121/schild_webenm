@@ -48,11 +48,11 @@ else
 }
 
 if($loginHandler->isLoggedIn()){
-    $page = "home";
-}
-
-if($pageArg == "admin") {
-    $page = "admin";
+    if ($loginHandler->isAdmin()) {
+        $page = "admin";
+    } else {
+        $page = "home";
+    }
 }
 
 ?>

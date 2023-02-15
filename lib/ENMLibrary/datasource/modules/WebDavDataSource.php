@@ -25,7 +25,7 @@ class WebDavDataSource extends DataSourceModule {
             'password' => WEBDAV_PWD
         ));
 
-        // TODO this is just a work around because otherwise the method first has to be distinguished and the PUT will fail
+        // TODO this is just a work around because otherwise the method has to be distinguished first and the PUT will fail
         $this->client->addCurlSetting(CURLOPT_HTTPAUTH, Client::AUTH_BASIC);
 
         $response = $this->client->options();
@@ -70,9 +70,9 @@ class WebDavDataSource extends DataSourceModule {
         return false;
     }
 
-    public function findFilenameImpl(string $username): string {
+    public function findFilenameImpl(string $username): ?string {
         if ($this->client == null) {
-            return (string) null;
+            return null;
         }
         
         $response = $this->client->propfind('', array('{DAV:}givenname'), 1);
@@ -84,7 +84,7 @@ class WebDavDataSource extends DataSourceModule {
             }
         }
 
-        return (string) null;
+        return null;
     }
 
     public function getFilesInfos(): array {

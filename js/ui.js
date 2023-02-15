@@ -291,14 +291,24 @@ function sortCurrentTable(columns = []){
     table.sortTable(columns);
 }
 
+/**
+ * add event listener to element only if it's not null
+ * 
+ * @param {HTMLElement} element element to which the listener should be added
+ * @param {String} type listener type
+ * @param {EventListenerOrEventListenerObject} listener method to call if event is triggered
+ */
+function addEventListenerIfPresent(element, type, listener) {
+    if (element != null) {
+        element.addEventListener(type, listener);
+    }
+}
+
 function addUIEventListeners(){
     Array.from(document.getElementsByClassName("nav-menu-button")).forEach(item => {
         item.addEventListener("click", onMenuItemClicked)
     });
-    var backupFileElement = document.getElementById("backupFile");
-    if (backupFileElement != null) {
-        backupFileElement.addEventListener("change", onRestoreBackupFileSelected);
-    }
+    addEventListenerIfPresent(document.getElementById("backupFile"), "change", onRestoreBackupFileSelected);
     Array.from(document.getElementsByClassName("nav-data-tabs-button")).forEach(item => {
         item.addEventListener('shown.bs.tab', function (event) {
             var data = event.currentTarget.getAttribute("name");
@@ -316,10 +326,7 @@ function addUIEventListeners(){
             }
         });
     });
-    var filterDataTableElement = document.getElementById("filter-data-table-button");
-    if (filterDataTableElement != null) {
-        filterDataTableElement.addEventListener("click", filterDataTable);
-    }
+    addEventListenerIfPresent(document.getElementById("filter-data-table-button"), "click", filterDataTable);
 }
 
 function initObjects(){

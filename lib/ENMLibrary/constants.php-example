@@ -2,6 +2,8 @@
 
 namespace ENMLibrary;
 
+use ENMLibrary\datasource\modules\LocalFolderDataSource;
+
 /**
  * #########################################
  * # REMOVE BEFORE USING FOR PRODUCTION!!! #
@@ -25,8 +27,25 @@ define("FILE_SUFFIX", "_2020_2");
 
 /**
  * ###############
+ * # ADMIN PAGE  #
+ * ###############
+ */
+
+/*
+ * This are the credentials which are used to acces the admin page. The username shouldn't match a grade file user,
+ * because you could not access the user's grade file anymore. Furthermore, only upper-case letters are allowed.
+ */
+define("ADMIN_USER", "ADMIN");
+define("ADMIN_PWD", "pwd");
+
+/**
+ * ###############
  * # DATA SOURCE #
  * ###############
+ */
+
+/**
+ * You have to import the source modules you're using at the top.
  */
 define("DATA_SOURCE_MODULE", LocalFolderDataSource::getName());
 
@@ -41,7 +60,7 @@ define("SOURCE_GRADE_FILES_DIRECTORY", "grade-files/source/");
  * ################
  */
 
-/*
+/**
  * define which of the following optional (and mostly editable) columns should be shown in the ui
  */
 define("SHOW_DATA_STUDENT_KURSART", false); //not editable

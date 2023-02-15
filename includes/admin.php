@@ -1,6 +1,5 @@
 <?php
 
-use ENMLibrary\datasource\DataSourceModule;
 use ENMLibrary\datasource\DataSourceModuleHelper;
 $module = DataSourceModuleHelper::createModule();
 ?>
@@ -15,7 +14,7 @@ $module = DataSourceModuleHelper::createModule();
                 <h2>webENM <span class="admin-area">Admin-Bereich</span></h2>
             </div>
             <div class="col-sm-auto">
-                Angemeldet als Admin
+                Angemeldet als <?php echo $loginHandler->getUsername(); ?>
             </div>
             <div class="col-sm-auto">
                 <a class="btn btn-primary" href="?page=logout">Abmelden</a>
@@ -37,7 +36,7 @@ $module = DataSourceModuleHelper::createModule();
                 <div class="tab-pane show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
                     <div id="overview-content">
                         <div class="dataTable">
-                            <table class="table">
+                            <table>
                                 <thead>
                                     <tr>
                                         <th class="hidden" scope="col">placeholder</th>
