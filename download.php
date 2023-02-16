@@ -26,7 +26,7 @@ if(!$loginHandler->checkDownloadToken($_GET["token"])){
 $loginHandler->getGradeFile()->close();
 $loginHandler->saveFileChanges();
 
-$path = $loginHandler->getSourceFilename($loginHandler->getUsername());
+$path = $loginHandler->getZipFilename($loginHandler->getUsername());
 if(!file_exists($path)){
     http_response_code(404);
     die();
@@ -37,7 +37,7 @@ if(!file_exists($path)){
 */
 header('Content-Description: File Transfer');
 header('Content-Type: application/octet-stream');
-header('Content-Disposition: attachment; filename='.basename($path));
+header('Content-Disposition: attachment; filename=' . $loginHandler->getSourceFilename($loginHandler->getUsername()));
 header('Content-Transfer-Encoding: binary');
 header('Expires: 0');
 header('Cache-Control: must-revalidate');

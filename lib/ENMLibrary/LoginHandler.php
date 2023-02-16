@@ -264,6 +264,16 @@ class LoginHandler {
         return $this->encryptedGradeFile->saveChanges() && $this->dataSource->saveFile();
     }
 
+    /**
+     * saves only the zip file to the data source
+     */
+    public function saveToSource() {
+        if(!$this->isLoggedIn()){
+            return false;
+        }
+        return $this->dataSource->saveFile();
+    }
+
     private function normalizeUsername(string $username) {
         return mb_strtoupper($username, 'UTF-8');
     }
@@ -378,6 +388,10 @@ class LoginHandler {
     public function getDBFilename($username){
         $fileID = $this->session->getSessionFileID();
         return $this->dataSource->findFilename($username) . ".enm_" . $fileID;
+    }
+
+    public function getSourceFilename() {
+        return $this->dataSource->findFilename($this->username);
     }
 
     public function getGradeFile()

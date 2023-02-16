@@ -61,7 +61,9 @@ if($_POST["action"] == "save-changes"){
         $file = $_FILES["backupFile"];
         if($file["error"] == UPLOAD_ERR_OK){
             $fileUploader = new BackupHandler();
-            if($fileUploader->upload($file, $loginHandler->getPassword(), $loginHandler->getBasename($loginHandler->getUsername()))){
+            if ($fileUploader->upload($file, $loginHandler->getPassword(), $loginHandler->getSourceFilename(),
+                    $loginHandler->getZipFilename($loginHandler->getUsername()))) {
+                $loginHandler->saveToSource();
                 $loginHandler->reopenFile(false);
                 echo RequestResponse::SuccessfulResponse($loginHandler->getCSRFToken())->getResponse();
                 exit;
@@ -78,7 +80,8 @@ if($_POST["action"] == "save-changes"){
     $loginHandler->saveFileChanges();
 
     $fileUploader = new BackupHandler();
-    if($fileUploader->undoBackupRestore($loginHandler->getBasename($loginHandler->getUsername()))){
+    if($fileUploader->undoBackupRestore($loginHandler->getSourceFilename(), $loginHandler->getZipFilename($loginHandler->getUsername()))){
+        $loginHandler->saveToSource();
         $loginHandler->reopenFile(false);
         echo RequestResponse::SuccessfulResponse($loginHandler->getCSRFToken())->getResponse();
         exit;
