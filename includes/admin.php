@@ -2,6 +2,25 @@
 
 use ENMLibrary\datasource\DataSourceModuleHelper;
 $module = DataSourceModuleHelper::createModule();
+
+$fileInfos = $module->getFilesInfos();
+$maxLastSaved = 0;
+$maxLastUnsavedChanges = 0;
+foreach ($fileInfos as $key => $fileInfo) {
+    $lastSaved = $fileInfo['last-edit'];
+    if ($maxLastSaved < $lastSaved) {
+        $maxLastSaved = $lastSaved;
+    }
+    $tmpFile = $loginHandler->foreignTmpFileExists($fileInfo['name']);
+    if ($tmpFile !== false) {
+        $lastUnsavedChanges = filemtime(TMP_GRADE_FILES_DIRECTORY . $tmpFile);
+        if ($maxLastUnsavedChanges < $lastUnsavedChanges) {
+            $maxLastUnsavedChanges = $lastUnsavedChanges;
+        }
+        $fileInfos[$key]['last-unsaved-changes'] = $lastUnsavedChanges;
+    }
+}
+
 ?>
 
 <div id="home-container">
@@ -42,14 +61,34 @@ $module = DataSourceModuleHelper::createModule();
                                         <th class="hidden" scope="col">placeholder</th>
                                         <th scope="col">#</th>
                                         <th scope="col">Benutzername</th>
-                                        <th scope="col">Zuletzt bearbeitet</th>
-                                        <th scope="col">Aktionen</th>
+                                        <th scope="col">Zuletzt gespeichert</th>
+                                        <th scope="col">Ungesicherte Änderungen</th>
+                                        <?php if (ALLOW_ACTIONS) { ?>
+                                            <th scope="col">Aktionen</th>
+                                        <?php } ?>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr>
+                                        <td class="hidden"></td>
+                                        <td></td>
+                                        <td>ALLE (<?php echo count($fileInfos) ?>)</td>
+                                        <td><?php if ($maxLastSaved != 0) { echo date('d-m-Y H:i', $maxLastSaved); } ?></td>
+                                        <td><?php if ($maxLastUnsavedChanges != 0) { echo date('d-m-Y H:i', $maxLastUnsavedChanges); } else { echo "keine"; } ?></td>
+                                        <?php if (ALLOW_ACTIONS) { ?>
+                                        <td>
+                                            <button class="btn btn-outline-secondary" title="Dateien als ZIP herunterladen"><svg class="bi"><use xlink:href="img/ui-icons.svg#download"/></svg></button>
+                                            <?php if ($maxLastUnsavedChanges != 0) { ?>
+                                                <button class="btn btn-outline-secondary" title="Speichere alle ungesicherten Änderungen"><svg class="bi"><use xlink:href="img/ui-icons.svg#save"/></svg></button>
+                                                <button class="btn btn-outline-secondary" title="Lösche alle ungesicherten Änderungen"><svg class="bi"><use xlink:href="img/ui-icons.svg#delete-unsaved"/></svg></button>
+                                            <?php } ?>
+                                            <button class="btn btn-outline-secondary" title="Lösche alle Backups und Hilfs-Dateien"><svg class="bi"><use xlink:href="img/ui-icons.svg#delete-archive"/></svg></button>
+                                        </td>
+                                        <?php } ?>
+                                    </tr>
                                     <?php
                                     $i = 1;
-                                    foreach($module->getFilesInfos() as $file) {
+                                    foreach($fileInfos as $file) {
                                         ?>
                                         <tr>
                                             <td class="hidden"></td>
@@ -62,7 +101,17 @@ $module = DataSourceModuleHelper::createModule();
                                                 echo date('d-m-Y H:i', $file["last-edit"]);
                                             }
                                             ?></td>
-                                            <td></td>
+                                            <td><?php if (isset($file['last-unsaved-changes'])) { echo date('d-m-Y H:i', $file['last-unsaved-changes']); } else { echo "keine"; } ?></td>
+                                            <?php if (ALLOW_ACTIONS) { ?>
+                                            <td>
+                                                <button class="btn btn-outline-secondary" title="Datei herunterladen"><svg class="bi"><use xlink:href="img/ui-icons.svg#download"/></svg></button>
+                                                <?php if (isset($file['last-unsaved-changes'])) { ?>
+                                                <button class="btn btn-outline-secondary" title="Speichere ungesicherte Änderungen"><svg class="bi"><use xlink:href="img/ui-icons.svg#save"/></svg></button>
+                                                <button class="btn btn-outline-secondary" title="Lösche ungesicherte Änderungen"><svg class="bi"><use xlink:href="img/ui-icons.svg#delete-unsaved"/></svg></button>
+                                                <?php } ?>
+                                                <button class="btn btn-outline-secondary" title="Lösche Backups und Hilfs-Dateien"><svg class="bi"><use xlink:href="img/ui-icons.svg#delete-archive"/></svg></button>
+                                            </td>
+                                            <?php } ?>
                                         </tr>
                                         <?php
                                         $i++;
@@ -76,6 +125,7 @@ $module = DataSourceModuleHelper::createModule();
                             <ul>
                                 <li>"Jetzt" heißt in den letzten 5 Minuten.</li>
                                 <li>Dateien, die nicht auf ".enz" enden, werden nicht angezeigt.</li>
+                                <li>Wenn die Zeit von zuletzt gespeichert und ungesicherten Änderungen fast gleich sind, ist es wahrscheinlich, dass die Änderungen gesichert wurden, aber der Benutzer sich nicht richtig abgemeldet hat.</li>
                             </ul>
                         </div>
                     </div>

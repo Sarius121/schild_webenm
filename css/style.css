@@ -1130,6 +1130,11 @@ tr span.now
     margin-bottom: 0;
 }
 
+#overview-content tbody tr:nth-child(1)
+{
+    background-color: var(--bs-light);
+}
+
 #information
 {
     padding-top: 1em;

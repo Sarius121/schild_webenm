@@ -345,7 +345,7 @@ class LoginHandler {
         return $this->session->isAdmin();
     }
 
-    private function foreignTmpFileExists($username){
+    public function foreignTmpFileExists($username){
         $foundSrcFilename = $this->dataSource->findFilename($username);
         if (is_null($foundSrcFilename)) {
             return false;
