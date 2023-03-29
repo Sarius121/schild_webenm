@@ -11,7 +11,7 @@ if(!isset($loginHandler)){
 
 <div id="csrf_token"><?php echo $loginHandler->getCSRFToken(); ?></div>
 
-<div id="home-container">
+<div id="home-container" class="big-container">
     <div id="top-box">
         <div id="header" class="row">
             <div class="col-sm-auto">

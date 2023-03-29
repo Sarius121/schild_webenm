@@ -81,7 +81,8 @@ abstract class DataSourceModule {
      * returns an array containing information about a file
      * 
      * for each element the following keys are defined:
-     * - name: name of the file
+     * - user: username
+     * - file: filename
      * - last-edit: date of the last edit
      * 
      * @return array infos about all available files
@@ -90,6 +91,10 @@ abstract class DataSourceModule {
 
     protected function getSourceFile(): string {
         return $this->filename . ".enz";
+    }
+
+    public function setSourceFile(string $sourceFile) {
+        $this->filename = basename($sourceFile, ".enz");
     }
 
     protected function getTargetFile(): string {
@@ -101,6 +106,22 @@ abstract class DataSourceModule {
      */
     public function getModuleInformation(): array {
         return [];
+    }
+
+    /**
+     * helper method to get username by filename
+     * 
+     * @param string $filename filename to extract username from
+     * @return string extracted username
+     */
+    protected function getUsernameByFilename(string $filename): string {
+        $matches = array();
+        preg_match("/^(.*)" . preg_quote(FILE_SUFFIX) . ".*$/", basename($filename, ".enz"), $matches);
+        if (isset($matches[1])) {
+            return $matches[1];
+        } else {
+            return "";
+        }
     }
 }
 

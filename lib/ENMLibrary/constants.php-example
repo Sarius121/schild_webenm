@@ -39,6 +39,11 @@ define("ADMIN_USER", "ADMIN");
 define("ADMIN_PWD", "pwd");
 
 /**
+ * specify if admins can perform actions such as downloading of files
+ */
+define("ADMIN_ALLOW_ACTIONS", true);
+
+/**
  * ###############
  * # DATA SOURCE #
  * ###############

@@ -623,12 +623,12 @@ div.back-button:hover
     background-image: url("../img/back-button-filled.svg");
 }
 
-#home-container .d-flex
+.big-container .d-flex
 {
     margin-bottom: 1em;
 }
 
-#home-container div.d-flex h2
+.big-container div.d-flex h2
 {
     margin-bottom: 0;
 }
@@ -639,7 +639,7 @@ div.back-button svg
     width: auto;
 }
 
-#home-container{
+.big-container{
     min-width: 1400px;
     width: 75%;
     margin: 0 auto;
@@ -653,7 +653,7 @@ div.back-button svg
 }
 
 @media only screen and (max-width: 1400px){
-    #home-container{
+    .big-container{
         width: 100%;
         min-width: unset;
     }

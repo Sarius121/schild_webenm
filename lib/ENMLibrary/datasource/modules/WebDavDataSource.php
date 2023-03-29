@@ -102,7 +102,8 @@ class WebDavDataSource extends DataSourceModule {
                 continue;
             }
             $fileInfos = array();
-            $fileInfos["name"] = basename($file, ".enz");
+            $fileInfos["file"] = basename($file, ".enz");
+            $fileInfos["user"] = $this->getUsernameByFilename($fileInfos["file"]);
             $fileInfos["last-edit"] = strtotime($info["{DAV:}getlastmodified"]);
             $result[] = $fileInfos;
         }

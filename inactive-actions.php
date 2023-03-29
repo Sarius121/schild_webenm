@@ -14,7 +14,7 @@ if(!isset($_POST["csrf_token"])){
 $loginHandler = new LoginHandler();
 $loginHandler->loginWithSession();
 
-if(!$loginHandler->isLoggedIn()){
+if(!$loginHandler->isLoggedIn() || $loginHandler->isAdmin()){
     http_response_code(403);
     die();
 }
@@ -36,7 +36,7 @@ if($_POST["action"] == "save-changes"){
         echo RequestResponse::SuccessfulResponse($loginHandler->getCSRFToken())->getResponse();
         exit;
     }
-    echo RequestResponse::ErrorResponse(RequestResponse::ERROR_FUNCTION_SPECIFIC)->getResponse();
+    echo RequestResponse::ErrorResponse(RequestResponse::ERROR_FUNCTION_SPECIFIC, $loginHandler->getCSRFToken())->getResponse();
     exit;
 } else if($_POST["action"] == "create"){
     /*
@@ -61,7 +61,7 @@ if($_POST["action"] == "save-changes"){
         $file = $_FILES["backupFile"];
         if($file["error"] == UPLOAD_ERR_OK){
             $fileUploader = new BackupHandler();
-            if ($fileUploader->upload($file, $loginHandler->getPassword(), $loginHandler->getSourceFilename(),
+            if ($fileUploader->upload($file, $loginHandler->getPassword(), basename($loginHandler->getSourceFilename(), ".enz"),
                     $loginHandler->getZipFilename($loginHandler->getUsername()))) {
                 $loginHandler->saveToSource();
                 $loginHandler->reopenFile(false);
@@ -80,7 +80,7 @@ if($_POST["action"] == "save-changes"){
     $loginHandler->saveFileChanges();
 
     $fileUploader = new BackupHandler();
-    if($fileUploader->undoBackupRestore($loginHandler->getSourceFilename(), $loginHandler->getZipFilename($loginHandler->getUsername()))){
+    if($fileUploader->undoBackupRestore(basename($loginHandler->getSourceFilename(), ".enz"), $loginHandler->getZipFilename($loginHandler->getUsername()))){
         $loginHandler->saveToSource();
         $loginHandler->reopenFile(false);
         echo RequestResponse::SuccessfulResponse($loginHandler->getCSRFToken())->getResponse();
@@ -89,7 +89,7 @@ if($_POST["action"] == "save-changes"){
     echo RequestResponse::ErrorResponse(RequestResponse::ERROR_FUNCTION_SPECIFIC, $loginHandler->getCSRFToken())->getResponse();
     exit;
 } else {
-    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_WRONG_ARGUMENTS)->getResponse());
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_WRONG_ARGUMENTS, $loginHandler->getCSRFToken())->getResponse());
 }
     
 ?>

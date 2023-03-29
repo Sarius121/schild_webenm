@@ -16,7 +16,7 @@ if(!isset($_POST["csrf_token"])){
 $loginHandler = new LoginHandler();
 $loginHandler->loginWithSession();
  
-if(!$loginHandler->isLoggedIn()){
+if(!$loginHandler->isLoggedIn() || $loginHandler->isAdmin()){
     http_response_code(403);
     die();
 }

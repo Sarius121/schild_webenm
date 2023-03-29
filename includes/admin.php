@@ -11,7 +11,7 @@ foreach ($fileInfos as $key => $fileInfo) {
     if ($maxLastSaved < $lastSaved) {
         $maxLastSaved = $lastSaved;
     }
-    $tmpFile = $loginHandler->foreignTmpFileExists($fileInfo['name']);
+    $tmpFile = $loginHandler->foreignTmpFileExists($fileInfo['user']);
     if ($tmpFile !== false) {
         $lastUnsavedChanges = filemtime(TMP_GRADE_FILES_DIRECTORY . $tmpFile);
         if ($maxLastUnsavedChanges < $lastUnsavedChanges) {
@@ -23,7 +23,9 @@ foreach ($fileInfos as $key => $fileInfo) {
 
 ?>
 
-<div id="home-container">
+<div id="csrf_token"><?php echo $loginHandler->getCSRFToken(); ?></div>
+
+<div id="admin-container" class="big-container">
     <div id="top-box">
         <div id="header" class="row">
             <div class="col-sm-auto">
@@ -61,9 +63,10 @@ foreach ($fileInfos as $key => $fileInfo) {
                                         <th class="hidden" scope="col">placeholder</th>
                                         <th scope="col">#</th>
                                         <th scope="col">Benutzername</th>
+                                        <th scope="col">Datei</th>
                                         <th scope="col">Zuletzt gespeichert</th>
                                         <th scope="col">Ungesicherte Änderungen</th>
-                                        <?php if (ALLOW_ACTIONS) { ?>
+                                        <?php if (ADMIN_ALLOW_ACTIONS) { ?>
                                             <th scope="col">Aktionen</th>
                                         <?php } ?>
                                     </tr>
@@ -73,16 +76,17 @@ foreach ($fileInfos as $key => $fileInfo) {
                                         <td class="hidden"></td>
                                         <td></td>
                                         <td>ALLE (<?php echo count($fileInfos) ?>)</td>
+                                        <td></td>
                                         <td><?php if ($maxLastSaved != 0) { echo date('d-m-Y H:i', $maxLastSaved); } ?></td>
                                         <td><?php if ($maxLastUnsavedChanges != 0) { echo date('d-m-Y H:i', $maxLastUnsavedChanges); } else { echo "keine"; } ?></td>
-                                        <?php if (ALLOW_ACTIONS) { ?>
+                                        <?php if (ADMIN_ALLOW_ACTIONS && count($fileInfos) > 0) { ?>
                                         <td>
-                                            <button class="btn btn-outline-secondary" title="Dateien als ZIP herunterladen"><svg class="bi"><use xlink:href="img/ui-icons.svg#download"/></svg></button>
+                                            <button class="btn btn-outline-secondary admin-button" name="download-all" title="Dateien als ZIP herunterladen"><svg class="bi"><use xlink:href="img/ui-icons.svg#download"/></svg></button>
                                             <?php if ($maxLastUnsavedChanges != 0) { ?>
-                                                <button class="btn btn-outline-secondary" title="Speichere alle ungesicherten Änderungen"><svg class="bi"><use xlink:href="img/ui-icons.svg#save"/></svg></button>
-                                                <button class="btn btn-outline-secondary" title="Lösche alle ungesicherten Änderungen"><svg class="bi"><use xlink:href="img/ui-icons.svg#delete-unsaved"/></svg></button>
+                                                <button class="btn btn-outline-secondary admin-button" name="save-changes-all" title="Speichere alle ungesicherten Änderungen"><svg class="bi"><use xlink:href="img/ui-icons.svg#save"/></svg></button>
+                                                <button class="btn btn-outline-secondary admin-button" name="discard-changes-all" title="Lösche alle ungesicherten Änderungen"><svg class="bi"><use xlink:href="img/ui-icons.svg#delete-unsaved"/></svg></button>
                                             <?php } ?>
-                                            <button class="btn btn-outline-secondary" title="Lösche alle Backups und Hilfs-Dateien"><svg class="bi"><use xlink:href="img/ui-icons.svg#delete-archive"/></svg></button>
+                                            <?php // not implemented yet <button class="btn btn-outline-secondary" title="Lösche alle Backups und Hilfs-Dateien"><svg class="bi"><use xlink:href="img/ui-icons.svg#delete-archive"/></svg></button>?>
                                         </td>
                                         <?php } ?>
                                     </tr>
@@ -93,7 +97,8 @@ foreach ($fileInfos as $key => $fileInfo) {
                                         <tr>
                                             <td class="hidden"></td>
                                             <td scope="row"><?php echo $i ?></td>
-                                            <td><?php echo $file["name"] ?></td>
+                                            <td><?php echo $file["user"] ?></td>
+                                            <td><?php echo $file["file"] ?></td>
                                             <td><?php
                                             if (time() - $file["last-edit"] < 60 * 5) {
                                                 echo "<span class=\"now\">jetzt</span>";
@@ -102,14 +107,13 @@ foreach ($fileInfos as $key => $fileInfo) {
                                             }
                                             ?></td>
                                             <td><?php if (isset($file['last-unsaved-changes'])) { echo date('d-m-Y H:i', $file['last-unsaved-changes']); } else { echo "keine"; } ?></td>
-                                            <?php if (ALLOW_ACTIONS) { ?>
+                                            <?php if (ADMIN_ALLOW_ACTIONS) { ?>
                                             <td>
-                                                <button class="btn btn-outline-secondary" title="Datei herunterladen"><svg class="bi"><use xlink:href="img/ui-icons.svg#download"/></svg></button>
                                                 <?php if (isset($file['last-unsaved-changes'])) { ?>
-                                                <button class="btn btn-outline-secondary" title="Speichere ungesicherte Änderungen"><svg class="bi"><use xlink:href="img/ui-icons.svg#save"/></svg></button>
-                                                <button class="btn btn-outline-secondary" title="Lösche ungesicherte Änderungen"><svg class="bi"><use xlink:href="img/ui-icons.svg#delete-unsaved"/></svg></button>
+                                                <button class="btn btn-outline-secondary admin-button" name="save-changes" title="Speichere ungesicherte Änderungen"><svg class="bi"><use xlink:href="img/ui-icons.svg#save"/></svg></button>
+                                                <button class="btn btn-outline-secondary admin-button" name="discard-changes" title="Lösche ungesicherte Änderungen"><svg class="bi"><use xlink:href="img/ui-icons.svg#delete-unsaved"/></svg></button>
                                                 <?php } ?>
-                                                <button class="btn btn-outline-secondary" title="Lösche Backups und Hilfs-Dateien"><svg class="bi"><use xlink:href="img/ui-icons.svg#delete-archive"/></svg></button>
+                                                <?php // not implemented yet <button class="btn btn-outline-secondary" title="Lösche Backups und Hilfs-Dateien"><svg class="bi"><use xlink:href="img/ui-icons.svg#delete-archive"/></svg></button> ?>
                                             </td>
                                             <?php } ?>
                                         </tr>
@@ -123,9 +127,10 @@ foreach ($fileInfos as $key => $fileInfo) {
                         <div id="overview-explanations">
                             <b>Erklärungen:</b>
                             <ul>
-                                <li>"Jetzt" heißt in den letzten 5 Minuten.</li>
                                 <li>Dateien, die nicht auf ".enz" enden, werden nicht angezeigt.</li>
-                                <li>Wenn die Zeit von zuletzt gespeichert und ungesicherten Änderungen fast gleich sind, ist es wahrscheinlich, dass die Änderungen gesichert wurden, aber der Benutzer sich nicht richtig abgemeldet hat.</li>
+                                <li>Dateien, die nicht dem Muster (Benutzername, Suffix, beliebige Zeichen) bestehen, werden nicht angezeigt.</li>
+                                <li>"Jetzt" heißt in den letzten 5 Minuten.</li>
+                                <li>Wenn die Zeit von "zuletzt gespeichert" und "ungesicherte Änderungen" fast gleich sind, ist es wahrscheinlich, dass die Änderungen gesichert wurden, aber der Benutzer sich nicht richtig abgemeldet hat.</li>
                             </ul>
                         </div>
                     </div>

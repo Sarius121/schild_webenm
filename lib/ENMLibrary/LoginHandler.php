@@ -265,6 +265,26 @@ class LoginHandler {
     }
 
     /**
+     * open tmp file of user and close it (if some file is opened at the moment)
+     * 
+     * @param string $username the owner of the foreign file
+     * @param bool $saveChanges true if the changes should be saved before closing the file
+     */
+    public function closeForeignFile($username, $saveChanges) {
+        $foreignFilename = $this->foreignTmpFileExists($username);
+        if ($foreignFilename == false) {
+            return false;
+        }
+        //save changes from foreign session and create new
+        $foreignZipFile = $this->foreignZipFileExists($username);
+        $foreignEncryptedGradeFile = new EncryptedZipArchive($foreignZipFile, TMP_GRADE_FILES_DIRECTORY . $foreignFilename);
+        $foreignDataSource = DataSourceModuleHelper::createModule();
+        $foreignDataSource->findFilename($username);
+        $foreignDataSource->setTargetFile($foreignZipFile);
+        return $foreignEncryptedGradeFile->close($saveChanges) && $foreignDataSource->closeFile($saveChanges);
+    }
+
+    /**
      * saves only the zip file to the data source
      */
     public function saveToSource() {
@@ -391,7 +411,7 @@ class LoginHandler {
     }
 
     public function getSourceFilename() {
-        return $this->dataSource->findFilename($this->username);
+        return $this->dataSource->findFilename($this->username) . ".enz";
     }
 
     public function getGradeFile()

@@ -20,9 +20,98 @@ window.onbeforeunload = function(){
  */
 window.addEventListener("load", function(event) {
     $(".modal-dialog").draggable({ cancel: ".modal-body, .modal-footer", containment: "html", scroll: false });
-    addUIEventListeners();
-    initObjects();
+    initRequests();
+    if (this.document.getElementById("admin-container") != null) {
+        Array.from(document.getElementsByClassName("admin-button")).forEach(item => {
+            item.addEventListener("click", onAdminPageButtonClicked)
+        });
+    } else if (this.document.getElementById("home-container") != null) {
+        addUIEventListeners();
+        initObjects();
+    }
 });
+
+/**
+ * is called when a button in the overview table is clicked
+ * 
+ * @param {Event} event 
+ */
+function onAdminPageButtonClicked(event) {
+    var action = event.currentTarget.getAttribute("name");
+
+    var data = new FormData();
+    data.append("action", action);
+
+    switch(action){
+        case "save-changes-all":
+            var messageBox = new ProgressMessageBox("save-changes-all", "Alle Änderungen speichern", "Die Änderungen aller offenen Dateien werden gesichert...", "Schließe nicht das Fenster oder lade die Seite neu, während die Änderungen gesichert werden!", true);
+            break;
+        case "save-changes":
+            var messageBox = new ProgressMessageBox("save-changes", "Änderungen speichern", "Die Änderungen werden gesichert...", "Schließe nicht das Fenster oder lade die Seite neu, während die Änderungen gesichert werden!", true);
+            var targetFile = event.currentTarget.parentElement.parentElement.children[2].textContent;
+            data.append("target", targetFile)
+            break;
+        case "save-changes-all":
+            var messageBox = new ProgressMessageBox("discard-changes-all", "Alle Änderungen verwerfen", "Die Änderungen aller offenen Dateien werden verworfen...", "Schließe nicht das Fenster oder lade die Seite neu, während die Änderungen verworfen werden!", true);
+            break;
+        case "discard-changes":
+            var messageBox = new ProgressMessageBox("discard-changes", "Änderungen verwerfen", "Die Änderungen werden verworfen...", "Schließe nicht das Fenster oder lade die Seite neu, während die Änderungen verworfen werden!", true);
+            var targetFile = event.currentTarget.parentElement.parentElement.children[2].textContent;
+            data.append("target", targetFile)
+            break;
+        case "download-all":
+            var messageBox = new ProgressMessageBox("download-changes", "Alle Dateien als ZIP runterladen", "Die Dateien werden zusammengefasst...", "Schließe nicht das Fenster oder lade die Seite neu, während der Download vorbereitet wird!", true);
+            break;
+        case "delete-archives":
+            // not implemented yet
+            return;
+        default:
+            return;
+    }
+
+    messageBox.show();
+    preventAppClosing = true;
+
+    requests.addRequestToQueue("POST", "admin-actions.php", data, function(result){
+        if(result.code == 0){
+            //success
+            preventAppClosing = false;
+            messageBox.setStatus(ProgressMessageBox.STATUS_SUCCESS);
+            switch(action){
+                case "save-changes-all":
+                    messageBox.setMessage("Alle Änderungen wurden gesichert.");
+                    break;
+                case "save-changes":
+                    messageBox.setMessage("Die Änderungen wurden gesichert.");
+                    break;
+                case "discard-changes-all":
+                    messageBox.setMessage("Alle Änderungen wurden verworfen.");
+                    break;    
+                case "discard-changes":
+                    messageBox.setMessage("Die Änderungen wurden verworfen.");
+                    break;
+                case "download-all":
+                    if("download_token" in result){
+                        messageBox.setMessage("Alle Dateien wurden zusammengefasst und werden jetzt runtergeladen.");
+                        messageBox.hide();
+                        window.open("download.php?token=" + result.download_token);
+                    }
+                    break;
+                case "delete-archives":
+                    // not implemented yet
+                    break;
+                default:
+                    return;
+            }
+            messageBox.hide();
+        } else {
+            preventAppClosing = false;
+            //error
+            messageBox.setStatus(ProgressMessageBox.STATUS_FAIL);
+            messageBox.setMessage("Es ist ein unbekannter Fehler aufgetreten!");
+        }
+    });
+}
 
 
 /**
@@ -329,7 +418,7 @@ function addUIEventListeners(){
     addEventListenerIfPresent(document.getElementById("filter-data-table-button"), "click", filterDataTable);
 }
 
-function initObjects(){
+function initRequests() {
     var token = document.getElementById("csrf_token");
     if (token == null) {
         // probably not on home-page
@@ -337,7 +426,9 @@ function initObjects(){
     }
     requests = new Requests(token.innerText);
     token.remove();
+}
 
+function initObjects(){
     gradesModal = new GradesModal();
 
     var tablesToFetch = ["GradeTable", "Grades"];

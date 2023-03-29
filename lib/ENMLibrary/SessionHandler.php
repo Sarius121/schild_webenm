@@ -50,6 +50,7 @@ class SessionHandler {
         $_SESSION['tmp'] = false;
         $_SESSION['create'] = time();
         $_SESSION['admin'] = true;
+        $this->generateCSRFToken();
         // 5 minutes
         $_SESSION['expire'] = time() + 60 * 5;
     }
@@ -115,7 +116,7 @@ class SessionHandler {
      * @return true|false true if token matches, false otherwise
      */
     public function checkDownloadToken($token){
-        if(hash_equals($token, $_SESSION["download_token"])){
+        if(isset($_SESSION["download_token"]) && hash_equals($token, $_SESSION["download_token"])){
             unset($_SESSION["download_token"]);
             return true;
         }
