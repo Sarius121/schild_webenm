@@ -39,12 +39,12 @@ if ($loginHandler->isAdmin()) {
             break;
         }
         $tmpFile = tempnam(GRADE_FILES_DIRECTORY, "download");
-        $dataSource->setSourceFile($file["name"]);
+        $dataSource->setSourceFile($file["file"]);
         $dataSource->setTargetFile($tmpFile);
         if (!$dataSource->openFile()) {
             continue;
         }
-        $zip->addFile($tmpFile, $file["name"] . ".enz");
+        $zip->addFile($tmpFile, $file["file"] . ".enz");
         if (!$zip->close()) {
             // always close zip file so that the tmp file can be directly removed
             $success = false;

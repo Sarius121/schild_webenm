@@ -176,7 +176,7 @@ function onMenuItemClicked(event){
             sortCurrentTable(["Klasse", "FachBez"]);
             break;
         case "create-filter":
-            var id = $("#data-container .visible").first().attr("id");
+            var id = $("#data-container .active").first().attr("id");
             $("#filter-modal .filter-group").toggleClass("hidden", true);
             $("#" + id.replace("data", "filter")).toggleClass("hidden", false);
 
@@ -185,7 +185,7 @@ function onMenuItemClicked(event){
             $("#filter-modal").modal("show");
             break;
         case "delete-filter":
-            var id = $("#data-container .visible").first().attr("id");
+            var id = $("#data-container .active").first().attr("id");
             switch(id){
                 case "data-grades":
                     gradeTable.filterTable();

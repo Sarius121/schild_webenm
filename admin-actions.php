@@ -38,7 +38,7 @@ if (isset($_POST['target'])) {
     }
 } else {
     foreach (DataSourceModuleHelper::createModule()->getFilesInfos() as $file) {
-        $targets[] = $file['name'];
+        $targets[] = $file['user'];
     }
 }
 
