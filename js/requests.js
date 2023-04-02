@@ -40,6 +40,7 @@ class Requests {
                         // errror
                         if(that.debug){
                             console.log(result.message);
+                            console.log(result.details);
                         }
                         if(result.code == 21){
                             // wrong csrf token -> reload to get current token
