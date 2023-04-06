@@ -28,6 +28,7 @@ It should work with every web server but was only tested on Linux with Apache an
 - popper (2.9.2)
 - editablegrid (https://github.com/webismymind/editablegrid) (clone on 01.2021)
 - Textarea Caret Position (https://github.com/component/textarea-caret-position)
+- SabreDAV (4.4)
 
 Please have a look at the respective files/folders for more information on the licenses. All the above libraries are licensed under the MIT License.
 
@@ -35,6 +36,8 @@ Please have a look at the respective files/folders for more information on the l
 - supports encrypted SchILD grade files (.enz)
 - all student grade, class teacher and exams functions work
 - platform independant (but Linux is recommended)
+- admin page for seeing file insights and downloading and saving files
+- possible sources of the grade files: WebDAV or local folder
 
 ## not supported
 - not encrypted grade files (.enm)
@@ -44,6 +47,13 @@ Please have a look at the respective files/folders for more information on the l
 # Installation notices
 ## Permissions
 The grade-files/tmp/ directory has to be read and write accessible by the webserver with this webapp and the servlet-container with the mdb_connector_server. Easy way to do this in Linux is creating a group with the two users and setting the default permission for this directory as discribed here: https://unix.stackexchange.com/questions/1314/how-to-set-default-file-permissions-for-all-folders-files-in-a-directory.
+
+## Installation
+To load the Sabre library, you have to use composer:
+```
+php composer.phar install
+```
+If composer is not installed yet, you find more information about it here: [https://getcomposer.org/doc/00-intro.md](https://getcomposer.org/doc/00-intro.md).
 
 ## Configuration
 - *config/ui-conf.php*: configure the front-end; note that these configurations are only at the front end: disabling a button doesn't mean that the functions of this button are not available anymore. It just hides the button.
@@ -55,7 +65,16 @@ For the following configuration files, *constants.php-example* files are include
 
     The DEFAULT_DB_PASSWORD is set by SchILD and can be easily "cracked" by exporting any enm-file (enm not enz!) from SchILD and opening it with the ["Access PassView" program by NirSoft](http://www.nirsoft.net/utils/accesspv.html). It will output the password.
 
-The source directory can be synchronized with a file location. In my setup it is synchronized with a WebDAV share. At the moment this synchonization has to be configured on the machine and cannot be handled by this application.
+### Source module
+
+The source module must be configured in the *lib/ENMLibrary/constants.php* file and can at the moment be either WebDAV or a local folder (feel free to write your own module).
+
+- *LocalFolderDataSourceModule*: The grade files have to be in a folder on the server. I had this folder synchronised with WebDAV a long time, so synchronising this folder should work.
+- *WebDAVDataSourceModule*: The grade files lay on some WebDAV-Server and are downloaded to this app when editing. This feature is rather new, so it's still a bit experimental.
+
+### Admin user
+
+The admin user must also be configured in the *lib/ENMLibrary/constants.php* file. The username of the admin should definetely not be a normal username, because he uses the same login form as normal users. The admin can see all files and usernames which can be opened. He can also see the date of the last changes, can close files if someone forgot to sign out and download all grade files as zip. However, the actions can be disabled in the config file, too.
 
 ## Security
 As I am not a professional software developer or cyber security specialist I cannot guarantee that there are no security issues in this app. You should only use it in an internal network or provide extra security e.g. with a HTTP authentication. When using it outside a safe environment it is furthermore highly recommended to use HTTPS and HSTS.
