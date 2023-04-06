@@ -178,7 +178,7 @@ if(!isset($loginHandler)){
     ?>
     <p><b>webENM-Notenmanager für SchILD-NRW</b><br>angeglichen an den ENM-Notenmanager für SchILD-NRW des Ministeriums für Schule und Bildung, 40190 Düsseldorf (<a target="_blank" href="https://www.svws.nrw.de">https://www.svws.nrw.de</a>)</p>
     <p>Copyright © Sarius121</p>
-    <p>Programmversion: 0.2.0 (12.12.2022)</p>
+    <p>Programmversion: 0.3.0 (06.04.2023)</p>
     <p>Diese Software ist OpenSource und in Github einsehbar: <a href="https://github.com/Sarius121/schild_webenm" target="_blank">https://github.com/Sarius121/schild_webenm</a></p>
     <?php
     echo $informationModal->getHTMLAfterBody();

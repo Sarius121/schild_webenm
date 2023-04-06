@@ -1,7 +1,7 @@
 <?php
 
 /* current version - need exactly 6 digits */
-define("VERSION", "010000");
+define("VERSION", "000300");
 
 /**
  * code from https://stackoverflow.com/questions/118884/how-to-force-the-browser-to-reload-cached-css-and-javascript-files#answer-118886
