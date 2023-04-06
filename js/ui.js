@@ -20,9 +20,98 @@ window.onbeforeunload = function(){
  */
 window.addEventListener("load", function(event) {
     $(".modal-dialog").draggable({ cancel: ".modal-body, .modal-footer", containment: "html", scroll: false });
-    addUIEventListeners();
-    initObjects();
+    initRequests();
+    if (this.document.getElementById("admin-container") != null) {
+        Array.from(document.getElementsByClassName("admin-button")).forEach(item => {
+            item.addEventListener("click", onAdminPageButtonClicked)
+        });
+    } else if (this.document.getElementById("home-container") != null) {
+        addUIEventListeners();
+        initObjects();
+    }
 });
+
+/**
+ * is called when a button in the overview table is clicked
+ * 
+ * @param {Event} event 
+ */
+function onAdminPageButtonClicked(event) {
+    var action = event.currentTarget.getAttribute("name");
+
+    var data = new FormData();
+    data.append("action", action);
+
+    switch(action){
+        case "save-changes-all":
+            var messageBox = new ProgressMessageBox("save-changes-all", "Alle Änderungen speichern", "Die Änderungen aller offenen Dateien werden gesichert...", "Schließe nicht das Fenster oder lade die Seite neu, während die Änderungen gesichert werden!", true);
+            break;
+        case "save-changes":
+            var messageBox = new ProgressMessageBox("save-changes", "Änderungen speichern", "Die Änderungen werden gesichert...", "Schließe nicht das Fenster oder lade die Seite neu, während die Änderungen gesichert werden!", true);
+            var targetFile = event.currentTarget.parentElement.parentElement.children[2].textContent;
+            data.append("target", targetFile)
+            break;
+        case "save-changes-all":
+            var messageBox = new ProgressMessageBox("discard-changes-all", "Alle Änderungen verwerfen", "Die Änderungen aller offenen Dateien werden verworfen...", "Schließe nicht das Fenster oder lade die Seite neu, während die Änderungen verworfen werden!", true);
+            break;
+        case "discard-changes":
+            var messageBox = new ProgressMessageBox("discard-changes", "Änderungen verwerfen", "Die Änderungen werden verworfen...", "Schließe nicht das Fenster oder lade die Seite neu, während die Änderungen verworfen werden!", true);
+            var targetFile = event.currentTarget.parentElement.parentElement.children[2].textContent;
+            data.append("target", targetFile)
+            break;
+        case "download-all":
+            var messageBox = new ProgressMessageBox("download-changes", "Alle Dateien als ZIP runterladen", "Die Dateien werden zusammengefasst...", "Schließe nicht das Fenster oder lade die Seite neu, während der Download vorbereitet wird!", true);
+            break;
+        case "delete-archives":
+            // not implemented yet
+            return;
+        default:
+            return;
+    }
+
+    messageBox.show();
+    preventAppClosing = true;
+
+    requests.addRequestToQueue("POST", "admin-actions.php", data, function(result){
+        if(result.code == 0){
+            //success
+            preventAppClosing = false;
+            messageBox.setStatus(ProgressMessageBox.STATUS_SUCCESS);
+            switch(action){
+                case "save-changes-all":
+                    messageBox.setMessage("Alle Änderungen wurden gesichert.");
+                    break;
+                case "save-changes":
+                    messageBox.setMessage("Die Änderungen wurden gesichert.");
+                    break;
+                case "discard-changes-all":
+                    messageBox.setMessage("Alle Änderungen wurden verworfen.");
+                    break;    
+                case "discard-changes":
+                    messageBox.setMessage("Die Änderungen wurden verworfen.");
+                    break;
+                case "download-all":
+                    if("download_token" in result){
+                        messageBox.setMessage("Alle Dateien wurden zusammengefasst und werden jetzt runtergeladen.");
+                        messageBox.hide();
+                        window.open("download.php?token=" + result.download_token);
+                    }
+                    break;
+                case "delete-archives":
+                    // not implemented yet
+                    break;
+                default:
+                    return;
+            }
+            messageBox.hide();
+        } else {
+            preventAppClosing = false;
+            //error
+            messageBox.setStatus(ProgressMessageBox.STATUS_FAIL);
+            messageBox.setMessage("Es ist ein unbekannter Fehler aufgetreten!");
+        }
+    });
+}
 
 
 /**
@@ -87,7 +176,7 @@ function onMenuItemClicked(event){
             sortCurrentTable(["Klasse", "FachBez"]);
             break;
         case "create-filter":
-            var id = $("#data-container .visible").first().attr("id");
+            var id = $("#data-container .active").first().attr("id");
             $("#filter-modal .filter-group").toggleClass("hidden", true);
             $("#" + id.replace("data", "filter")).toggleClass("hidden", false);
 
@@ -96,7 +185,7 @@ function onMenuItemClicked(event){
             $("#filter-modal").modal("show");
             break;
         case "delete-filter":
-            var id = $("#data-container .visible").first().attr("id");
+            var id = $("#data-container .active").first().attr("id");
             switch(id){
                 case "data-grades":
                     gradeTable.filterTable();
@@ -223,7 +312,7 @@ function saveChanges(){
  * filters the current data table by the selected filters
  */
 function filterDataTable(){
-    var id = $("#data-container .visible").first().attr("id");
+    var id = $("#data-container .active").first().attr("id");
     var tablePrefix = id.replace("data-", "");
     var table = null;
     switch(id){
@@ -270,7 +359,7 @@ function filterDataTable(){
  * @param {*} columns columns to sort by
  */
 function sortCurrentTable(columns = []){
-    var id = $("#data-container .visible").first().attr("id");
+    var id = $("#data-container .active").first().attr("id");
     var table = null;
     switch(id){
         case "data-grades":
@@ -292,31 +381,15 @@ function sortCurrentTable(columns = []){
 }
 
 /**
- * is called when data tab navigation button was clicked
- * change visible data tab (specified by name attribute)
+ * add event listener to element only if it's not null
  * 
- * @param {Event} event 
+ * @param {HTMLElement} element element to which the listener should be added
+ * @param {String} type listener type
+ * @param {EventListenerOrEventListenerObject} listener method to call if event is triggered
  */
-function onNavDataTabsButtonClicked(event){
-    var data = event.currentTarget.getAttribute("name");
-    $("#data-container > div").removeClass('visible');
-    document.getElementById(data).classList.add("visible");
-
-    //add active class to nav-link
-    $("#nav-data .nav-link").removeClass('active');
-    event.currentTarget.classList.add('active');
-
-    //adjust possible sort methods
-    switch(data){
-        case "data-grades":
-            $("#sort-menu-items").toggleClass("disabled", false);
-            break;
-        case "data-class-teacher":
-            $("#sort-menu-items").toggleClass("disabled", true);
-            break;
-        case "data-exams":
-            $("#sort-menu-items").toggleClass("disabled", false);
-            break;
+function addEventListenerIfPresent(element, type, listener) {
+    if (element != null) {
+        element.addEventListener(type, listener);
     }
 }
 
@@ -324,21 +397,38 @@ function addUIEventListeners(){
     Array.from(document.getElementsByClassName("nav-menu-button")).forEach(item => {
         item.addEventListener("click", onMenuItemClicked)
     });
-    var backupFileElement = document.getElementById("backupFile");
-    if (backupFileElement != null) {
-        backupFileElement.addEventListener("change", onRestoreBackupFileSelected);
-    }
+    addEventListenerIfPresent(document.getElementById("backupFile"), "change", onRestoreBackupFileSelected);
     Array.from(document.getElementsByClassName("nav-data-tabs-button")).forEach(item => {
-        item.addEventListener("click", onNavDataTabsButtonClicked);
+        item.addEventListener('shown.bs.tab', function (event) {
+            var data = event.currentTarget.getAttribute("name");
+            //adjust possible sort methods
+            switch(data){
+                case "data-grades":
+                    $("#sort-menu-items").toggleClass("disabled", false);
+                    break;
+                case "data-class-teacher":
+                    $("#sort-menu-items").toggleClass("disabled", true);
+                    break;
+                case "data-exams":
+                    $("#sort-menu-items").toggleClass("disabled", false);
+                    break;
+            }
+        });
     });
-    document.getElementById("filter-data-table-button").addEventListener("click", filterDataTable);
+    addEventListenerIfPresent(document.getElementById("filter-data-table-button"), "click", filterDataTable);
+}
+
+function initRequests() {
+    var token = document.getElementById("csrf_token");
+    if (token == null) {
+        // probably not on home-page
+        return;
+    }
+    requests = new Requests(token.innerText);
+    token.remove();
 }
 
 function initObjects(){
-    var token = document.getElementById("csrf_token");
-    requests = new Requests(token.innerText);
-    token.remove();
-
     gradesModal = new GradesModal();
 
     var tablesToFetch = ["GradeTable", "Grades"];

@@ -15,11 +15,14 @@ class BackupHandler {
     }
 
     /**
-     * upload file
+     * upload file to the working directory -> needs to be saved to the source afterwards
      * 
+     * @param string $file file which should be uploaded
+     * @param string $password user's password
      * @param string $basename name of the file in the source directory (without file extension)
+     * @param string $current_file the zip file which is currently used (in the working directory)
      */
-    public function upload($file, $password, $basename) {
+    public function upload($file, $password, $basename, $current_file) {
         if(!$this->doSuperficialFileCheck($file)){
             return false;
         }
@@ -36,7 +39,6 @@ class BackupHandler {
             return false;
         }
 
-        $current_file = SOURCE_GRADE_FILES_DIRECTORY . $basename . ".enz";
         // old files are not stored in source directory but the working directory
         $old_target_file = GRADE_FILES_DIRECTORY . $basename . ".enz-old";
 
@@ -123,13 +125,16 @@ class BackupHandler {
     /**
      * remove current grade file and move old file to current file
      * 
+     * Notice that this is only done in the working directory -> needs to be saved to the source afterwards
+     * 
      * @param string $basename name of the file in the source directory (without file extension)
+     * @param string $current_file the zip file which is currently used (in the working directory)
      */
-    public function undoBackupRestore($basename){
+    public function undoBackupRestore($basename, $current_file){
         if(!$this->oldBackupExists($basename)){
             return false;
         }
-        $current_file = SOURCE_GRADE_FILES_DIRECTORY . $basename . ".enz";
+
         $old_file = GRADE_FILES_DIRECTORY . $basename . ".enz-old";
 
         $current_safety_file = GRADE_FILES_DIRECTORY . $basename . ".enz-safe";

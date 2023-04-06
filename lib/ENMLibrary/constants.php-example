@@ -2,6 +2,9 @@
 
 namespace ENMLibrary;
 
+use ENMLibrary\datasource\modules\LocalFolderDataSource;
+use ENMLibrary\datasource\modules\WebDavDataSource;
+
 /**
  * #########################################
  * # REMOVE BEFORE USING FOR PRODUCTION!!! #
@@ -19,10 +22,50 @@ define("TEST_USAGE", true);
 
 define("DEFAULT_ZIP_PASSWORD", "default zip password");
 define("DEFAULT_DB_PASSWORD", "default database password");
-define("SOURCE_GRADE_FILES_DIRECTORY", "grade-files/source/");
 define("GRADE_FILES_DIRECTORY", "grade-files/working/");
 define("TMP_GRADE_FILES_DIRECTORY", "grade-files/tmp/");
 define("FILE_SUFFIX", "_2020_2");
+
+/**
+ * ###############
+ * # ADMIN PAGE  #
+ * ###############
+ */
+
+/*
+ * This are the credentials which are used to acces the admin page. The username shouldn't match a grade file user,
+ * because you could not access the user's grade file anymore. Furthermore, only upper-case letters are allowed.
+ */
+define("ADMIN_USER", "ADMIN");
+define("ADMIN_PWD", "pwd");
+
+/**
+ * specify if admins can perform actions such as downloading of files
+ */
+define("ADMIN_ALLOW_ACTIONS", true);
+
+/**
+ * ###############
+ * # DATA SOURCE #
+ * ###############
+ */
+
+/**
+ * You have to import the source modules you're using at the top.
+ */
+define("DATA_SOURCE_MODULE", LocalFolderDataSource::getName());
+
+/**
+ * Local folder module: (only necessary if used)
+ */
+define("SOURCE_GRADE_FILES_DIRECTORY", "grade-files/source/");
+
+/**
+ * WebDAV module: (only necessary if used)
+ */
+define("WEBDAV_URL", "https://??");
+define("WEBDAV_USER", "user");
+define("WEBDAV_PWD", "pwd");
 
 /**
  * ################
@@ -30,7 +73,7 @@ define("FILE_SUFFIX", "_2020_2");
  * ################
  */
 
-/*
+/**
  * define which of the following optional (and mostly editable) columns should be shown in the ui
  */
 define("SHOW_DATA_STUDENT_KURSART", false); //not editable

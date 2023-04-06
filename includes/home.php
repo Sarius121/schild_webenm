@@ -11,7 +11,7 @@ if(!isset($loginHandler)){
 
 <div id="csrf_token"><?php echo $loginHandler->getCSRFToken(); ?></div>
 
-<div id="home-container">
+<div id="home-container" class="big-container">
     <div id="top-box">
         <div id="header" class="row">
             <div class="col-sm-auto">
@@ -104,39 +104,39 @@ if(!isset($loginHandler)){
             </div>
         </div>
         <div class="separator"></div>
-        <div id="nav-data" class="nav nav-tabs">
-            <div class="nav-item">
-                <button class="nav-link active nav-data-tabs-button" name="data-grades">Leistungsdaten</button>
-            </div>
+        <ul id="nav-data" class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button id="tab-grades" class="nav-link active nav-data-tabs-button" name="data-grades" data-bs-toggle="tab" data-bs-target="#data-grades" role="tab" aria-controls="data-grades" aria-selected="true">Leistungsdaten</button>
+            </li>
             <?php if(getConstant("SHOW_CLASS_TEACHER_TAB", true)){ ?>
-            <div class="nav-item">
-                <button id="tab-class-teacher" class="nav-link nav-data-tabs-button" name="data-class-teacher">Klassenleitung</button>
-            </div><?php } ?>
+            <li class="nav-item" role="presentation">
+                <button id="tab-class-teacher" class="nav-link nav-data-tabs-button" name="data-class-teacher" data-bs-toggle="tab" data-bs-target="#data-class-teacher" role="tab" aria-controls="data-class-teacher" aria-selected="false">Klassenleitung</button>
+            </li><?php } ?>
             <?php if(getConstant("SHOW_EXAMS_TAB", true)){ ?>
-                <div class="nav-item">
-                <button id="tab-exams" class="nav-link nav-data-tabs-button" name="data-exams">Zentr. Prf.</button>
-            </div><?php } ?>
-        </div>
+            <li class="nav-item" role="presentation">
+                <button id="tab-exams" class="nav-link nav-data-tabs-button" name="data-exams" data-bs-toggle="tab" data-bs-target="#data-exams" role="tab" aria-controls="data-exans" aria-selected="false">Zentr. Prf.</button>
+            </li><?php } ?>
+        </ul>
     </div>
     <div id="print-header">
         <p>Lehrer: <?php echo $loginHandler->getUsername(); ?> | Datum: <?php echo date("d.m.Y"); ?></p>
     </div>
     <div id="data-container-boundary">
-        <div id="data-container">
+        <div id="data-container" class="tab-content">
             <div id="data-container-loading" class="d-flex justify-content-center"><div class="spinner-border" role="status" aria-hidden="true"></div></div>
-            <div id="data-grades" class="visible">
+            <div id="data-grades" class="tab-pane active" role="tabpanel" aria-labelledby="tab-grades">
                 <div id="gradeTable" class="dataTable"></div>
             </div>
             <?php if(getConstant("SHOW_CLASS_TEACHER_TAB", true)){
                 ?>
-                <div id="data-class-teacher">
+                <div id="data-class-teacher" class="tab-pane" role="tabpanel" aria-labelledby="tab-class-teacher">
                     <div id="classTeacherTable" class="dataTable"></div>
                 </div>
                 <?php 
             }
             if(getConstant("SHOW_EXAMS_TAB", true)){
                 ?>
-                <div id="data-exams">
+                <div id="data-exams" class="tab-pane" role="tabpanel" aria-labelledby="tab-exams">
                     <div id="examsTable" class="dataTable"></div>
                 </div>
                 <?php
@@ -179,7 +179,7 @@ if(!isset($loginHandler)){
     <p><b>webENM-Notenmanager für SchILD-NRW</b><br>angeglichen an den ENM-Notenmanager für SchILD-NRW des Ministeriums für Schule und Bildung, 40190 Düsseldorf (<a target="_blank" href="https://www.svws.nrw.de">https://www.svws.nrw.de</a>)</p>
     <p>Copyright © Sarius121</p>
     <p>Programmversion: 0.2.0 (12.12.2022)</p>
-    <p>Diese Software ist bald OpenSource und in Github einsehbar: <a href="https://github.com/Sarius121/schild_webenm">https://github.com/Sarius121/schild_webenm</a></p>
+    <p>Diese Software ist OpenSource und in Github einsehbar: <a href="https://github.com/Sarius121/schild_webenm" target="_blank">https://github.com/Sarius121/schild_webenm</a></p>
     <?php
     echo $informationModal->getHTMLAfterBody();
 ?>

@@ -29,6 +29,7 @@ class SessionHandler {
         $_SESSION['password'] = $password;
         $_SESSION['create'] = time();
         $_SESSION['tmp'] = false;
+        $_SESSION['admin'] = false;
         $this->generateCSRFToken();
         $this->extendSession();
     }
@@ -38,6 +39,18 @@ class SessionHandler {
         $_SESSION['password'] = $password;
         $_SESSION['tmp'] = true;
         $_SESSION['create'] = time();
+        $_SESSION['admin'] = false;
+        // 5 minutes
+        $_SESSION['expire'] = time() + 60 * 5;
+    }
+
+    public function createAdminSession() {
+        $_SESSION['username'] = ADMIN_USER;
+        $_SESSION['password'] = ADMIN_PWD;
+        $_SESSION['tmp'] = false;
+        $_SESSION['create'] = time();
+        $_SESSION['admin'] = true;
+        $this->generateCSRFToken();
         // 5 minutes
         $_SESSION['expire'] = time() + 60 * 5;
     }
@@ -58,6 +71,10 @@ class SessionHandler {
 
     public function isTmpSession() {
         return $_SESSION['tmp'];
+    }
+
+    public function isAdmin() {
+        return $_SESSION['admin'];
     }
 
     public function getUsername() {
@@ -99,7 +116,7 @@ class SessionHandler {
      * @return true|false true if token matches, false otherwise
      */
     public function checkDownloadToken($token){
-        if(hash_equals($token, $_SESSION["download_token"])){
+        if(isset($_SESSION["download_token"]) && hash_equals($token, $_SESSION["download_token"])){
             unset($_SESSION["download_token"]);
             return true;
         }

@@ -214,8 +214,6 @@ textarea:hover
 
 #data-container > div
 {
-    visibility: hidden;
-    display: none;
     height: 100%;
 }
 
@@ -530,8 +528,7 @@ textarea:hover
 { 
     border-bottom: 1px solid black;
     border-top: 1px solid #E0E0E0;
-    text-align: left; 
-    cursor: pointer;
+    text-align: left;
     transition: background-color 0.25s;
     position: -webkit-sticky;
     position: sticky;
@@ -625,12 +622,12 @@ div.back-button:hover
     background-image: url("../img/back-button-filled.svg");
 }
 
-#home-container .d-flex
+.big-container .d-flex
 {
     margin-bottom: 1em;
 }
 
-#home-container div.d-flex h2
+.big-container div.d-flex h2
 {
     margin-bottom: 0;
 }
@@ -641,7 +638,7 @@ div.back-button svg
     width: auto;
 }
 
-#home-container{
+.big-container{
     min-width: 1400px;
     width: 75%;
     margin: 0 auto;
@@ -655,7 +652,7 @@ div.back-button svg
 }
 
 @media only screen and (max-width: 1400px){
-    #home-container{
+    .big-container{
         width: 100%;
         min-width: unset;
     }
@@ -1092,3 +1089,52 @@ div.back-button svg
     99%  {opacity: 0;}
     100% {opacity: 1;}
   }
+
+/*#################### admin page #################### */
+
+tr span.now
+{
+    background-color: var(--bs-success);
+    padding: 0.2em 1em;
+    border-radius: 0.2em;
+    color: white;
+}
+
+.admin-area
+{
+    background-color: var(--bs-gray-dark);
+    color: white;
+    padding: 0 0.25em;
+}
+
+#overview
+{
+    height: 100%;
+}
+
+#overview-content
+{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#overview-content #overview-explanations
+{
+    margin-top: 1em;
+}
+
+#overview-content ul
+{
+    margin-bottom: 0;
+}
+
+#overview-content tbody tr:nth-child(1)
+{
+    background-color: var(--bs-light);
+}
+
+#information
+{
+    padding-top: 1em;
+}

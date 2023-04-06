@@ -5,6 +5,12 @@ require_once("config/ui-conf.php");
 
 require_once("lib/MDBConnector/MDBDatabase.php");
 
+// data source:
+require_once("lib/ENMLibrary/datasource/DataSourceModule.php");
+require_once("lib/ENMLibrary/datasource/modules/WebDavDataSource.php");
+require_once("lib/ENMLibrary/datasource/modules/LocalFolderDataSource.php");
+require_once("lib/ENMLibrary/datasource/DataSourceModuleHelper.php");
+
 require_once("lib/ENMLibrary/RequestResponse.php");
 require_once("lib/ENMLibrary/BackupHandler.php");
 require_once("lib/ENMLibrary/LoginHandler.php");

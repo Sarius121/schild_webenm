@@ -1,11 +1,13 @@
 <?php
 namespace ENMLibrary;
 
+use Exception;
 use stdClass;
 
 class RequestResponse{
 
     public const ERROR_SUCCESS = 0;
+    public const ERROR_UNKNOWN = 1;
     public const ERROR_MISSING_ARGUMENTS = 10;
     public const ERROR_WRONG_ARGUMENTS = 11;
     public const ERROR_CSRF_TOKEN = 21;
@@ -14,6 +16,7 @@ class RequestResponse{
 
     private const ERRORS = array(
         RequestResponse::ERROR_SUCCESS => "success",
+        RequestResponse::ERROR_UNKNOWN => "unknown",
         RequestResponse::ERROR_MISSING_ARGUMENTS => "missing arguments",
         RequestResponse::ERROR_WRONG_ARGUMENTS => "wrong arguments",
         RequestResponse::ERROR_CSRF_TOKEN => "wrong CSRF token",
@@ -23,8 +26,20 @@ class RequestResponse{
 
     private $response;
 
-    public static function ErrorResponse($error_code, $csrf_token = null){
-        return new RequestResponse(RequestResponse::ERRORS[$error_code], $error_code, $csrf_token);
+    /**
+     * create an error response
+     * 
+     * @param string $error_code one of the error code constants in this class
+     * @param ?string $csrf_token new csrf-token to send back
+     * @param ?Exception $exception exception which has occurred and whose message should be sent as 'details'
+     *                  (it's only sent if DEBUG_MESSAGES is true)
+     */
+    public static function ErrorResponse(string $error_code, string $csrf_token = null, ?Exception $exception = null): RequestResponse{
+        $response = new RequestResponse(RequestResponse::ERRORS[$error_code], $error_code, $csrf_token);
+        if (!is_null($exception) && DEBUG_MESSAGES) {
+            $response->addDetailedMessage($exception->getMessage());
+        }
+        return $response;
     }
 
     public static function SuccessfulResponse($csrf_token){
@@ -51,6 +66,15 @@ class RequestResponse{
 
     public function addData($key, $value){
         $this->response->$key = $value;
+    }
+
+    /**
+     * add a detailed message (key = 'details')
+     * 
+     * @param string $message detailed message as value for the key 'details'
+     */
+    public function addDetailedMessage(string $message): void {
+        $this->addData("details", $message);
     }
 }
 

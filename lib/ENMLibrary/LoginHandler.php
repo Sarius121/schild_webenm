@@ -2,9 +2,11 @@
 
 namespace ENMLibrary;
 
+use ENMLibrary\datasource\DataSourceModule;
+use ENMLibrary\datasource\DataSourceModuleHelper;
+
 require_once("GradeFile.php");
 require_once("EncryptedZipArchive.php");
-require_once("SourceFileHandler.php");
 require_once("SessionHandler.php");
 
 class LoginHandler {
@@ -16,17 +18,20 @@ class LoginHandler {
     private $error = false;
     private $gradeFile;
     private $encryptedGradeFile;
-    private $sourceFile;
-
-    private $basename;
+    private DataSourceModule $dataSource;
 
     public function __construct()
     {
         $this->session = new SessionHandler();
+        $this->dataSource = DataSourceModuleHelper::createModule();
     }
 
     public function login($username, $password, $saveChanges=true) {
         $username = $this->normalizeUsername($username);
+        if ($username == ADMIN_USER) {
+            // login as admin instead of normal
+            return $this->loginAdmin($password);
+        }
         if($this->checkLogin($username, $password, true, $saveChanges)){
             $this->loggedin = true;
             $this->username = $username;
@@ -50,6 +55,15 @@ class LoginHandler {
             //not loggedin
             //$this->error = "Unbekannter Fehler. Versuche, dich erneut anzumelden.";
             return false;
+        } elseif ($this->session->isAdmin()) {
+            if ($this->session->isSessionExpired()) {
+                $this->logout();
+                return false;
+            }
+            $this->loggedin = true;
+            $this->username = $this->session->getUsername();
+            $this->session->extendSession();
+            return true;
         } elseif ($this->session->isTmpSession()) {
             // logging in with tmp session is not allowed
             $this->session->destroySession();
@@ -101,14 +115,14 @@ class LoginHandler {
     private function checkLogin($username, $password, $newlogin = false, $saveChanges = true){
         $success = false;
 
-        if(!$this->getBasename($username)){
+        if(is_null($this->dataSource->findFilename($username))){
             //wrong username
             $this->error = "Der Benutzername oder das Passwort ist falsch!";
             return false;
         }
 
         $dbFilename = $this->getDBFilename($username);
-        $this->sourceFile = new SourceFileHandler($this->getSourceFilename($username), $this->getZipFilename($username));
+        $this->dataSource->setTargetFile($this->getZipFilename($username));
         $this->encryptedGradeFile = new EncryptedZipArchive($this->getZipFilename($username), TMP_GRADE_FILES_DIRECTORY . $dbFilename);
         if(file_exists(TMP_GRADE_FILES_DIRECTORY . $dbFilename)){
             //only try password
@@ -123,12 +137,12 @@ class LoginHandler {
                     }
                     //close files and save changes if connection is not possible
                     $this->encryptedGradeFile->close();
-                    $this->sourceFile->closeFile();
+                    $this->dataSource->closeFile();
                 }
             }
             //TODO what if db exists but working zip not or source zip?
         } elseif(($foreignFilename = $this->foreignTmpFileExists($username)) != false){
-            $this->differentSessionActive = true;
+            //$this->differentSessionActive = true;
             if(!$newlogin){
                 //when it's not a new login and a foreign file is opened, the user has to login again to close the foreign session
                 $this->error = "Du hast dich an einem anderen Gerät angemeldet und wurdest deswegen auf diesem Gerät abgemeldet. Deine Änderungen wurden gesichert!";
@@ -141,8 +155,10 @@ class LoginHandler {
                 //save changes from foreign session and create new
                 $foreignZipFile = $this->foreignZipFileExists($username);
                 $foreignEncryptedGradeFile = new EncryptedZipArchive($foreignZipFile, TMP_GRADE_FILES_DIRECTORY . $foreignFilename);
-                $foreignSourceFile = new SourceFileHandler($this->getSourceFilename($username), $foreignZipFile);
-                if($foreignEncryptedGradeFile->close($saveChanges) && $foreignSourceFile->closeFile($saveChanges)){
+                $foreignDataSource = DataSourceModuleHelper::createModule();
+                $foreignDataSource->findFilename($username);
+                $foreignDataSource->setTargetFile($foreignZipFile);
+                if($foreignEncryptedGradeFile->close($saveChanges) && $foreignDataSource->closeFile($saveChanges)){
                     $success = $this->openComplete($dbFilename, $password);
                 } else {
                     //nothing opened yet
@@ -165,7 +181,7 @@ class LoginHandler {
             } else {
                 //different session was opened and closed -> user should be logged out
                 //nothing opened yet
-                $this->differentSessionActive = true;
+                //$this->differentSessionActive = true;
                 $this->error = "Du hast dich an einem anderen Gerät angemeldet und wurdest deswegen auf diesem Gerät abgemeldet. Deine Änderungen wurden gesichert!";
                 return false;
             }
@@ -183,7 +199,7 @@ class LoginHandler {
      * @return bool true if openings are successful and the password is ok, false otherwise
      */
     private function openComplete(string $dbFilename, string $password) {
-        if($this->sourceFile->openFile()){
+        if($this->dataSource->openFile()){
             //try password and extract grade file
             if($this->encryptedGradeFile->open()){
                 $this->gradeFile = new GradeFile($dbFilename);
@@ -202,18 +218,28 @@ class LoginHandler {
                 }
                 $this->encryptedGradeFile->close(false);
             }
-            $this->sourceFile->closeFile(false);
+            $this->dataSource->closeFile(false);
         }
         return false;
     }
 
     public function checkChangesToSave(string $username) {
         $username = $this->normalizeUsername($username);
+
+        if(is_null($this->dataSource->findFilename($username))){
+            return false;
+        }
+
         return $this->foreignTmpFileExists($username) != false;
     }
 
     public function checkLoginAgainstForeignFile(string $username, string $password) {
         $username = $this->normalizeUsername($username);
+
+        if(is_null($this->dataSource->findFilename($username))){
+            return false;
+        }
+
         if (($foreignFilename = $this->foreignTmpFileExists($username)) != false) {
             $foreignGradeFile = new GradeFile($foreignFilename);
             if ($foreignGradeFile->openFile()) {
@@ -235,7 +261,37 @@ class LoginHandler {
         if(!$this->isLoggedIn()){
             return false;
         }
-        return $this->encryptedGradeFile->saveChanges() && $this->sourceFile->saveFile();
+        return $this->encryptedGradeFile->saveChanges() && $this->dataSource->saveFile();
+    }
+
+    /**
+     * open tmp file of user and close it (if some file is opened at the moment)
+     * 
+     * @param string $username the owner of the foreign file
+     * @param bool $saveChanges true if the changes should be saved before closing the file
+     */
+    public function closeForeignFile($username, $saveChanges) {
+        $foreignFilename = $this->foreignTmpFileExists($username);
+        if ($foreignFilename == false) {
+            return false;
+        }
+        //save changes from foreign session and create new
+        $foreignZipFile = $this->foreignZipFileExists($username);
+        $foreignEncryptedGradeFile = new EncryptedZipArchive($foreignZipFile, TMP_GRADE_FILES_DIRECTORY . $foreignFilename);
+        $foreignDataSource = DataSourceModuleHelper::createModule();
+        $foreignDataSource->findFilename($username);
+        $foreignDataSource->setTargetFile($foreignZipFile);
+        return $foreignEncryptedGradeFile->close($saveChanges) && $foreignDataSource->closeFile($saveChanges);
+    }
+
+    /**
+     * saves only the zip file to the data source
+     */
+    public function saveToSource() {
+        if(!$this->isLoggedIn()){
+            return false;
+        }
+        return $this->dataSource->saveFile();
     }
 
     private function normalizeUsername(string $username) {
@@ -252,7 +308,7 @@ class LoginHandler {
         if($this->gradeFile != null) { $this->gradeFile->close(); }
         $success = true;
         if($this->encryptedGradeFile != null) { $success = $this->encryptedGradeFile->close($saveChanges); }
-        if($this->sourceFile != null) { $success = $success && $this->sourceFile->closeFile($saveChanges); }
+        if($this->dataSource != null) { $success = $success && $this->dataSource->closeFile($saveChanges); }
         return $success;
     }
 
@@ -267,7 +323,7 @@ class LoginHandler {
             return false;
         }
         if($this->closeFile($saveChanges)){
-            $success = $this->sourceFile->openFile();
+            $success = $this->dataSource->openFile();
             return $success && $this->encryptedGradeFile->open();
         }
         return false;
@@ -277,7 +333,7 @@ class LoginHandler {
         if(!$force && !$this->isLoggedIn()){
             return false;
         }
-        if($this->closeFile()){
+        if($this->isAdmin() || $this->closeFile()){
             $this->loggedin = false;
             $this->username = null;
             $this->gradeFile = null;
@@ -288,8 +344,33 @@ class LoginHandler {
         return false;
     }
 
-    private function foreignTmpFileExists($username){
-        $found = glob(TMP_GRADE_FILES_DIRECTORY . $this->getBasename($username) . "*");
+    /**
+     * login the current user as admin if the user is allowed to
+     */
+    public function loginAdmin($password) {
+        if ($password == ADMIN_PWD) {
+            $this->session->createAdminSession();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * check if the current user is logged in as admin
+     */
+    public function isAdmin() {
+        if (!$this->isLoggedIn()) {
+            return false;
+        }
+        return $this->session->isAdmin();
+    }
+
+    public function foreignTmpFileExists($username){
+        $foundSrcFilename = $this->dataSource->findFilename($username);
+        if (is_null($foundSrcFilename)) {
+            return false;
+        }
+        $found = glob(TMP_GRADE_FILES_DIRECTORY . $foundSrcFilename . "*");
         if($found == false || count($found) <= 0){
             return false;
         }
@@ -305,7 +386,11 @@ class LoginHandler {
     }
 
     private function foreignZipFileExists($username){
-        $found = glob(GRADE_FILES_DIRECTORY . $this->getBasename($username) . "*");
+        $foundSrcFilename = $this->dataSource->findFilename($username);
+        if (is_null($foundSrcFilename)) {
+            return false;
+        }
+        $found = glob(GRADE_FILES_DIRECTORY . $foundSrcFilename . "*");
         if($found == false || count($found) <= 0){
             return false;
         }
@@ -316,33 +401,17 @@ class LoginHandler {
         return false;
     }
 
-    public function getSourceFilename($username){
-        return SOURCE_GRADE_FILES_DIRECTORY . $this->getBasename($username) . ".enz";
-    }
-
     public function getZipFilename($username){
-        return GRADE_FILES_DIRECTORY . $this->getBasename($username) . ".enz_" . $this->session->getSessionFileID();
+        return GRADE_FILES_DIRECTORY . $this->dataSource->findFilename($username) . ".enz_" . $this->session->getSessionFileID();
     }
 
     public function getDBFilename($username){
         $fileID = $this->session->getSessionFileID();
-        return $this->getBasename($username) . ".enm_" . $fileID;
+        return $this->dataSource->findFilename($username) . ".enm_" . $fileID;
     }
 
-    public function getBasename($username){
-        if($this->basename != null){
-            return $this->basename;
-        }
-        $found = glob(SOURCE_GRADE_FILES_DIRECTORY . $username . FILE_SUFFIX . "*.enz");
-        if($found == false || count($found) <= 0){
-            return false;
-        }
-        foreach ($found as $file) {
-            //take first
-            $this->basename = basename($file, ".enz");
-            return $this->basename;
-        }
-        return false;
+    public function getSourceFilename() {
+        return $this->dataSource->findFilename($this->username) . ".enz";
     }
 
     public function getGradeFile()

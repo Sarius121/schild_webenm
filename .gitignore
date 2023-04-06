@@ -21,3 +21,5 @@ example.spec.ts
 *.log
 package.json
 package-lock.json
+
+vendor/
