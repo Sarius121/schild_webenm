@@ -528,8 +528,7 @@ textarea:hover
 { 
     border-bottom: 1px solid black;
     border-top: 1px solid #E0E0E0;
-    text-align: left; 
-    cursor: pointer;
+    text-align: left;
     transition: background-color 0.25s;
     position: -webkit-sticky;
     position: sticky;

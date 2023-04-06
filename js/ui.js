@@ -312,7 +312,7 @@ function saveChanges(){
  * filters the current data table by the selected filters
  */
 function filterDataTable(){
-    var id = $("#data-container .visible").first().attr("id");
+    var id = $("#data-container .active").first().attr("id");
     var tablePrefix = id.replace("data-", "");
     var table = null;
     switch(id){
@@ -359,7 +359,7 @@ function filterDataTable(){
  * @param {*} columns columns to sort by
  */
 function sortCurrentTable(columns = []){
-    var id = $("#data-container .visible").first().attr("id");
+    var id = $("#data-container .active").first().attr("id");
     var table = null;
     switch(id){
         case "data-grades":

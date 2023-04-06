@@ -50,7 +50,8 @@ class LocalFolderDataSource extends DataSourceModule {
         $result = array();
         foreach ($found as $file) {
             $fileInfos = array();
-            $fileInfos["name"] = basename($file);
+            $fileInfos["file"] = basename($file, ".enz");
+            $fileInfos["user"] = $this->getUsernameByFilename($fileInfos["file"]);
             $fileInfos["last-edit"] = filemtime($file);
             $result[] = $fileInfos;
         }

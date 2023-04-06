@@ -22,7 +22,4 @@ example.spec.ts
 package.json
 package-lock.json
 
-# temporary:
-composer.json
-composer.lock
 vendor/

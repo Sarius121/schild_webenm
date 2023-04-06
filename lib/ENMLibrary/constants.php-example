@@ -3,6 +3,7 @@
 namespace ENMLibrary;
 
 use ENMLibrary\datasource\modules\LocalFolderDataSource;
+use ENMLibrary\datasource\modules\WebDavDataSource;
 
 /**
  * #########################################
@@ -55,9 +56,16 @@ define("ADMIN_ALLOW_ACTIONS", true);
 define("DATA_SOURCE_MODULE", LocalFolderDataSource::getName());
 
 /**
- * Local folder module:
+ * Local folder module: (only necessary if used)
  */
 define("SOURCE_GRADE_FILES_DIRECTORY", "grade-files/source/");
+
+/**
+ * WebDAV module: (only necessary if used)
+ */
+define("WEBDAV_URL", "https://??");
+define("WEBDAV_USER", "user");
+define("WEBDAV_PWD", "pwd");
 
 /**
  * ################
