@@ -35,11 +35,13 @@ if ($loginHandler->isAdmin()) {
     $downloadFile = tempnam(GRADE_FILES_DIRECTORY, "download-zip");
 
     $success = true;
+    $zipMode = ZipArchive::OVERWRITE;
     foreach ($files as $file) {
-        if (!$zip->open($downloadFile, ZipArchive::OVERWRITE)) {
+        if (!$zip->open($downloadFile, $zipMode)) {
             $success = false;
             break;
         }
+        $zipMode = ZipArchive::CREATE;
         $tmpFile = tempnam(GRADE_FILES_DIRECTORY, "download");
         $dataSource->setSourceFile($file["file"]);
         $dataSource->setTargetFile($tmpFile);
