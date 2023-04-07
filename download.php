@@ -1,5 +1,7 @@
 <?php
 
+ob_start();
+
 use ENMLibrary\datasource\DataSourceModuleHelper;
 use ENMLibrary\LoginHandler;
 use ENMLibrary\RequestResponse;
@@ -34,7 +36,7 @@ if ($loginHandler->isAdmin()) {
 
     $success = true;
     foreach ($files as $file) {
-        if (!$zip->open($downloadFile)) {
+        if (!$zip->open($downloadFile, ZipArchive::OVERWRITE)) {
             $success = false;
             break;
         }
