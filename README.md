@@ -45,6 +45,10 @@ Please have a look at the respective files/folders for more information on the l
 - form print (print with designer)
 
 # Installation notices
+
+## Docker
+The easiest way of installing webENM is docker. You find more information how to deploy the app with docker here: https://github.com/Sarius121/webenm_docker. Please notice that the docker installation seems to work but wasn't tested in production yet.
+
 ## Permissions
 The grade-files/tmp/ directory has to be read and write accessible by the webserver with this webapp and the servlet-container with the mdb_connector_server. Easy way to do this in Linux is creating a group with the two users and setting the default permission for this directory as discribed here: https://unix.stackexchange.com/questions/1314/how-to-set-default-file-permissions-for-all-folders-files-in-a-directory.
 
