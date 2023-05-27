@@ -67,6 +67,9 @@ define("WEBDAV_URL", "https://??");
 define("WEBDAV_USER", "user");
 define("WEBDAV_PWD", "pwd");
 
+// Proxy for the WebDAV connection (optional)
+//define("WEBDAV_PROXY", "localhost:8888");
+
 /**
  * ################
  * # VISIBLE DATA #

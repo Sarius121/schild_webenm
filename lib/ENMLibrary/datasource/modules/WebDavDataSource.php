@@ -19,11 +19,17 @@ class WebDavDataSource extends DataSourceModule {
     public function __construct() {
         parent::__construct();
 
-        $this->client = new Client(array(
+        $settings = array(
             'baseUri' => WEBDAV_URL,
             'userName' => WEBDAV_USER,
             'password' => WEBDAV_PWD
-        ));
+        );
+        
+        if (defined("WEBDAV_PROXY")) {
+            $settings['proxy'] = WEBDAV_PROXY;
+        }
+
+        $this->client = new Client($settings);
 
         // TODO this is just a work around because otherwise the method has to be distinguished first and the PUT will fail
         $this->client->addCurlSetting(CURLOPT_HTTPAUTH, Client::AUTH_BASIC);
