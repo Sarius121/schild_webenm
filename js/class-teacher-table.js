@@ -42,7 +42,9 @@ class ClassTeacherTable extends CustomEditableGrid{
         $("#" + this.tableID + " tbody tr").dblclick((event) => {that.onRowDoubleClicked(event)});
 
         //dblclick on checkbox should be handled but click not because it shouldn't be editable (disabled -> no dblclick event)
-        $("#" + this.tableID + " .boolean input").attr("onclick", "return false;")
+        document.querySelectorAll("#" + this.tableID + " .boolean input").forEach((element) => {
+            element.addEventListener("click", (event) => { event.preventDefault(); });
+        });
     }
     
     onRowDoubleClicked(event){
