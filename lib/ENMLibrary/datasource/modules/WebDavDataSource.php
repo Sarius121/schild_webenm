@@ -84,7 +84,7 @@ class WebDavDataSource extends DataSourceModule {
         $response = $this->client->propfind('', array('{DAV:}givenname'), 1);
         
         foreach ($response as $file => $info) {
-            $filename = basename(($file));
+            $filename = urldecode(basename(($file)));
             if (preg_match("/^" . preg_quote($username) . preg_quote(FILE_SUFFIX) . ".*\.enz$/", $filename) == 1) {
                 return basename($filename, '.enz');
             }
@@ -108,7 +108,7 @@ class WebDavDataSource extends DataSourceModule {
                 continue;
             }
             $fileInfos = array();
-            $fileInfos["file"] = basename($file, ".enz");
+            $fileInfos["file"] = urldecode(basename($file, ".enz"));
             $fileInfos["user"] = $this->getUsernameByFilename($fileInfos["file"]);
             $fileInfos["last-edit"] = strtotime($info["{DAV:}getlastmodified"]);
             $result[] = $fileInfos;
