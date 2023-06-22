@@ -34,14 +34,12 @@ else if ($pageArg == "login" && isset($_POST['username']) && isset($_POST['passw
 }
 else if ($pageArg == "login" && (isset($_POST['yes']) || isset($_POST['no'])))
 {
-    if (isset($_POST['yes'])) {
-        // save changes
-        $loginHandler->loginWithTmpSession(true);
-    } else {
-        // don't save changes
-        $loginHandler->loginWithTmpSession(false);
+    // save changes
+    if ($loginHandler->closeForeignFile($loginHandler->getUsername(), isset($_POST['yes'])
+            && $loginHandler->loginWithTmpSession())) {
+        
+        header("Location: .");
     }
-    header("Location: .");
     exit();
 }
 else

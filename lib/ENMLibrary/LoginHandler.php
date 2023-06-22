@@ -13,8 +13,8 @@ class LoginHandler {
 
     private SessionHandler $session;
 
-    private $loggedin;
-    private $username;
+    private bool $loggedin = false;
+    private ?string $username = null;
     private $error = false;
     private $gradeFile;
     private $encryptedGradeFile;
@@ -31,20 +31,19 @@ class LoginHandler {
      * 
      * if the user is the admin user, no file is opened
      * 
+     * foreign files are always closed without saving the changes
+     * 
      * @param string $username name of the user
      * @param string $password password of the user
-     * @param bool $saveChanges if true, unsaved changes will be saved before logging in 
      * @return true|false true if login was successful, false otherwise
      */
-    public function login(string $username, string $password, bool $saveChanges=true): bool {
+    public function login(string $username, string $password): bool {
         $username = $this->normalizeUsername($username);
         if ($username == ADMIN_USER) {
             // login as admin instead of normal
             return $this->loginAdmin($password);
         }
-        if ($this->checkLogin($username, $password, $saveChanges)) {
-            $this->loggedin = true;
-            $this->username = $username;
+        if ($this->checkLogin($username, $password)) {
             $this->session->createSession($username);
             $success = true;
         } else {
@@ -76,7 +75,6 @@ class LoginHandler {
             return false;
         } elseif ($this->session->isAdmin()) {
             $this->loggedin = true;
-            $this->username = $this->session->getUsername();
             $this->session->extendSession();
             return true;
         } elseif ($this->session->isTmpSession()) {
@@ -88,7 +86,6 @@ class LoginHandler {
 
         if ($this->checkSessionLogin($this->session->getUsername())) {
             $this->loggedin = true;
-            $this->username = $this->session->getUsername();
             $this->session->extendSession();
             return true;
         } else {
@@ -104,14 +101,11 @@ class LoginHandler {
     }
 
     /**
-     * login with using a tmp session
+     * try to authenticate tmp session
      * 
-     * this login will destroy the tmp session and creates a normal session instead
-     * 
-     * @param bool $saveChanges if true, unsaved changes will be saved before logging in
      * @return true|false true if login was successful, false otherwise
      */
-    public function loginWithTmpSession(bool $saveChanges): bool {
+    public function authenticateTmpSession(): bool {
         if (!$this->session->isTmpSession()) {
             // already logged in -> someone else should handle this
             return false;
@@ -124,13 +118,23 @@ class LoginHandler {
             $this->session->destroySession();
             return false;
         }
-        $username = $this->session->getUsername();
-        // TODO NOT WORKING YET!!! -> how to check password
-        // check password against foreign and own file -> only then login
-        $password = "";
+        return true;
+    }
+
+    /**
+     * convert tmp session into normal session
+     * 
+     * @return bool true if the session could be successfully created, false otherwise
+     */
+    public function loginWithTmpSession() : bool {
+        if (!$this->isLoggedIn()) {
+            return false;
+        }
         $this->session->destroySession();
         $this->session->initSession();
-        return $this->login($username, $password, $saveChanges);
+        $this->session->createSession($this->getUsername());
+        $this->loggedin = true;
+        return true;
     }
 
     /**
@@ -144,52 +148,30 @@ class LoginHandler {
      *             in this file should be saved or discarded
      * @return true|false true if login was successful, false otherwise
      */
-    private function checkLogin(string $username, string $password, bool $saveChanges = true): bool{
+    private function checkLogin(string $username, string $password): bool{
         if(is_null($this->dataSource->findFilename($username))){
             //wrong username
             $this->error = "Der Benutzername oder das Passwort ist falsch!";
             return false;
         }
 
-        $dbFilename = $this->getDBFilename($username);
-        $this->dataSource->setTargetFile($this->getZipFilename($username));
-        $this->encryptedGradeFile = new EncryptedZipArchive($this->getZipFilename($username), TMP_GRADE_FILES_DIRECTORY . $dbFilename);
+        $dbFilename = $this->initFileObjects($username);
         if (file_exists(TMP_GRADE_FILES_DIRECTORY . $dbFilename)) {
             // if this case happens with a new login, something is wrong (probably old url) -> try with new session
             $this->logout();
             return false;
-        } elseif (($foreignFilename = $this->foreignTmpFileExists($username)) != false) {
-            $foreignGradeFile = new GradeFile($foreignFilename);
-            if($foreignGradeFile->openFile() && $foreignGradeFile->checkUser($password)){
-                $foreignGradeFile->close();
-
-                //save changes from foreign session and create new
-                $foreignZipFile = $this->foreignZipFileExists($username);
-                $foreignEncryptedGradeFile = new EncryptedZipArchive($foreignZipFile, TMP_GRADE_FILES_DIRECTORY . $foreignFilename);
-                $foreignDataSource = DataSourceModuleHelper::createModule();
-                $foreignDataSource->findFilename($username);
-                $foreignDataSource->setTargetFile($foreignZipFile);
-                if($foreignEncryptedGradeFile->close($saveChanges) && $foreignDataSource->closeFile($saveChanges)){
-                    return $this->openComplete($dbFilename, $password);
-                } else {
-                    //nothing opened yet
-                }
-            } else {
-                if($foreignGradeFile->getError() != null){
-                    $this->error = $foreignGradeFile->getError();
-                } else {
-                    $this->error = "Der Benutzername oder das Passwort ist falsch!";
-                }
-                //connection not possible or wrong username or password -> not your file, don't close it
-                $foreignGradeFile->close();
-                //doesn't matter -> nothing opened yet
-                return false;
-            }
-            
-        } else {
-            return $this->openComplete($dbFilename, $password);
         }
-        return false;
+        if (!$this->openComplete($dbFilename, $password)) {
+            $this->closeFile(false);
+            $this->error = "Der Benutzername oder das Passwort ist falsch!";
+            return false;
+        }
+        $this->loggedin = true;
+        if ($this->foreignTmpFileExists($username)) {
+            // in the best case, this should be handled before calling this function
+            $this->closeForeignFile($username, false);
+        }
+        return true;
     }
 
     /**
@@ -273,6 +255,13 @@ class LoginHandler {
         return false;
     }
 
+    private function initFileObjects(string $username) {
+        $dbFilename = $this->getDBFilename($username);
+        $this->dataSource->setTargetFile($this->getZipFilename($username));
+        $this->encryptedGradeFile = new EncryptedZipArchive($this->getZipFilename($username), TMP_GRADE_FILES_DIRECTORY . $dbFilename);
+        return $dbFilename;
+    }
+
     public function checkChangesToSave(string $username) {
         $username = $this->normalizeUsername($username);
 
@@ -283,6 +272,9 @@ class LoginHandler {
         return $this->foreignTmpFileExists($username) != false;
     }
 
+    /**
+     * checks login against foreign and source file
+     */
     public function checkLoginAgainstForeignFile(string $username, string $password) {
         $username = $this->normalizeUsername($username);
 
@@ -295,12 +287,19 @@ class LoginHandler {
             if ($foreignGradeFile->openFile()) {
                 $success = $foreignGradeFile->checkUser($password);
                 $foreignGradeFile->close();
-                if ($success) {
-                    $this->session->createTmpSession($username);
-                } else {
+                if (!$success) {
                     $this->error = "Der Benutzername oder das Passwort ist falsch!";
+                    return false;
                 }
-                return $success;
+                $dbFilename = $this->initFileObjects($username);
+                
+                $success = $this->openComplete($dbFilename, $password);
+                $this->closeFile(false);
+                if (!$success) {
+                    $this->error = "Der Benutzername oder das Passwort ist falsch!";
+                    return false;
+                }
+                $this->session->createTmpSession($username);
             }
         }
         $this->error = "Ein unbekannter Fehler ist aufgetreten.";
@@ -321,6 +320,9 @@ class LoginHandler {
      * @param bool $saveChanges true if the changes should be saved before closing the file
      */
     public function closeForeignFile($username, $saveChanges) {
+        if (!$this->isLoggedIn()) {
+            return false;
+        }
         $foreignFilename = $this->foreignTmpFileExists($username);
         if ($foreignFilename == false) {
             return false;
@@ -351,13 +353,14 @@ class LoginHandler {
     /**
      * close file completely (tmp-file and working-file)
      * 
-     * @param bool $saveChanges shall the changes be saved before closing the file?
+     * @param bool $saveChanges shall the changes be saved before closing the file?, if the user is not loggedin, it's set to false
      * @return true|false true if closing succeeds or there is no file to close, false otherwise
      */
     public function closeFile(bool $saveChanges = true): bool {
-        if (!$this->isLoggedIn() || $this->isAdmin()) {
+        if ($this->isAdmin()) {
             return true;
         }
+        $saveChanges = $this->isLoggedIn() && $saveChanges; // changes can only be saved if logged in
         if($this->gradeFile != null) { $this->gradeFile->close(); }
         $success = true;
         if($this->encryptedGradeFile != null) { $success = $this->encryptedGradeFile->close($saveChanges); }
@@ -480,16 +483,41 @@ class LoginHandler {
         return $this->gradeFile;
     }
 
+    /**
+     * if not done yet, tries to authenticate the user and returns true if the authentication succeeds
+     * 
+     * once a user is authenticated, the user is not authenticated again
+     * 
+     * notice that normal sessions have to be authenticated in a different way
+     */
     public function isLoggedIn(){
-        return $this->loggedin;
+        if ($this->loggedin) {
+            return true;
+        }
+        if (!$this->session->isSessionValid()) {
+            return false;
+        }
+        if ($this->session->isAdmin()) {
+            return $this->loggedin = true;
+        }
+        if ($this->authenticateTmpSession()) {
+            return $this->loggedin = true;
+        }
+        return false;
     }
 
     public function getError(){
         return $this->error;
     }
 
-    public function getUsername(){
-        return $this->username;
+    public function getUsername(): ?string{
+        if ($this->username != null) {
+            return $this->username;
+        }
+        if ($this->isLoggedIn()) {
+            return $this->username = $this->session->getUsername();
+        }
+        return null;
     }
 
     public function getCSRFToken() {
