@@ -1,5 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
-import { login, logout, DataTableCell } from "./test-utils";
+import { login, logout, DataTableCell, getRandomRow, getRandomGrade, insertValueIntoTable } from "./test-utils";
 
 test.beforeEach(async ({ page }) => {
     await page.goto('http://localhost/webenm');
@@ -89,21 +89,3 @@ test.describe('data.exams', () => {
         await insertValueIntoTable(page, "ExamsTable", row, "NoteSchriftlich", grade);
     });
 });
-
-async function getRandomRow(page: Page, tableid: string, minRow: number = 0) {
-    var row_count = (await page.locator("#" + tableid + " tbody tr").count()).valueOf();
-    return Math.random() * (row_count - 1 - minRow) + minRow;
-}
-
-async function getRandomGrade(page: Page) {
-    // -1 because first row is header
-    var count = (await page.locator("#grades-list .row:not(.hidden)").count() - 1).valueOf();
-    var row = Math.random() * (count - 1) + 1;
-    var grade = await page.locator("#grades-list .row:not(.hidden) >> nth=" + row.toFixed(0)).locator(".col-sm-1 >> nth=1").innerText();
-    return grade;
-}
-
-async function insertValueIntoTable(page: Page, tableid: string, row: number, col: string, value: string) {
-    var cell = new DataTableCell(page, tableid, row, col);
-    await cell.insertValue(value);
-}

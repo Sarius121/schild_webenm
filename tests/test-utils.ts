@@ -82,3 +82,26 @@ export class DataTableCell
         this.page = page;
     }
 }
+
+export async function getRandomRow(page: Page, tableid: string, minRow: number = 0) {
+    var row_count = (await page.locator("#" + tableid + " tbody tr").count()).valueOf();
+    return Math.random() * (row_count - 1 - minRow) + minRow;
+}
+
+export async function getRandomGrade(page: Page) {
+    // -1 because first row is header
+    var count = (await page.locator("#grades-list .row:not(.hidden)").count() - 1).valueOf();
+    var row = Math.random() * (count - 1) + 1;
+    var grade = await page.locator("#grades-list .row:not(.hidden) >> nth=" + row.toFixed(0)).locator(".col-sm-1 >> nth=1").innerText();
+    return grade;
+}
+
+export async function insertValueIntoTable(page: Page, tableid: string, row: number, col: string, value: string) {
+    var cell = new DataTableCell(page, tableid, row, col);
+    await cell.insertValue(value);
+}
+
+export function selectMenuItem(page: Page, tab: string, item: string) {
+    page.locator("#top-box .tab-layout-2").getByText(tab).click();
+    page.locator("#top-box .tab-content").getByText(item).click();
+}
