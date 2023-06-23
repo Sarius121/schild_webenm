@@ -1,5 +1,6 @@
 {
     "require": {
-        "sabre/dav": "^4.4"
+        "sabre/dav": "^4.4",
+        "monolog/monolog": "^2.9"
     }
 }
