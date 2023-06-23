@@ -16,8 +16,8 @@ class LoginHandler {
     private bool $loggedin = false;
     private ?string $username = null;
     private $error = false;
-    private $gradeFile;
-    private $encryptedGradeFile;
+    private ?GradeFile $gradeFile = null;
+    private ?EncryptedZipArchive $encryptedGradeFile = null;
     private DataSourceModule $dataSource;
 
     public function __construct()
@@ -133,6 +133,9 @@ class LoginHandler {
         $this->session->destroySession();
         $this->session->initSession();
         $this->session->createSession($this->getUsername());
+        $dbFilename = $this->initFileObjects($this->getUsername());
+        $this->openComplete($dbFilename, $this->getUsername(), false);
+        $this->getGradeFile()->close();
         $this->loggedin = true;
         return true;
     }
@@ -187,9 +190,7 @@ class LoginHandler {
             return false;
         }
 
-        $dbFilename = $this->getDBFilename($username);
-        $this->dataSource->setTargetFile($this->getZipFilename($username));
-        $this->encryptedGradeFile = new EncryptedZipArchive($this->getZipFilename($username), TMP_GRADE_FILES_DIRECTORY . $dbFilename);
+        $dbFilename = $this->initFileObjects($username);
         if (file_exists(TMP_GRADE_FILES_DIRECTORY . $dbFilename)) {
             if ($this->encryptedGradeFile->checkPassword()) { //TODO not neccessary? -> if this fails, something is wrong
                 $this->gradeFile = new GradeFile($dbFilename);
@@ -300,6 +301,7 @@ class LoginHandler {
                     return false;
                 }
                 $this->session->createTmpSession($username);
+                return true;
             }
         }
         $this->error = "Ein unbekannter Fehler ist aufgetreten.";

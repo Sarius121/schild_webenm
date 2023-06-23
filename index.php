@@ -35,10 +35,10 @@ else if ($pageArg == "login" && isset($_POST['username']) && isset($_POST['passw
 else if ($pageArg == "login" && (isset($_POST['yes']) || isset($_POST['no'])))
 {
     // save changes
-    if ($loginHandler->closeForeignFile($loginHandler->getUsername(), isset($_POST['yes'])
-            && $loginHandler->loginWithTmpSession())) {
-        
-        header("Location: .");
+    if ($loginHandler->closeForeignFile($loginHandler->getUsername(), isset($_POST['yes']))) {
+        if ($loginHandler->loginWithTmpSession()) {
+            header("Location: .");
+        }
     }
     exit();
 }
@@ -47,7 +47,7 @@ else
     $loginHandler->loginWithSession();
 }
 
-if($loginHandler->isLoggedIn()){
+if($loginHandler->isLoggedIn() && $page != "unsaved-changes"){
     if ($loginHandler->isAdmin()) {
         $page = "admin";
     } else {
@@ -98,3 +98,10 @@ if($loginHandler->isLoggedIn()){
         ?>
     </body>
 </html>
+
+<?php
+    if (!is_null($loginHandler->getGradeFile())) {
+        // file is not needed anymore
+        $loginHandler->getGradeFile()->close();
+    }
+?>
