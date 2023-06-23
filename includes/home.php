@@ -4,9 +4,9 @@ use ENMLibrary\BackupHandler;
 use ENMLibrary\Modal;
 
 if(!isset($loginHandler)){
-        header("Location: index.php");
-        die("An Error occurred!");
-    }
+    header("Location: index.php");
+    die("An Error occurred!");
+}
 ?>
 
 <div id="csrf_token"><?php echo $loginHandler->getCSRFToken(); ?></div>
@@ -157,9 +157,6 @@ if(!isset($loginHandler)){
     echo $classTeacherModal->getHTMLBeforeBody();
     include("includes/modals/ClassTeacherModal.php");
     echo $classTeacherModal->getHTMLAfterBody(); 
-
-
-    $loginHandler->getGradeFile()->close();
 
 ?>
 

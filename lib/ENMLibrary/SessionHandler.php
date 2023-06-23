@@ -21,12 +21,13 @@ class SessionHandler {
     }
 
     public function isSessionValid(){
-        return isset($_SESSION['username']) && isset($_SESSION['password']) && isset($_SESSION['expire']);
+        return isset($_SESSION['create']) && isset($_SESSION['expire']) 
+            && isset($_SESSION['username']) && isset($_SESSION['admin'])
+            && isset($_SESSION['tmp']);
     }
 
-    public function createSession($username, $password){
+    public function createSession($username){
         $_SESSION['username'] = $username;
-        $_SESSION['password'] = $password;
         $_SESSION['create'] = time();
         $_SESSION['tmp'] = false;
         $_SESSION['admin'] = false;
@@ -34,9 +35,8 @@ class SessionHandler {
         $this->extendSession();
     }
 
-    public function createTmpSession(string $username, string $password) {
+    public function createTmpSession(string $username) {
         $_SESSION['username'] = $username;
-        $_SESSION['password'] = $password;
         $_SESSION['tmp'] = true;
         $_SESSION['create'] = time();
         $_SESSION['admin'] = false;
@@ -46,7 +46,6 @@ class SessionHandler {
 
     public function createAdminSession() {
         $_SESSION['username'] = ADMIN_USER;
-        $_SESSION['password'] = ADMIN_PWD;
         $_SESSION['tmp'] = false;
         $_SESSION['create'] = time();
         $_SESSION['admin'] = true;
@@ -79,10 +78,6 @@ class SessionHandler {
 
     public function getUsername() {
         return $_SESSION['username'];
-    }
-
-    public function getPassword() {
-        return $_SESSION['password'];
     }
 
     /**

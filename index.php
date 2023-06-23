@@ -14,10 +14,12 @@ if(isset($_GET["page"])){
 }
 
 if($pageArg == "logout"){
-    $loginHandler->loginWithSession();
-    if(!$loginHandler->logout()){
-        header("Location: .");
+    if ($loginHandler->loginWithSession()) {
+        $loginHandler->closeFile();
+        $loginHandler->logout();
     }
+    header("Location: .");
+    exit();
 }
 else if ($pageArg == "login" && isset($_POST['username']) && isset($_POST['password']))
 {
@@ -32,14 +34,12 @@ else if ($pageArg == "login" && isset($_POST['username']) && isset($_POST['passw
 }
 else if ($pageArg == "login" && (isset($_POST['yes']) || isset($_POST['no'])))
 {
-    if (isset($_POST['yes'])) {
-        // save changes
-        $loginHandler->loginWithTmpSession(true);
-    } else {
-        // don't save changes
-        $loginHandler->loginWithTmpSession(false);
+    // save changes
+    if ($loginHandler->closeForeignFile($loginHandler->getUsername(), isset($_POST['yes']))) {
+        if ($loginHandler->loginWithTmpSession()) {
+            header("Location: .");
+        }
     }
-    header("Location: .");
     exit();
 }
 else
@@ -47,7 +47,7 @@ else
     $loginHandler->loginWithSession();
 }
 
-if($loginHandler->isLoggedIn()){
+if($loginHandler->isLoggedIn() && $page != "unsaved-changes"){
     if ($loginHandler->isAdmin()) {
         $page = "admin";
     } else {
@@ -98,3 +98,10 @@ if($loginHandler->isLoggedIn()){
         ?>
     </body>
 </html>
+
+<?php
+    if (!is_null($loginHandler->getGradeFile())) {
+        // file is not needed anymore
+        $loginHandler->getGradeFile()->close();
+    }
+?>
