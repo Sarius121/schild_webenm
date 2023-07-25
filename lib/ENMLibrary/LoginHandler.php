@@ -45,6 +45,8 @@ class LoginHandler {
         }
         if ($this->checkLogin($username, $password)) {
             $this->session->createSession($username);
+            LoggingHandler::initLogger($username, $this->session->getSessionFileID());
+            LoggingHandler::getLogger()->info("new login");
             $success = true;
         } else {
             $success = false;
@@ -85,6 +87,7 @@ class LoginHandler {
         }
 
         if ($this->checkSessionLogin($this->session->getUsername())) {
+            LoggingHandler::initLogger($this->getUsername(), $this->session->getSessionFileID());
             $this->loggedin = true;
             $this->session->extendSession();
             return true;
@@ -118,6 +121,7 @@ class LoginHandler {
             $this->session->destroySession();
             return false;
         }
+        LoggingHandler::initLogger($this->getUsername(), $this->session->getSessionFileID(), ["tmp" => "true"]);
         return true;
     }
 
@@ -133,6 +137,8 @@ class LoginHandler {
         $this->session->destroySession();
         $this->session->initSession();
         $this->session->createSession($this->getUsername());
+        LoggingHandler::initLogger($this->getUsername(), $this->session->getSessionFileID());
+        LoggingHandler::getLogger()->info("new login using tmp session");
         $dbFilename = $this->initFileObjects($this->getUsername());
         $this->openComplete($dbFilename, $this->getUsername(), false);
         $this->getGradeFile()->close();

@@ -3,6 +3,7 @@
 namespace ENMLibrary\datasource\modules;
 
 use ENMLibrary\datasource\DataSourceModule;
+use ENMLibrary\LoggingHandler;
 use Sabre\DAV\Client;
 use Sabre\HTTP\Request;
 
@@ -37,6 +38,7 @@ class WebDavDataSource extends DataSourceModule {
         $response = $this->client->options();
 
         if (array_search(1, $response) === false || array_search(3, $response) === false) {
+            LoggingHandler::getLogger()->error("WebDAV server connection not possible", ["location" => "WebDavDataSource.__construct()"]);
             $this->client = null;
         }
     }
@@ -50,6 +52,7 @@ class WebDavDataSource extends DataSourceModule {
         $response = $this->client->send($request);
 
         if ($response->getStatus() != 200) {
+            LoggingHandler::getLogger()->error("WebDAV server responded with " . $response->getStatus(), ["location" => "WebDavDataSource.openFile()"]);
             return false;
         }
 
@@ -72,7 +75,7 @@ class WebDavDataSource extends DataSourceModule {
         if ($response->getStatus() < 400) {
             return true;
         }
-
+        LoggingHandler::getLogger()->error("WebDAV server responded with " . $response->getStatus(), ["location" => "WebDavDataSource.saveFile()"]);
         return false;
     }
 

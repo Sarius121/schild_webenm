@@ -5,7 +5,7 @@ This tool replaces the SchILD ENM used in NRW (Germany) for filling in the stude
 ## mdb_connector_server
 Source: https://github.com/Sarius121/mdb_connector_server
 This server has to run on the same machine on port 8080 (server and port can be changed in lib/MDBConnector/MDBDatabase.php). 
-It is used because there is no MDB-file driver for php on linux (no one that can handle all sql commands this WebApp needs). The mdb_connector_server is written in Java (Spring) and uses the UCanAccess driver (http://ucanaccess.sourceforge.net/site.html), which is platform-independant.
+It is used because there is no MDB-file driver for php on linux (no one that can handle all sql commands this WebApp needs). The mdb_connector_server is written in Java (Spring) and uses the UCanAccess driver (http://ucanaccess.sourceforge.net/site.html), which is platform-independent.
 
 ## required grade file format
 The grade-files must be encrypted (i.e. enz-files) with a password which is the same for all teacher. This "school master password" protects the files against non-teacher access. Furthermore the files must be saved with a teacher individual password which is used to authenticate the teachers.
@@ -29,13 +29,14 @@ It should work with every web server but was only tested on Linux with Apache an
 - editablegrid (https://github.com/webismymind/editablegrid) (clone on 01.2021)
 - Textarea Caret Position (https://github.com/component/textarea-caret-position)
 - SabreDAV (4.4)
+- Monolog (2.9)
 
 Please have a look at the respective files/folders for more information on the licenses. All the above libraries are licensed under the MIT License.
 
 # Features
 - supports encrypted SchILD grade files (.enz)
 - all student grade, class teacher and exams functions work
-- platform independant (but Linux is recommended)
+- platform independent (but Linux is recommended)
 - admin page for seeing file insights and downloading and saving files
 - possible sources of the grade files: WebDAV or local folder
 
@@ -50,7 +51,7 @@ Please have a look at the respective files/folders for more information on the l
 The easiest way of installing webENM is docker. You find more information how to deploy the app with docker here: https://github.com/Sarius121/webenm_docker. Please notice that the docker installation seems to work but wasn't tested in production yet.
 
 ## Permissions
-The grade-files/tmp/ directory has to be read and write accessible by the webserver with this webapp and the servlet-container with the mdb_connector_server. Easy way to do this in Linux is creating a group with the two users and setting the default permission for this directory as discribed here: https://unix.stackexchange.com/questions/1314/how-to-set-default-file-permissions-for-all-folders-files-in-a-directory.
+The grade-files/tmp/ directory has to be read and write accessible by the webserver with this webapp and the servlet-container with the mdb_connector_server. Easy way to do this in Linux is creating a group with the two users and setting the default permission for this directory as described here: https://unix.stackexchange.com/questions/1314/how-to-set-default-file-permissions-for-all-folders-files-in-a-directory.
 
 ## Installation
 To load the Sabre library, you have to use composer:
@@ -73,12 +74,12 @@ For the following configuration files, *constants.php-example* files are include
 
 The source module must be configured in the *lib/ENMLibrary/constants.php* file and can at the moment be either WebDAV or a local folder (feel free to write your own module).
 
-- *LocalFolderDataSourceModule*: The grade files have to be in a folder on the server. I had this folder synchronised with WebDAV a long time, so synchronising this folder should work.
+- *LocalFolderDataSourceModule*: The grade files have to be in a folder on the server. I had this folder synchronized with WebDAV a long time, so synchronizing this folder should work.
 - *WebDAVDataSourceModule*: The grade files lay on some WebDAV-Server and are downloaded to this app when editing. This feature is rather new, so it's still a bit experimental.
 
 ### Admin user
 
-The admin user must also be configured in the *lib/ENMLibrary/constants.php* file. The username of the admin should definetely not be a normal username, because he uses the same login form as normal users. The admin can see all files and usernames which can be opened. He can also see the date of the last changes, can close files if someone forgot to sign out and download all grade files as zip. However, the actions can be disabled in the config file, too.
+The admin user must also be configured in the *lib/ENMLibrary/constants.php* file. The username of the admin should definitely not be a normal username, because he uses the same login form as normal users. The admin can see all files and usernames which can be opened. He can also see the date of the last changes, can close files if someone forgot to sign out and download all grade files as zip. However, the actions can be disabled in the config file, too.
 
 ## Security
 As I am not a professional software developer or cyber security specialist I cannot guarantee that there are no security issues in this app. You should only use it in an internal network or provide extra security e.g. with a HTTP authentication. When using it outside a safe environment it is furthermore highly recommended to use HTTPS and HSTS.
@@ -86,4 +87,4 @@ As I am not a professional software developer or cyber security specialist I can
 I don't take any responsibility for security flaws and this app does not follow the german data processing laws. In my opinion, this app is nevertheless more secure than the often usual "sending not encrypted grade files by email" method (by working on this project I noticed how badly protected the not encrypted grade files are).
 
 # Known issues
-- in Windows temporary files are often not deleteted directly (probably because they are somehow still opened by mdb_connector_server) -> this is not a problem in Linux
+- in Windows temporary files are often not deleted directly (probably because they are somehow still opened by mdb_connector_server) -> this is not a problem in Linux
