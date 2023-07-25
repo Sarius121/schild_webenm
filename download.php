@@ -3,6 +3,7 @@
 ob_start();
 
 use ENMLibrary\datasource\DataSourceModuleHelper;
+use ENMLibrary\LoggingHandler;
 use ENMLibrary\LoginHandler;
 use ENMLibrary\RequestResponse;
 
@@ -22,6 +23,7 @@ if(!$loginHandler->isLoggedIn()){
 }
 
 if(!$loginHandler->checkDownloadToken($_GET["token"])){
+    LoggingHandler::getLogger()->warning("access with wrong download token", [LoggingHandler::LOCATION => "download"]);
     die(RequestResponse::ErrorResponse(RequestResponse::ERROR_DOWNLOAD_TOKEN)->getResponse());
 }
 

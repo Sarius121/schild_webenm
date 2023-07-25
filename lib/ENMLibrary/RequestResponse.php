@@ -20,7 +20,7 @@ class RequestResponse{
         RequestResponse::ERROR_MISSING_ARGUMENTS => "missing arguments",
         RequestResponse::ERROR_WRONG_ARGUMENTS => "wrong arguments",
         RequestResponse::ERROR_CSRF_TOKEN => "wrong CSRF token",
-        RequestResponse::ERROR_DOWNLOAD_TOKEN => "wrong donwload token",
+        RequestResponse::ERROR_DOWNLOAD_TOKEN => "wrong download token",
         RequestResponse::ERROR_FUNCTION_SPECIFIC => "the requested function returned an error"
     );
 
@@ -34,10 +34,13 @@ class RequestResponse{
      * @param ?Exception $exception exception which has occurred and whose message should be sent as 'details'
      *                  (it's only sent if DEBUG_MESSAGES is true)
      */
-    public static function ErrorResponse(string $error_code, string $csrf_token = null, ?Exception $exception = null): RequestResponse{
+    public static function ErrorResponse(string $error_code, string $csrf_token = null, ?Exception $exception = null, ?string $errorId = null): RequestResponse{
         $response = new RequestResponse(RequestResponse::ERRORS[$error_code], $error_code, $csrf_token);
         if (!is_null($exception) && DEBUG_MESSAGES) {
             $response->addDetailedMessage($exception->getMessage());
+        }
+        if (!is_null($errorId)) {
+            $response->addData("errorid", $errorId);
         }
         return $response;
     }

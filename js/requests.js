@@ -36,8 +36,9 @@ class Requests {
                             that.curOnload = null;
                         }
                         that.csrfToken = result.csrf_token;
+                        that.clearError();
                     } else {
-                        // errror
+                        // error
                         if(that.debug){
                             console.log(result.message);
                             console.log(result.details);
@@ -49,6 +50,7 @@ class Requests {
                         if("csrf_token" in result){
                             that.csrfToken = result.csrf_token;
                         }
+                        that.displayError(result.code, result.message, result.errorid);
                         if(that.curOnload != null){
                             try {
                                 that.curOnload(result);
@@ -95,5 +97,41 @@ class Requests {
         this.curOnload = curItem.onload;
         this.request.open(curItem.method, curItem.target);
         this.request.send(curItem.data);
+    }
+
+    /**
+     * display error in alert box
+     * 
+     * @param {string} code error code
+     * @param {string} message error message
+     * @param {string} errorId error id
+     */
+    displayError(code, message, errorId) {
+        var text = "Bei der letzten Anfrage ist ein Fehler aufgetreten: ";
+        text += message;
+        text += " (Code: " + code;
+        text += ", ID: " + errorId;
+        text += ").";
+        text += " Bitte benachrichtigen Sie den Administrator. Beachten Sie, dass die durchgeführten Änderungen möglicherweise nicht gespeichert wurden.";
+
+        document.getElementById("error-alert").textContent = text;
+        document.getElementById("error-alert").classList.remove("hidden");
+
+        document.getElementById("error-alert").animate(
+            [
+                { opacity: '0' },
+                { opacity: '1' }
+            ],
+            {
+                duration: 500,
+            }
+        );
+    }
+
+    /**
+     * remove alert from ui
+     */
+    clearError() {
+        document.getElementById("error-alert").classList.add("hidden");
     }
 }

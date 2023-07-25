@@ -1,10 +1,13 @@
 <?php
 namespace ENMLibrary;
 
+use Exception;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 class LoggingHandler {
+
+    public const LOCATION = "location";
 
     private static ?Logger $logger = null;
 
@@ -32,6 +35,21 @@ class LoggingHandler {
             LoggingHandler::initDefaultLogger();
         }
         return LoggingHandler::$logger;
+    }
+
+    public static function logTrackableError($message, array $context = []) {
+        $errorId = uniqid("error");
+        $context["errorid"] = $errorId;
+        LoggingHandler::getLogger()->error($message, $context);
+        return $errorId;
+    }
+
+    public static function logTrackableException(Exception $e, array $context = []) : string {
+        $errorId = uniqid("error");
+        $context["errorid"] = $errorId;
+        $context[LoggingHandler::LOCATION] = $e->getFile() . ":" . $e->getLine();
+        LoggingHandler::getLogger()->error($e->getMessage(), $context);
+        return $errorId;
     }
 
 }

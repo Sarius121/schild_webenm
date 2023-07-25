@@ -18,11 +18,10 @@ class BackupHandler {
      * upload file to the working directory -> needs to be saved to the source afterwards
      * 
      * @param string $file file which should be uploaded
-     * @param string $password user's password
      * @param string $basename name of the file in the source directory (without file extension)
      * @param string $current_file the zip file which is currently used (in the working directory)
      */
-    public function upload($file, $password, $basename, $current_file) {
+    public function upload($file, $basename, $current_file) {
         if(!$this->doSuperficialFileCheck($file)){
             return false;
         }
@@ -33,7 +32,7 @@ class BackupHandler {
             return false;
         }
 
-        if(!$this->doDetailedFileCheck($target_file, $password, $basename)){
+        if(!$this->doDetailedFileCheck($target_file, $basename)){
             // delete uploaded file if check fails
             unlink($target_file);
             return false;
@@ -87,11 +86,10 @@ class BackupHandler {
      * check if the file inside the archive is accessable with user's password and contains all required tables
      * 
      * @param string $target archive file to check
-     * @param string $password user's password
      * @param string $basename name of the file in the source directory (without file extension)
      * @return true|false true if file passes checks, false otherwise
      */
-    private function doDetailedFileCheck($target, $password, $basename){
+    private function doDetailedFileCheck($target, $basename){
         //is file zip archive encrypted with the right password?
         $tmp_grade_file = TMP_GRADE_FILES_DIRECTORY . "new-" . $basename . ".enm";
         $zipArchive = new EncryptedZipArchive($target, $tmp_grade_file);
@@ -106,9 +104,7 @@ class BackupHandler {
         $gradeFile = new GradeFile(basename($tmp_grade_file));
         if($gradeFile->openFile()){
             if($gradeFile->hasRequiredTables()){
-                if($gradeFile->checkUser($password)){
-                    $success = true;
-                }
+                $success = true;
             } else {
                 //some tables are missing
             }

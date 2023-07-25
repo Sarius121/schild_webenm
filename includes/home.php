@@ -103,6 +103,7 @@ if(!isset($loginHandler)){
                 </div>
             </div>
         </div>
+        <div id="error-alert" class="alert alert-danger hidden">Ein Fehler ist aufgetreten. Bitte benachrichtigen Sie den Administrator.</div>
         <div class="separator"></div>
         <ul id="nav-data" class="nav nav-tabs" role="tablist">
             <li class="nav-item" role="presentation">

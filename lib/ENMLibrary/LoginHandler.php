@@ -87,9 +87,9 @@ class LoginHandler {
         }
 
         if ($this->checkSessionLogin($this->session->getUsername())) {
-            LoggingHandler::initLogger($this->getUsername(), $this->session->getSessionFileID());
             $this->loggedin = true;
             $this->session->extendSession();
+            LoggingHandler::initLogger($this->getUsername(), $this->session->getSessionFileID());
             return true;
         } else {
             if ($this->error == null) {
@@ -524,10 +524,7 @@ class LoginHandler {
         if ($this->username != null) {
             return $this->username;
         }
-        if ($this->isLoggedIn()) {
-            return $this->username = $this->session->getUsername();
-        }
-        return null;
+        return $this->username = $this->session->getUsername();
     }
 
     public function getCSRFToken() {

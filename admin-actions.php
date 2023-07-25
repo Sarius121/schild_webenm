@@ -1,6 +1,7 @@
 <?php
 
 use ENMLibrary\datasource\DataSourceModuleHelper;
+use ENMLibrary\LoggingHandler;
 use ENMLibrary\LoginHandler;
 use ENMLibrary\RequestResponse;
 
@@ -20,6 +21,7 @@ if(!$loginHandler->isLoggedIn() || !$loginHandler->isAdmin()){
 }
 
 if(!$loginHandler->checkCSRFToken($_POST["csrf_token"])){
+    LoggingHandler::getLogger()->warning("access with wrong CSRF token", [LoggingHandler::LOCATION => "admin-actions"]);
     die(RequestResponse::ErrorResponse(RequestResponse::ERROR_CSRF_TOKEN)->getResponse());
 }
 
@@ -87,6 +89,7 @@ try {
     }
     
 } catch (Exception $e) {
-    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_UNKNOWN, $loginHandler->getCSRFToken(), $e)->getResponse());
+    $errorId = LoggingHandler::logTrackableException($e);
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_UNKNOWN, $loginHandler->getCSRFToken(), $e, $errorId)->getResponse());
 }
 ?>

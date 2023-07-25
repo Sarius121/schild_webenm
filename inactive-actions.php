@@ -1,6 +1,7 @@
 <?php
 
 use ENMLibrary\BackupHandler;
+use ENMLibrary\LoggingHandler;
 use ENMLibrary\LoginHandler;
 use ENMLibrary\RequestResponse;
 
@@ -20,6 +21,7 @@ if(!$loginHandler->isLoggedIn() || $loginHandler->isAdmin()){
 }
 
 if(!$loginHandler->checkCSRFToken($_POST["csrf_token"])){
+    LoggingHandler::getLogger()->warning("access with wrong CSRF token", [LoggingHandler::LOCATION => "inactive-actions"]);
     die(RequestResponse::ErrorResponse(RequestResponse::ERROR_CSRF_TOKEN)->getResponse());
 }
 
@@ -62,7 +64,7 @@ try {
             $file = $_FILES["backupFile"];
             if($file["error"] == UPLOAD_ERR_OK){
                 $fileUploader = new BackupHandler();
-                if ($fileUploader->upload($file, $loginHandler->getPassword(), basename($loginHandler->getSourceFilename(), ".enz"),
+                if ($fileUploader->upload($file, basename($loginHandler->getSourceFilename(), ".enz"),
                         $loginHandler->getZipFilename($loginHandler->getUsername()))) {
                     $loginHandler->saveToSource();
                     $loginHandler->reopenFile(false);
@@ -93,6 +95,7 @@ try {
         die(RequestResponse::ErrorResponse(RequestResponse::ERROR_WRONG_ARGUMENTS, $loginHandler->getCSRFToken())->getResponse());
     }
 } catch (Exception $e) {
-    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_UNKNOWN, $loginHandler->getCSRFToken(), $e)->getResponse());
+    $errorId = LoggingHandler::logTrackableException($e);
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_UNKNOWN, $loginHandler->getCSRFToken(), $e, $errorId)->getResponse());
 }
 ?>

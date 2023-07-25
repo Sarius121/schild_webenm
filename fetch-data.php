@@ -3,6 +3,7 @@
 use ENMLibrary\datatypes\GradesData;
 use ENMLibrary\datatypes\PhrasesData;
 use ENMLibrary\GradeFileDataHelper;
+use ENMLibrary\LoggingHandler;
 use ENMLibrary\LoginHandler;
 use ENMLibrary\RequestResponse;
 
@@ -21,6 +22,7 @@ if(!$loginHandler->isLoggedIn() || $loginHandler->isAdmin()){
     die();
 }
 if(!$loginHandler->checkCSRFToken($_POST["csrf_token"])){
+    LoggingHandler::getLogger()->warning("access with wrong CSRF token", [LoggingHandler::LOCATION => "fetch-data"]);
     die(RequestResponse::ErrorResponse(RequestResponse::ERROR_CSRF_TOKEN)->getResponse());
 }
 
@@ -29,7 +31,7 @@ try {
         die(RequestResponse::ErrorResponse(RequestResponse::ERROR_MISSING_ARGUMENTS, $loginHandler->getCSRFToken())->getResponse());
     }
 
-    //database is now accessable
+    //database is now accessible
     try{
         $data = json_decode($_POST["tables"]);
     } catch(Exception $e) {
@@ -65,7 +67,8 @@ try {
 
     $loginHandler->getGradeFile()->close();
 } catch (Exception $e) {
-    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_UNKNOWN, $loginHandler->getCSRFToken(), $e)->getResponse());
+    $errorId = LoggingHandler::logTrackableException($e);
+    die(RequestResponse::ErrorResponse(RequestResponse::ERROR_UNKNOWN, $loginHandler->getCSRFToken(), $e, $errorId)->getResponse());
 }
 
 ?>
