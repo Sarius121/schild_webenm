@@ -420,6 +420,8 @@ class LoginHandler {
      */
     public function loginAdmin(string $password): bool {
         if ($password == ADMIN_PWD) {
+            LoggingHandler::initLogger(ADMIN_USER, "-", ["privileges" => "admin"]);
+            LoggingHandler::getLogger()->info("new login");
             $this->session->createAdminSession();
             return true;
         }
