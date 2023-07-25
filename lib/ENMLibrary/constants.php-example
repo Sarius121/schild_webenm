@@ -87,4 +87,13 @@ define("SHOW_DATA_STUDENT_GRADES_MAHNUNG", false);
 define("SHOW_DATA_CLASS_TEACHER_FS", false);
 define("SHOW_DATA_CLASS_TEACHER_uFS", false);
 
+/**
+ * ###########
+ * # LOGGING #
+ * ###########
+ */
+
+define("LOG_FILE", "log/webenm.log");
+define("LOG_LEVEL", Logger::INFO);
+
 ?>
